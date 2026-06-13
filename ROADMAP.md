@@ -6,18 +6,19 @@
 - Define product scope and open-core boundary.
 - Define architecture, MVP, data model, knowledge flow, privacy policy, specs, and synthetic examples.
 
-## v0.2 - Web App Skeleton
+## v0.2 - Web App Skeleton (current / completed)
 
-- Add frontend and backend skeleton after product definition is reviewed.
-- Add basic routing and placeholder pages.
-- Keep implementation aligned with CE scope.
+- Added local-first Next.js App Router skeleton.
+- Added local creator dashboard and service menu.
+- Added fan intake, case management, tag workbench, rule matching, report, feedback, and candidate queue flows.
+- Kept all persistence in browser localStorage.
 
-## v0.3 - Hairstyle Workflow MVP
+## v0.3 - Hairstyle Workflow MVP Refinement (next)
 
-- Implement fan intake.
-- Implement case management.
-- Implement tag workbench.
-- Implement hairstyle rule matching.
+- Refine Hairstyle Workflow usability.
+- Improve rule matching transparency.
+- Improve report editing ergonomics.
+- Add stronger validation for consent, anonymization, and candidate extraction.
 
 ## v0.4 - Report Generator
 

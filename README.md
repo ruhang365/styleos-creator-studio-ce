@@ -5,7 +5,48 @@ Open-source community edition of StyleOS Creator Studio, a workflow tool for AI-
 中文说明：
 StyleOS Creator Studio CE 是入行365 StyleOS 的开源社区版小 B 工作台，帮助造型、穿搭、形象、发型、美妆创作者把粉丝咨询转化为结构化服务、Lite Report 和可复用知识。
 
-This repository is a product-definition repository first. It defines the runnable product architecture and workflow before implementation starts.
+This repository is the local-first community edition of Creator Studio. It is not StyleOS Cloud and does not include hosted accounts, payments, production databases, AI APIs, or real user photo upload.
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+For a production build check:
+
+```bash
+npm run build
+```
+
+No lint script is configured in v0.2. If a future version adds one, run:
+
+```bash
+npm run lint
+```
+
+Reset local data from the Dashboard by using `Reset Local Data`, or clear the browser localStorage keys that start with `styleos_ce_`.
+
+## v0.2 Web App Skeleton
+
+The CE app now includes a runnable Next.js App Router skeleton for the Hairstyle Workflow:
+
+- local creator profile
+- dashboard metrics
+- service menu
+- fan intake workflow
+- case management
+- tag workbench
+- hairstyle rule matching
+- Lite Report generator
+- Barber Brief generator
+- feedback workflow
+- Candidate Knowledge Queue
+
+All records are stored in browser localStorage and all seed examples are synthetic.
 
 ## Relationship with styleos-protocol
 
@@ -74,6 +115,8 @@ The first product definition focuses on the Hairstyle Suitability Workflow:
 - [Roadmap](ROADMAP.md)
 - [Contributing](CONTRIBUTING.md)
 - [Security](SECURITY.md)
+- [Local Development](docs/local-development.md)
+- [v0.2 Web App Skeleton](docs/v0.2-web-app-skeleton.md)
 
 ## License
 

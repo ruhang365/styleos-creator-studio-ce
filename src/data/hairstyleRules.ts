@@ -1,0 +1,172 @@
+import type { RuleCard } from "@/types";
+
+export const hairstyleRules: RuleCard[] = [
+  {
+    rule_id: "HAIR-RULE-001",
+    rule_name: "Add crown lift for round face balance",
+    tags: ["face_round", "crown_low", "goal_lift", "hair_flat_crown"],
+    status: "starter",
+    evidence_level: "E0",
+    applicable_conditions: ["Round or soft face outline", "Low crown height", "User wants cleaner proportion"],
+    recommendation: "Use layered crown lift and controlled side volume to make the upper head shape feel lighter.",
+    avoid: ["Heavy side expansion", "Flat top with blunt side weight"],
+    limitations: ["Starter rule only", "No photo-based diagnosis in CE"],
+    barber_brief_hint: "Keep side volume compact and build soft lift at the crown."
+  },
+  {
+    rule_id: "HAIR-RULE-002",
+    rule_name: "Use side contour for soft jawline",
+    tags: ["jaw_soft", "goal_clean_outline", "face_round"],
+    status: "starter",
+    evidence_level: "E0",
+    applicable_conditions: ["Soft jawline signal", "Goal includes cleaner outline"],
+    recommendation: "Create a gentle face-framing contour that narrows the side silhouette without sharp contrast.",
+    avoid: ["Overly blunt cheek-level cuts", "Heavy inward curl at the widest face point"],
+    limitations: ["Needs creator review before real use"],
+    barber_brief_hint: "Shape the side line so it closes softly below the cheek and avoids cheek-level bulk."
+  },
+  {
+    rule_id: "HAIR-RULE-003",
+    rule_name: "Keep conservative work constraints visible",
+    tags: ["constraint_conservative", "scenario_work", "color_low"],
+    status: "starter",
+    evidence_level: "E0",
+    applicable_conditions: ["Workplace or school constraints", "Low willingness to color"],
+    recommendation: "Recommend natural color direction and shape changes that do not rely on high-contrast styling.",
+    avoid: ["High-saturation color", "Extreme asymmetry", "Daily styling burden"],
+    limitations: ["Does not replace workplace dress-code judgment"],
+    barber_brief_hint: "Keep color natural and make the silhouette improvement come from cut and texture."
+  },
+  {
+    rule_id: "HAIR-RULE-004",
+    rule_name: "Low maintenance texture direction",
+    tags: ["maintenance_low", "perm_low", "hair_straight"],
+    status: "starter",
+    evidence_level: "E0",
+    applicable_conditions: ["Low maintenance preference", "Low willingness to perm", "Straight hair texture"],
+    recommendation: "Choose a cut that can hold shape after blow-dry rather than depending on daily curling.",
+    avoid: ["Complex curl routines", "High heat styling dependency"],
+    limitations: ["Actual hold depends on hair density and cut execution"],
+    barber_brief_hint: "Prioritize a structure that air-dries cleanly and needs minimal tool work."
+  },
+  {
+    rule_id: "HAIR-RULE-005",
+    rule_name: "Medium maintenance allows soft styling upgrade",
+    tags: ["maintenance_medium", "goal_easy_routine"],
+    status: "starter",
+    evidence_level: "E0",
+    applicable_conditions: ["Medium maintenance willingness", "User wants easier routine"],
+    recommendation: "Offer one simple daily styling step, such as root lift or side smoothing, instead of a full routine.",
+    avoid: ["Multi-step routine", "Products that require expert handling"],
+    limitations: ["Product choices are not prescribed in CE"],
+    barber_brief_hint: "Explain one repeatable styling action the user can perform at home."
+  },
+  {
+    rule_id: "HAIR-RULE-006",
+    rule_name: "Long face needs horizontal softness",
+    tags: ["face_long", "goal_balance"],
+    status: "unverified",
+    evidence_level: "E0",
+    applicable_conditions: ["Long face impression", "Balance is the styling goal"],
+    recommendation: "Avoid excessive vertical height and use controlled side softness to reduce length emphasis.",
+    avoid: ["Very high top volume", "Long straight side drop without shape"],
+    limitations: ["Requires creator review"],
+    barber_brief_hint: "Avoid pushing too much height at the top; keep side softness intentional."
+  },
+  {
+    rule_id: "HAIR-RULE-007",
+    rule_name: "High forehead can use soft front coverage",
+    tags: ["forehead_high", "goal_soften"],
+    status: "starter",
+    evidence_level: "E0",
+    applicable_conditions: ["High forehead impression", "User wants softer facial proportion"],
+    recommendation: "Use a soft fringe or front-layer direction that partially breaks the forehead height.",
+    avoid: ["Severe slick-back", "Very short front line if user wants softness"],
+    limitations: ["Forehead assessment is intake-based only"],
+    barber_brief_hint: "Use soft front coverage; avoid exposing the full forehead if the user wants softness."
+  },
+  {
+    rule_id: "HAIR-RULE-008",
+    rule_name: "Square jawline benefits from softened corners",
+    tags: ["jaw_square", "goal_soften"],
+    status: "unverified",
+    evidence_level: "E0",
+    applicable_conditions: ["Square jawline signal", "Goal is softer impression"],
+    recommendation: "Use curved face-framing and avoid hard horizontal edges near the jaw.",
+    avoid: ["Jaw-level blunt line", "Rigid geometric side shape"],
+    limitations: ["Starter guidance only"],
+    barber_brief_hint: "Soften the jaw-adjacent line and avoid a hard block at jaw height."
+  },
+  {
+    rule_id: "HAIR-RULE-009",
+    rule_name: "Thick hair needs weight management",
+    tags: ["volume_high", "goal_lightness"],
+    status: "starter",
+    evidence_level: "E0",
+    applicable_conditions: ["High hair volume", "User wants lighter shape"],
+    recommendation: "Remove internal weight while keeping enough outer structure for a clean silhouette.",
+    avoid: ["Over-thinning surface", "Removing support at the crown"],
+    limitations: ["Execution depends on stylist technique"],
+    barber_brief_hint: "Reduce internal weight without making the surface frizzy or hollow."
+  },
+  {
+    rule_id: "HAIR-RULE-010",
+    rule_name: "Fine hair needs structure before layers",
+    tags: ["volume_low", "goal_lift"],
+    status: "starter",
+    evidence_level: "E0",
+    applicable_conditions: ["Low hair volume", "Goal includes lift"],
+    recommendation: "Keep enough base structure and use light layering only where it supports lift.",
+    avoid: ["Excessive thinning", "Long heavy length that pulls the crown down"],
+    limitations: ["Does not infer density from photos"],
+    barber_brief_hint: "Preserve density and create lift with shape, not heavy thinning."
+  },
+  {
+    rule_id: "HAIR-RULE-011",
+    rule_name: "Curly texture needs shape boundary",
+    tags: ["hair_curly", "maintenance_medium"],
+    status: "unverified",
+    evidence_level: "E0",
+    applicable_conditions: ["Curly hair texture", "Some maintenance willingness"],
+    recommendation: "Set a clear outline and define where volume should expand versus stay compact.",
+    avoid: ["Undefined perimeter", "Removing too much curl support"],
+    limitations: ["Curl pattern varies widely"],
+    barber_brief_hint: "Keep the outline intentional and preserve curl support where volume is desired."
+  },
+  {
+    rule_id: "HAIR-RULE-012",
+    rule_name: "Short cut willingness enables silhouette reset",
+    tags: ["cut_short_high", "goal_clean_outline"],
+    status: "starter",
+    evidence_level: "E0",
+    applicable_conditions: ["High willingness to cut short", "Goal is cleaner outline"],
+    recommendation: "Offer a shorter structured option as a clear reset path, with one softer fallback option.",
+    avoid: ["Only presenting conservative trim", "Ignoring maintenance tradeoff"],
+    limitations: ["Creator should confirm emotional readiness for short cut"],
+    barber_brief_hint: "Present one structured short option and one softer fallback length."
+  },
+  {
+    rule_id: "HAIR-RULE-013",
+    rule_name: "Color-low users need cut-led change",
+    tags: ["color_low", "goal_refresh"],
+    status: "starter",
+    evidence_level: "E0",
+    applicable_conditions: ["Low willingness to color", "User still wants refresh"],
+    recommendation: "Use shape, parting, and texture direction as the main refresh lever.",
+    avoid: ["Color-dependent proposal", "High-maintenance lightening"],
+    limitations: ["Color advice remains broad in CE"],
+    barber_brief_hint: "Keep the refresh cut-led; do not rely on color transformation."
+  },
+  {
+    rule_id: "HAIR-RULE-014",
+    rule_name: "Professional scenario needs readable barber brief",
+    tags: ["scenario_professional", "goal_clean_outline"],
+    status: "starter",
+    evidence_level: "E0",
+    applicable_conditions: ["Professional scenario", "Report should be usable by a hairstylist"],
+    recommendation: "Write the recommendation as direct cut and styling instructions, not abstract style language.",
+    avoid: ["Mood-only wording", "Unclear shape target"],
+    limitations: ["Brief does not guarantee salon execution"],
+    barber_brief_hint: "Use concrete terms: side volume, crown lift, front line, length boundary, maintenance level."
+  }
+];
