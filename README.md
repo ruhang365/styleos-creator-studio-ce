@@ -48,6 +48,16 @@ The CE app now includes a runnable Next.js App Router skeleton for the Hairstyle
 
 All records are stored in browser localStorage and all seed examples are synthetic.
 
+## Supabase Alpha Schema
+
+StyleOS Alpha is designed to reuse the existing ruhang365 Supabase Project while isolating StyleOS business data in a dedicated `styleos` schema.
+
+This repository includes SQL draft files only. They require human review before execution and must not be treated as already-applied migrations.
+
+- [StyleOS Alpha Migration Plan](supabase/STYLEOS_ALPHA_MIGRATION_PLAN.md)
+- [Supabase StyleOS Alpha Schema](docs/supabase-styleos-alpha-schema.md)
+- [Supabase StyleOS Alpha Safety Checklist](docs/supabase-styleos-alpha-safety-checklist.md)
+
 ## Relationship with styleos-protocol
 
 - `ruhang365/styleos-protocol` is the open standard library.
@@ -117,6 +127,8 @@ The first product definition focuses on the Hairstyle Suitability Workflow:
 - [Security](SECURITY.md)
 - [Local Development](docs/local-development.md)
 - [v0.2 Web App Skeleton](docs/v0.2-web-app-skeleton.md)
+- [Supabase StyleOS Alpha Schema](docs/supabase-styleos-alpha-schema.md)
+- [Supabase StyleOS Alpha Safety Checklist](docs/supabase-styleos-alpha-safety-checklist.md)
 
 ## License
 

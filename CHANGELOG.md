@@ -2,6 +2,16 @@
 
 All notable changes to StyleOS Creator Studio CE will be documented in this file.
 
+## v0.2.1 - StyleOS Alpha Supabase Schema Draft
+
+- Added styleos schema SQL draft.
+- Added RLS draft.
+- Added indexes draft.
+- Added rollback draft.
+- Added migration plan.
+- Added safety checklist.
+- Clarified reuse of existing ruhang365 Supabase Project.
+
 ## v0.2.0 - Web App Skeleton
 
 - Added Next.js app skeleton.

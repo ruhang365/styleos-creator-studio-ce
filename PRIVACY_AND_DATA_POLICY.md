@@ -12,6 +12,20 @@ StyleOS Creator Studio CE should collect only what is necessary for the service 
 6. Small-B creators must not upload real user data to public GitHub issues.
 7. Pro candidate knowledge requires stricter review and authorization.
 
+## Alpha Supabase Guardrails
+
+StyleOS Alpha must not store:
+
+- raw photos
+- ID card numbers
+- phone numbers
+- WeChat IDs
+- addresses
+- database secrets
+- service role keys
+
+Candidate knowledge may only store abstracted feature-solution-outcome mapping. User personal information is not the core asset of StyleOS.
+
 ## 中文核心原则
 
 1. 不收集不必要的个人数据。
@@ -22,6 +36,12 @@ StyleOS Creator Studio CE should collect only what is necessary for the service 
 6. 小 B 创作者不能把真实用户数据上传到公开 GitHub issue。
 7. Pro 候选知识需要更严格的复核和授权。
 
+## Alpha Supabase 中文边界
+
+StyleOS Alpha 不保存 raw photo，不保存身份证、手机号、微信号、地址。`candidate_knowledge` 只保存抽象后的“特征标签 -> 造型方案 -> 执行反馈 -> 规则证据”映射。
+
+用户个人信息不是 StyleOS 的核心资产。
+
 ## Public Repository Rule
 
 Public examples must be synthetic. Do not submit:
@@ -29,6 +49,10 @@ Public examples must be synthetic. Do not submit:
 - real user photos
 - real names
 - contact details
+- ID card numbers
+- phone numbers
+- WeChat IDs
+- addresses
 - private messages
 - unauthorized cases
 - payment records

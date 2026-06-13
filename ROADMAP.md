@@ -13,6 +13,20 @@
 - Added fan intake, case management, tag workbench, rule matching, report, feedback, and candidate queue flows.
 - Kept all persistence in browser localStorage.
 
+## v0.2.1 - StyleOS Alpha Supabase Schema Draft
+
+- Prepare draft SQL for a dedicated `styleos` schema in the existing ruhang365 Supabase Project.
+- Reuse `auth.users` through `creator_user_id`.
+- Add draft tables, indexes, RLS policies, rollback, migration plan, and safety checklist.
+- Do not execute SQL until manual review is complete.
+
+## v0.2.2 - Supabase Connection and Cloud Persistence
+
+- Connect Creator Studio CE to Supabase after schema review.
+- Add server routes for token-based public intake, report, and feedback flows.
+- Keep service role keys out of frontend code.
+- Preserve local-first development mode.
+
 ## v0.3 - Hairstyle Workflow MVP Refinement (next)
 
 - Refine Hairstyle Workflow usability.

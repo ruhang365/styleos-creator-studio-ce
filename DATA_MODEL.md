@@ -2,6 +2,23 @@
 
 This document defines entities at product-definition level. It is not a database migration.
 
+## Alpha Supabase Model
+
+StyleOS Alpha reuses the existing ruhang365 Supabase Project and shared `auth.users`.
+
+Alpha does not use a workspace model. Creator-owned StyleOS records use `creator_user_id`, which references `auth.users(id)`. A future version may migrate to a workspace model if team access, multi-creator studios, or organization billing become required.
+
+StyleOS Alpha business tables are isolated under the `styleos` schema:
+
+- `styleos.services`
+- `styleos.fan_cases`
+- `styleos.reports`
+- `styleos.feedback`
+- `styleos.candidate_knowledge`
+- `styleos.consent_records`
+
+This Alpha draft does not modify existing `public` tables. `public.profiles` may remain the ruhang365 unified profile layer, but the StyleOS Alpha migration does not change it.
+
 ## Entity Overview
 
 | Entity | Purpose | Privacy level | Open-source relation | Pro relation |
@@ -24,15 +41,15 @@ This document defines entities at product-definition level. It is not a database
 ### Creator
 
 - purpose: workspace owner and service provider.
-- key fields: `creator_id`, `display_name`, `role`, `workspace_id`, `created_at`.
+- key fields: `creator_user_id`, `display_name`, `role`, `created_at`.
 - privacy level: medium.
-- open-source relation: core CE user role.
+- open-source relation: core CE user role backed by shared `auth.users`.
 - Pro relation: may access future Pro library through Cloud.
 
 ### Service
 
 - purpose: defines a creator's service menu item.
-- key fields: `service_id`, `creator_id`, `title`, `module`, `scope`, `intake_schema_ref`, `price_note_placeholder`.
+- key fields: `id`, `creator_user_id`, `name`, `module`, `description`, `price_note`, `delivery_format`, `status`, `intake_token`.
 - privacy level: low.
 - open-source relation: CE workflow object.
 - Pro relation: future Pro may provide high-conversion service templates.
@@ -40,7 +57,7 @@ This document defines entities at product-definition level. It is not a database
 ### FanCase
 
 - purpose: tracks one fan/client consultation workflow.
-- key fields: `case_id`, `creator_id`, `service_id`, `status`, `created_at`, `updated_at`.
+- key fields: `id`, `creator_user_id`, `service_id`, `fan_alias`, `target_scenario`, `status`, `intake`, `tags`, `selected_rule_ids`, `share_token`.
 - privacy level: high.
 - open-source relation: CE private workflow object.
 - Pro relation: raw case does not enter Pro by default.
@@ -80,7 +97,7 @@ This document defines entities at product-definition level. It is not a database
 ### LiteReport
 
 - purpose: creator-reviewed service deliverable.
-- key fields: `report_id`, `case_id`, `summary`, `recommendations`, `avoid_list`, `manual_edits`, `delivery_status`.
+- key fields: `id`, `creator_user_id`, `case_id`, `share_token`, `markdown`, `barber_brief`, `status`, `delivered_at`.
 - privacy level: high.
 - open-source relation: uses protocol report structure.
 - Pro relation: Pro may provide advanced report templates.
@@ -96,7 +113,7 @@ This document defines entities at product-definition level. It is not a database
 ### Feedback
 
 - purpose: records post-delivery outcome and user/creator review.
-- key fields: `feedback_id`, `report_id`, `creator_feedback`, `user_feedback_score`, `execution_feedback`, `notes`.
+- key fields: `id`, `report_id`, `case_id`, `score`, `easy_to_understand`, `most_useful`, `will_use_barber_brief`, `shown_to_hairstylist`, `feedback_text`, `consent_to_anonymized_learning`.
 - privacy level: high.
 - open-source relation: CE private record.
 - Pro relation: abstracted feedback may become evidence after review.
@@ -104,7 +121,7 @@ This document defines entities at product-definition level. It is not a database
 ### ConsentRecord
 
 - purpose: tracks whether data can be reused beyond the original service.
-- key fields: `consent_id`, `case_id`, `scope`, `status`, `granted_at`, `revoked_at`.
+- key fields: `id`, `case_id`, `report_id`, `consent_type`, `consent_value`, `consent_note`, `created_at`.
 - privacy level: high.
 - open-source relation: required privacy guardrail.
 - Pro relation: required before candidate knowledge review.
@@ -116,12 +133,19 @@ CandidateKnowledge does not save real photos, names, or contact details. It save
 ### Fields
 
 - `candidate_id`
+- `creator_user_id`
 - `source_case_id`
 - `feature_tags`
+- `scenario_tags`
+- `constraints`
+- `selected_rule_ids`
 - `recommendation_summary`
-- `execution_feedback`
+- `execution_card_summary`
+- `avoid_list`
 - `creator_feedback`
 - `user_feedback_score`
+- `execution_status`
+- `reuse_potential`
 - `anonymization_status`
 - `consent_status`
 - `review_status`
