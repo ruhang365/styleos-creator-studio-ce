@@ -26,14 +26,17 @@ export default function CasesPage() {
   const [cases, setCases] = useState<FanCase[]>([]);
   const [filter, setFilter] = useState<CaseStatus | "all">("all");
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const storage = getStorageAdapter();
+    setIsLoading(true);
     storage
       .seedInitialData()
       .then(() => storage.listCases())
       .then(setCases)
-      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load cases."));
+      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load cases."))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const visibleCases = filter === "all" ? cases : cases.filter((caseItem) => caseItem.status === filter);
@@ -62,7 +65,9 @@ export default function CasesPage() {
         ))}
       </div>
 
-      {visibleCases.length === 0 ? (
+      {isLoading ? (
+        <EmptyState title="Loading cases" description="Loading cloud fan cases for the current creator session." />
+      ) : visibleCases.length === 0 ? (
         <EmptyState title="No cases found" description="Create a synthetic fan case from Dashboard or a service detail page." />
       ) : (
         <section className="grid two">

@@ -20,6 +20,7 @@ export default function CaseDetailPage() {
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [candidate, setCandidate] = useState<CandidateKnowledge | null>(null);
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const refresh = async () => {
     const storage = getStorageAdapter();
@@ -43,10 +44,12 @@ export default function CaseDetailPage() {
 
   useEffect(() => {
     const storage = getStorageAdapter();
+    setIsLoading(true);
     storage
       .seedInitialData()
       .then(refresh)
-      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load case."));
+      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load case."))
+      .finally(() => setIsLoading(false));
   }, [caseId]);
 
   const extractCandidate = async () => {
@@ -69,6 +72,14 @@ export default function CaseDetailPage() {
     setMessage("Candidate knowledge extracted as abstract mapping. No nickname, photo, or contact was copied.");
     await refresh();
   };
+
+  if (!caseItem && isLoading) {
+    return (
+      <AppShell title="Case Detail" description="Loading case.">
+        <EmptyState title="Loading case" description="Loading the cloud fan case for the current creator session." />
+      </AppShell>
+    );
+  }
 
   if (!caseItem) {
     return (

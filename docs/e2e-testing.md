@@ -92,6 +92,20 @@ The E2E flow should create consent records for:
 
 Consent records must not include sensitive personal data.
 
+### API-created fan case visibility
+
+API POST intake creates `styleos.fan_cases` through the public server route. The created fan case must be visible in the Creator UI `/cases` after the authenticated creator refreshes the page.
+
+Creator UI visibility depends on:
+
+- `creator_user_id` inherited from the service
+- `service_id` matching the source service
+- queries using the `styleos` schema
+- Supabase adapter field mapping from snake_case rows to frontend models
+- an authenticated creator session matching `creator_user_id`
+
+If API intake succeeds but `/cases` does not show the new case, first inspect the Supabase adapter query and field mapping before changing RLS or database structure.
+
 ## Cleanup Rules
 
 Cleanup must delete only data related to the current marker.

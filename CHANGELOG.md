@@ -2,6 +2,14 @@
 
 All notable changes to StyleOS Creator Studio CE will be documented in this file.
 
+## v0.2.2-case-visibility-fix - API-created Case Visibility
+
+- Fixed Supabase fan case visibility in Creator UI.
+- Ensured API-created fan cases use creator_user_id from service.
+- Aligned Supabase adapter field mapping.
+- Added loading guards for case list and case detail pages.
+- Added regression guidance for API-created fan cases.
+
 ## v0.2.2-e2e-fix - E2E Traceability and Consent Fixes
 
 - Improved Candidate Knowledge source traceability.

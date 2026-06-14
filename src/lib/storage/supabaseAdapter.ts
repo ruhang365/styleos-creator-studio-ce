@@ -157,13 +157,36 @@ function mapCase(row: CaseRow, serviceName = "Hairstyle Service"): FanCase {
     fanNickname: row.fan_alias ?? "fan_alias",
     targetScenario: row.target_scenario ?? "",
     status: row.status,
-    intake: row.intake as unknown as FanCase["intake"],
+    intake: normalizeIntake(row.intake),
     tags: (Array.isArray(row.tags) ? row.tags : []) as unknown as FanCase["tags"],
     ruleMatches: [],
     selectedRuleIds: row.selected_rule_ids ?? [],
     shareToken: row.share_token ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at
+  };
+}
+
+function normalizeIntake(intake: JsonRecord): FanCase["intake"] {
+  return {
+    fanNickname: typeof intake.fanNickname === "string" ? intake.fanNickname : "",
+    targetScenario: typeof intake.targetScenario === "string" ? intake.targetScenario : "",
+    currentHairstyleConcern: typeof intake.currentHairstyleConcern === "string" ? intake.currentHairstyleConcern : "",
+    stylingGoal: typeof intake.stylingGoal === "string" ? intake.stylingGoal : "",
+    faceShapeTag: typeof intake.faceShapeTag === "string" ? intake.faceShapeTag : "",
+    foreheadImpression: typeof intake.foreheadImpression === "string" ? intake.foreheadImpression : "",
+    jawlineSignal: typeof intake.jawlineSignal === "string" ? intake.jawlineSignal : "",
+    hairVolume: typeof intake.hairVolume === "string" ? intake.hairVolume : "",
+    hairTexture: typeof intake.hairTexture === "string" ? intake.hairTexture : "",
+    hairShape: typeof intake.hairShape === "string" ? intake.hairShape : "",
+    crownHeight: typeof intake.crownHeight === "string" ? intake.crownHeight : "",
+    maintenanceWillingness: typeof intake.maintenanceWillingness === "string" ? intake.maintenanceWillingness : "",
+    willingnessToCutShort: typeof intake.willingnessToCutShort === "string" ? intake.willingnessToCutShort : "",
+    willingnessToPerm: typeof intake.willingnessToPerm === "string" ? intake.willingnessToPerm : "",
+    willingnessToColor: typeof intake.willingnessToColor === "string" ? intake.willingnessToColor : "",
+    workplaceSchoolConstraints: typeof intake.workplaceSchoolConstraints === "string" ? intake.workplaceSchoolConstraints : "",
+    creatorNotes: typeof intake.creatorNotes === "string" ? intake.creatorNotes : "",
+    consentToLocalProcessing: intake.consentToLocalProcessing === true
   };
 }
 
@@ -330,10 +353,15 @@ export const supabaseAdapter: StorageAdapter = {
     return data ? mapService(data as ServiceRow) : null;
   },
   async listCases() {
-    await requireUser();
+    const user = await requireUser();
     const client = requireStyleosClient();
     const [caseResult, services] = await Promise.all([
-      client.from("fan_cases").select("*").order("created_at", { ascending: false }),
+      client
+        .from("fan_cases")
+        .select("*")
+        .eq("creator_user_id", user.id)
+        .order("updated_at", { ascending: false })
+        .order("created_at", { ascending: false }),
       listServicesInternal()
     ]);
     if (caseResult.error) {
@@ -366,7 +394,7 @@ export const supabaseAdapter: StorageAdapter = {
     return mapCase(data as CaseRow, caseItem.serviceName);
   },
   async updateCase(caseId, updates) {
-    await requireUser();
+    const user = await requireUser();
     const client = requireStyleosClient();
     const payload: Partial<CaseRow> = {};
     if (updates.fanNickname !== undefined) payload.fan_alias = updates.fanNickname;
@@ -377,15 +405,34 @@ export const supabaseAdapter: StorageAdapter = {
     if (updates.selectedRuleIds !== undefined) payload.selected_rule_ids = updates.selectedRuleIds;
     if (updates.shareToken !== undefined) payload.share_token = updates.shareToken;
 
-    const { data, error } = await client.from("fan_cases").update(payload).eq("id", caseId).select("*").single();
+    const { data, error } = await client
+      .from("fan_cases")
+      .update(payload)
+      .eq("id", caseId)
+      .eq("creator_user_id", user.id)
+      .select("*")
+      .single();
     if (error) {
       throw error;
     }
     return mapCase(data as CaseRow);
   },
   async getCaseById(caseId) {
-    const cases = await this.listCases();
-    return cases.find((caseItem) => caseItem.caseId === caseId) ?? null;
+    const user = await requireUser();
+    const client = requireStyleosClient();
+    const [caseResult, services] = await Promise.all([
+      client.from("fan_cases").select("*").eq("id", caseId).eq("creator_user_id", user.id).maybeSingle(),
+      listServicesInternal()
+    ]);
+    if (caseResult.error) {
+      throw caseResult.error;
+    }
+    if (!caseResult.data) {
+      return null;
+    }
+    const serviceNameById = new Map(services.map((service) => [service.serviceId, service.serviceName]));
+    const row = caseResult.data as CaseRow;
+    return mapCase(row, serviceNameById.get(row.service_id));
   },
   async listReports() {
     await requireUser();
