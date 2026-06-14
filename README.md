@@ -22,8 +22,8 @@ Current status:
 - Hosted Alpha: deployed
 - Hosted smoke test: passed
 - Local API-assisted synthetic E2E: passed
-- Hosted Online Synthetic E2E: next required step
-- Alpha invitations: not ready until hosted E2E and cleanup pass
+- Hosted Online Synthetic E2E: passed
+- Alpha invitations: ready for controlled 1-3 account setup after server allowlist is configured
 - Current workflow: Hairstyle only
 
 Start here:
@@ -97,7 +97,7 @@ v0.2.2 now supports a complete synthetic E2E flow with service creation, fan int
 
 ## Alpha Deployment
 
-v0.2.3 prepared the project for a hosted Alpha deployment. The hosted Alpha is now deployed and remains invite-only until Hosted Online Synthetic E2E passes.
+v0.2.3 prepared the project for a hosted Alpha deployment. The hosted Alpha is deployed and remains invite-only. Configure the server-only Alpha allowlist before sending invites.
 
 - [Alpha Deployment](docs/alpha-deployment.md)
 - [Vercel Deployment Guide](docs/vercel-deployment-guide.md)

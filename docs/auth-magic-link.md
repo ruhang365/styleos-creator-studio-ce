@@ -5,13 +5,28 @@ StyleOS Creator Studio CE uses Supabase email magic links only in optional Supab
 ## How Magic Link Works In CE
 
 1. The creator opens `/login`.
-2. The app calls Supabase `signInWithOtp`.
-3. Supabase sends a magic link to an existing internal test account.
-4. The link returns to `/auth/callback`.
-5. The callback creates a browser Supabase session.
-6. The creator returns to `/dashboard`.
+2. The app calls `/api/auth/magic-link`.
+3. The server route checks the Alpha allowlist.
+4. The server route calls Supabase `signInWithOtp`.
+5. Supabase sends a magic link to an existing approved Alpha account.
+6. The link returns to `/auth/callback`.
+7. The callback creates a browser Supabase session.
+8. The creator returns to `/dashboard`.
 
 CE does not write to `public.profiles` during this flow.
+
+## Invite-only Alpha Guard
+
+Hosted Alpha login is gated by server-only environment variables:
+
+```text
+STYLEOS_ALPHA_ALLOWED_EMAILS=
+STYLEOS_ALPHA_ALLOWED_EMAIL_HASHES=
+```
+
+Configure one of them in the hosted environment. Do not use `NEXT_PUBLIC_` for allowlists. Do not commit real email addresses or hashes.
+
+If neither allowlist variable is configured while Alpha Mode is enabled, the magic link route returns a safe configuration error and does not send login email.
 
 ## Required Redirect URLs
 

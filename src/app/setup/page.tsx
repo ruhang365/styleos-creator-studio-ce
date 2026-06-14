@@ -7,6 +7,7 @@ import {
   getStorageMode,
   isSupabaseModeRequestedButIncomplete
 } from "@/lib/config";
+import { isAlphaAccessConfigured } from "@/lib/alphaAccess";
 import SetupAuthDiagnostics from "@/app/setup/SetupAuthDiagnostics";
 import SetupUserStatus from "@/app/setup/SetupUserStatus";
 
@@ -16,6 +17,8 @@ export default function SetupPage() {
   const publicConfig = getPublicSupabaseConfig();
   const serverConfig = getServerSupabaseConfig();
   const incomplete = isSupabaseModeRequestedButIncomplete();
+  const alphaMode = process.env.NEXT_PUBLIC_ALPHA_MODE === "true";
+  const alphaAccessConfigured = !alphaMode || isAlphaAccessConfigured();
 
   return (
     <AppShell title="Setup" description="Storage mode and Supabase connection status for Creator Studio CE.">
@@ -31,6 +34,8 @@ export default function SetupPage() {
           <p className="muted">Requested storage mode: {requestedMode}</p>
           <p className="muted">Current storage mode: {mode}</p>
           <p className="muted">Supabase configured: {publicConfig.isConfigured ? "yes" : "no"}</p>
+          <p className="muted">Alpha invite-only mode: {alphaMode ? "yes" : "no"}</p>
+          <p className="muted">Alpha allowlist configured: {alphaAccessConfigured ? "yes" : "no"}</p>
         </article>
 
         <article className="panel">

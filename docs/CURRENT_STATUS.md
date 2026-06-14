@@ -8,12 +8,12 @@ StyleOS Creator Studio CE is in Hosted Alpha readiness.
 - Hosted Alpha URL: `https://styleos-creator-studio-ce.vercel.app`
 - Hosted smoke test: passed
 - Local full API-assisted synthetic E2E: passed
-- Hosted Alpha Online Synthetic E2E: not yet passed
+- Hosted Alpha Online Synthetic E2E: passed
 - Current supported workflow: Hairstyle Workflow only
 
 ## Current Gate
 
-The next required gate is Hosted Online Synthetic E2E. Do not invite real small-B Alpha users until it passes and cleanup is verified.
+The next required gate is configuring the server-only Alpha allowlist and running a login smoke test for an approved test account. Do not invite real small-B Alpha users before the allowlist is configured.
 
 ## What Works
 
@@ -23,7 +23,8 @@ The next required gate is Hosted Online Synthetic E2E. Do not invite real small-
 - creator pages without 500 or blank screens
 - public token API routes
 - local synthetic E2E write and cleanup
-- Candidate Knowledge extraction in the local E2E path
+- hosted synthetic E2E write and cleanup
+- Candidate Knowledge extraction in the local and hosted E2E paths
 
 ## What Is Not Ready
 
@@ -37,4 +38,4 @@ The next required gate is Hosted Online Synthetic E2E. Do not invite real small-
 
 ## Current Recommendation
 
-Proceed to Hosted Online Synthetic E2E with synthetic data only. If it passes, prepare a controlled 3-5 creator Alpha.
+Configure invite-only Alpha access, prepare 1-3 approved test accounts, and run a guided Alpha test with synthetic or low-risk data only.

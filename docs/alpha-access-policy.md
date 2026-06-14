@@ -6,7 +6,9 @@ StyleOS Creator Studio CE Alpha is invite-only.
 
 - Invite 3-5 small-B testers first.
 - Do not open public registration.
+- Use the server-side `/api/auth/magic-link` route for magic link requests.
 - Use Supabase Auth magic link with `shouldCreateUser=false`.
+- Configure `STYLEOS_ALPHA_ALLOWED_EMAILS` or `STYLEOS_ALPHA_ALLOWED_EMAIL_HASHES` as a server-only allowlist.
 - Only existing test accounts or manually created Alpha accounts should log in.
 - Do not accept real payment in Alpha.
 - Do not use Alpha as a production service for the public.
@@ -29,4 +31,6 @@ Candidate Knowledge may only be extracted after feedback consent and should stor
 
 ## Account Operations
 
-Alpha accounts should be created or approved manually by the maintainer. If an invite should be removed, disable access through the Supabase Auth administration path instead of changing application code.
+Alpha accounts should be created or approved manually by the maintainer. If an invite should be removed, remove the account from the server-only allowlist and disable access through the Supabase Auth administration path when needed.
+
+Do not commit real email addresses, email hashes, Supabase keys, JWTs, or Auth links to the repository.

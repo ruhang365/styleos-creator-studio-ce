@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import { getRequestedStorageMode, getStorageMode, isSupabaseConfigured, isSupabaseModeRequestedButIncomplete } from "@/lib/config-public";
-import { getCurrentUser, signInWithOtp, signOut } from "@/lib/supabase/auth";
+import { getCurrentUser, signOut } from "@/lib/supabase/auth";
 import { getCreator, saveCreator, seedInitialData } from "@/lib/storage";
 import { nowIso } from "@/lib/ids";
 import type { Creator } from "@/types";
@@ -37,6 +37,7 @@ export default function LoginPage() {
         <section className="panel">
           <h2>Supabase Mode</h2>
           <p className="muted">Current user: {userStatus}</p>
+          <p className="muted">Hosted Alpha is invite-only. Magic links are sent only for approved Alpha accounts.</p>
           <p className="muted">Creator profile is not written to public.profiles in CE v0.2.2.</p>
         </section>
 
@@ -47,13 +48,20 @@ export default function LoginPage() {
           onSubmit={async (event) => {
             event.preventDefault();
             try {
-              const { error } = await signInWithOtp(email);
-              if (error) {
-                throw error;
+              const response = await fetch("/api/auth/magic-link", {
+                method: "POST",
+                headers: {
+                  "content-type": "application/json"
+                },
+                body: JSON.stringify({ email })
+              });
+              const result = (await response.json()) as { error?: string; message?: string };
+              if (!response.ok) {
+                throw new Error(result.error ?? "Unable to send magic link.");
               }
-              setMessage("Magic link sent. Open the link in this browser to complete login.");
+              setMessage(result.message ?? "Magic link sent. Open the link in this browser to complete login.");
             } catch (error) {
-              setMessage("Unable to send magic link. Use an existing internal test account and check redirect URL settings.");
+              setMessage(error instanceof Error ? error.message : "Unable to send magic link. Use an approved Alpha account.");
             }
           }}
         >
