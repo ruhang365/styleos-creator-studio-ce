@@ -3,18 +3,93 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AppShell from "@/components/AppShell";
+import { getRequestedStorageMode, getStorageMode, isSupabaseConfigured, isSupabaseModeRequestedButIncomplete } from "@/lib/config-public";
+import { getCurrentUser, signInWithOtp, signOut } from "@/lib/supabase/auth";
 import { getCreator, saveCreator, seedInitialData } from "@/lib/storage";
 import { nowIso } from "@/lib/ids";
 import type { Creator } from "@/types";
 
 export default function LoginPage() {
   const router = useRouter();
+  const mode = getStorageMode();
+  const requestedMode = getRequestedStorageMode();
   const [creator, setCreator] = useState<Creator | null>(null);
+  const [email, setEmail] = useState("");
+  const [userStatus, setUserStatus] = useState("checking");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    seedInitialData();
-    setCreator(getCreator());
-  }, []);
+    if (mode === "local") {
+      seedInitialData();
+      setCreator(getCreator());
+      setUserStatus("local mode");
+      return;
+    }
+
+    getCurrentUser()
+      .then((user) => setUserStatus(user ? "logged in" : "not logged in"))
+      .catch(() => setUserStatus("not logged in"));
+  }, [mode]);
+
+  if (mode === "supabase") {
+    return (
+      <AppShell title="Creator Login" description="Supabase Mode uses ruhang365 auth.users with email magic link login.">
+        <section className="panel">
+          <h2>Supabase Mode</h2>
+          <p className="muted">Current user: {userStatus}</p>
+          <p className="muted">Creator profile is not written to public.profiles in CE v0.2.2.</p>
+        </section>
+
+        {message ? <div className="notice">{message}</div> : null}
+
+        <form
+          className="form-card"
+          onSubmit={async (event) => {
+            event.preventDefault();
+            try {
+              const { error } = await signInWithOtp(email);
+              if (error) {
+                throw error;
+              }
+              setMessage("Magic link sent. Open the link in this browser to complete login.");
+            } catch (error) {
+              setMessage(error instanceof Error ? error.message : "Unable to send magic link.");
+            }
+          }}
+        >
+          <div className="form-grid">
+            <label className="field">
+              Email
+              <input
+                autoComplete="email"
+                inputMode="email"
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="creator@example.com"
+                type="email"
+                value={email}
+              />
+            </label>
+          </div>
+          <div className="actions">
+            <button className="button primary" disabled={!email.trim()} type="submit">
+              Send Magic Link
+            </button>
+            <button
+              className="button"
+              onClick={async () => {
+                await signOut();
+                setUserStatus("not logged in");
+                setMessage("Signed out.");
+              }}
+              type="button"
+            >
+              Sign Out
+            </button>
+          </div>
+        </form>
+      </AppShell>
+    );
+  }
 
   if (!creator) {
     return (
@@ -25,7 +100,13 @@ export default function LoginPage() {
   }
 
   return (
-    <AppShell title="Creator Profile" description="No real login in CE v0.2. This profile is saved only in localStorage.">
+    <AppShell title="Creator Profile" description="Local Mode profile is saved only in this browser.">
+      {isSupabaseModeRequestedButIncomplete() ? (
+        <div className="notice">
+          Supabase Mode was requested, but public Supabase configuration is incomplete. Current mode is Local Mode.
+        </div>
+      ) : null}
+      {requestedMode === "local" || !isSupabaseConfigured() ? null : <div className="notice">Current mode: {mode}</div>}
       <form
         className="form-card"
         onSubmit={(event) => {

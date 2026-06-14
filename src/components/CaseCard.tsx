@@ -8,9 +8,11 @@ function nextAction(status: FanCase["status"]) {
     tagging: "Match rules",
     rule_matching: "Generate report",
     report_draft: "Mark delivered",
+    creator_review: "Review report",
     delivered: "Collect feedback",
     feedback_received: "Extract candidate knowledge",
-    candidate_extracted: "Review candidate"
+    candidate_extracted: "Review candidate",
+    archived: "Archived"
   };
   return map[status];
 }

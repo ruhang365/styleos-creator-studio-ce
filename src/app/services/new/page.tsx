@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
-import { getCreator, getServices, saveServices, seedInitialData } from "@/lib/storage";
-import { createId, nowIso } from "@/lib/ids";
+import { getStorageMode } from "@/lib/config-public";
+import { getStorageAdapter } from "@/lib/storage";
 import type { Service, ServiceStatus } from "@/types";
 
 const initialForm = {
@@ -17,38 +17,45 @@ const initialForm = {
 
 export default function NewServicePage() {
   const router = useRouter();
+  const mode = getStorageMode();
   const [form, setForm] = useState(initialForm);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    seedInitialData();
+    void getStorageAdapter().seedInitialData();
   }, []);
 
   return (
     <AppShell title="Create Service" description="Only the hairstyle module is active in CE v0.2.">
       <form
         className="form-card"
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault();
-          const creator = getCreator();
-          const serviceId = createId("service");
-          const now = nowIso();
-          const service: Service = {
-            serviceId,
+          const storage = getStorageAdapter();
+          const creator = await storage.getCurrentCreator();
+          if (!creator) {
+            setMessage("Supabase Mode requires creator login before creating services.");
+            return;
+          }
+          const service: Omit<Service, "serviceId" | "createdAt" | "updatedAt" | "intakePath"> = {
             creatorId: creator.creatorId,
             serviceName: form.serviceName,
             module: "hairstyle",
             description: form.description,
             priceNote: form.priceNote,
             deliveryFormat: form.deliveryFormat,
-            status: form.status,
-            intakePath: `/intake/${serviceId}`,
-            createdAt: now,
-            updatedAt: now
+            status: form.status
           };
-          saveServices([service, ...getServices()]);
-          router.push(`/services/${serviceId}`);
+          try {
+            const savedService = await storage.createService(service);
+            router.push(`/services/${savedService.serviceId}`);
+          } catch (error) {
+            setMessage(error instanceof Error ? error.message : "Unable to save service.");
+          }
         }}
       >
+        {message ? <div className="notice">{message}</div> : null}
+        <p className="muted">Current mode: {mode}</p>
         <div className="form-grid">
           <label className="field">
             Service name

@@ -1,20 +1,22 @@
 export type CreatorType = "individual_creator" | "small_studio" | "training_team";
 export type ServiceModule = "hairstyle";
-export type ServiceStatus = "draft" | "active" | "paused";
+export type ServiceStatus = "draft" | "active" | "paused" | "archived";
 
 export type CaseStatus =
   | "intake_submitted"
   | "tagging"
   | "rule_matching"
   | "report_draft"
+  | "creator_review"
   | "delivered"
   | "feedback_received"
-  | "candidate_extracted";
+  | "candidate_extracted"
+  | "archived";
 
-export type EvidenceLevel = "E0" | "E1" | "E2" | "E3";
-export type ReviewStatus = "pending" | "public_rule_candidate" | "pro_candidate" | "rejected" | "archived";
-export type ConsentStatus = "granted" | "not_granted";
-export type AnonymizationStatus = "abstracted" | "needs_review";
+export type EvidenceLevel = "E0" | "E1" | "E2" | "E3" | "E4" | "E5";
+export type ReviewStatus = "pending" | "under_review" | "public_rule_candidate" | "pro_candidate" | "rejected" | "archived";
+export type ConsentStatus = "unknown" | "granted" | "denied";
+export type AnonymizationStatus = "pending" | "anonymized" | "rejected";
 
 export interface Creator {
   creatorId: string;
@@ -36,6 +38,7 @@ export interface Service {
   priceNote?: string;
   deliveryFormat: string;
   intakePath: string;
+  intakeToken?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -91,6 +94,7 @@ export interface RuleMatch {
 
 export interface FanCase {
   caseId: string;
+  creatorId?: string;
   serviceId: string;
   serviceName: string;
   fanNickname: string;
@@ -101,6 +105,7 @@ export interface FanCase {
   ruleMatches: RuleMatch[];
   selectedRuleIds: string[];
   reportId?: string;
+  shareToken?: string;
   feedbackId?: string;
   candidateKnowledgeId?: string;
   createdAt: string;
@@ -122,6 +127,7 @@ export interface LiteReport {
   markdown: string;
   barberBrief: string;
   status: "draft" | "delivered";
+  shareToken?: string;
   createdAt: string;
   updatedAt: string;
   deliveredAt?: string;
@@ -145,10 +151,17 @@ export interface CandidateKnowledge {
   candidate_id: string;
   source_case_id: string;
   feature_tags: string[];
+  scenario_tags: string[];
+  constraints: string[];
+  selected_rule_ids: string[];
   recommendation_summary: string;
+  execution_card_summary: string;
+  avoid_list: string[];
   execution_feedback: string;
   creator_feedback: string;
   user_feedback_score: number;
+  execution_status: string;
+  reuse_potential: string;
   anonymization_status: AnonymizationStatus;
   consent_status: ConsentStatus;
   review_status: ReviewStatus;

@@ -4,19 +4,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import { createSyntheticFanCase } from "@/lib/caseFactory";
-import {
-  getCandidateKnowledge,
-  getCases,
-  getCreator,
-  getReports,
-  getServices,
-  resetAllData,
-  saveCases,
-  seedInitialData
-} from "@/lib/storage";
+import { getStorageMode, isSupabaseModeRequestedButIncomplete } from "@/lib/config-public";
+import { getStorageAdapter } from "@/lib/storage";
 import type { CandidateKnowledge, Creator, FanCase, LiteReport, Service } from "@/types";
 
 export default function DashboardPage() {
+  const mode = getStorageMode();
   const [creator, setCreator] = useState<Creator | null>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [cases, setCases] = useState<FanCase[]>([]);
@@ -24,31 +17,48 @@ export default function DashboardPage() {
   const [candidates, setCandidates] = useState<CandidateKnowledge[]>([]);
   const [message, setMessage] = useState("");
 
-  const refresh = () => {
-    setCreator(getCreator());
-    setServices(getServices());
-    setCases(getCases());
-    setReports(getReports());
-    setCandidates(getCandidateKnowledge());
+  const refresh = async () => {
+    const storage = getStorageAdapter();
+    try {
+      await storage.seedInitialData();
+      const [nextCreator, nextServices, nextCases, nextReports, nextCandidates] = await Promise.all([
+        storage.getCurrentCreator(),
+        storage.listServices(),
+        storage.listCases(),
+        storage.listReports(),
+        storage.listCandidateKnowledge()
+      ]);
+      setCreator(nextCreator);
+      setServices(nextServices);
+      setCases(nextCases);
+      setReports(nextReports);
+      setCandidates(nextCandidates);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to load dashboard data.");
+    }
   };
 
   useEffect(() => {
-    seedInitialData();
-    refresh();
+    void refresh();
   }, []);
 
-  const createSynthetic = () => {
-    const service = services[0] ?? getServices()[0];
+  const createSynthetic = async () => {
+    const storage = getStorageAdapter();
+    const service = services[0] ?? (await storage.listServices())[0];
+    if (!service) {
+      setMessage("Create a service before adding a synthetic case.");
+      return;
+    }
     const nextCase = createSyntheticFanCase(service);
-    const nextCases = [nextCase, ...getCases()];
-    saveCases(nextCases);
-    setCases(nextCases);
-    setMessage(`Created synthetic case ${nextCase.fanNickname}.`);
+    const savedCase = await storage.createCase(nextCase);
+    await refresh();
+    setMessage(`Created synthetic case ${savedCase.fanNickname}.`);
   };
 
-  const resetLocal = () => {
-    resetAllData();
-    refresh();
+  const resetLocal = async () => {
+    const storage = getStorageAdapter();
+    await storage.resetAllData();
+    await refresh();
     setMessage("Local data reset to CE seed state.");
   };
 
@@ -56,11 +66,14 @@ export default function DashboardPage() {
   const deliveredReports = reports.filter((report) => report.status === "delivered");
 
   return (
-    <AppShell title="Dashboard" description="Local creator workspace for the Hairstyle Workflow MVP skeleton.">
+    <AppShell title="Dashboard" description={`${mode === "supabase" ? "Supabase" : "Local"} creator workspace for the Hairstyle Workflow MVP.`}>
+      {isSupabaseModeRequestedButIncomplete() ? (
+        <div className="notice">Supabase Mode was requested but is not fully configured. The app is using Local Mode.</div>
+      ) : null}
       <section className="page-header">
         <div>
           <h2>{creator?.studioName ?? "StyleOS Local Studio"}</h2>
-          <p>{creator?.displayName ?? "Synthetic Creator"} · CE local-only workspace · no Cloud account required.</p>
+          <p>{creator?.displayName ?? "Synthetic Creator"} · {mode === "supabase" ? "Supabase Mode" : "Local Mode"} · hairstyle workflow only.</p>
         </div>
         <div className="actions">
           <Link className="button primary" href="/services/new">
@@ -111,9 +124,13 @@ export default function DashboardPage() {
           </Link>
         </div>
         <div className="panel">
-          <h3>Local data controls</h3>
-          <p className="muted">Reset removes localStorage records and restores only synthetic CE seed data.</p>
-          <button className="button danger" onClick={resetLocal} type="button">
+          <h3>Data controls</h3>
+          <p className="muted">
+            {mode === "local"
+              ? "Reset removes localStorage records and restores only synthetic CE seed data."
+              : "Cloud reset is disabled in CE. Use Supabase dashboard procedures for cloud data governance."}
+          </p>
+          <button className="button danger" disabled={mode !== "local"} onClick={resetLocal} type="button">
             Reset Local Data
           </button>
         </div>

@@ -6,29 +6,84 @@ import AppShell from "@/components/AppShell";
 import EmptyState from "@/components/EmptyState";
 import { syntheticFanIntake } from "@/data/syntheticExamples";
 import { createCaseFromIntake } from "@/lib/caseFactory";
-import { getCases, getServices, saveCases, seedInitialData } from "@/lib/storage";
+import { getStorageMode } from "@/lib/config-public";
+import { getStorageAdapter } from "@/lib/storage";
 import type { FanIntake, Service } from "@/types";
 
 export default function IntakePage() {
   const params = useParams();
   const router = useRouter();
-  const serviceId = String(params.serviceId ?? "");
+  const serviceIdOrToken = String(params.serviceId ?? "");
+  const mode = getStorageMode();
   const [service, setService] = useState<Service | null>(null);
   const [form, setForm] = useState<FanIntake>(syntheticFanIntake);
+  const [message, setMessage] = useState("");
+  const [submittedCaseId, setSubmittedCaseId] = useState("");
 
   useEffect(() => {
-    seedInitialData();
-    setService(getServices().find((item) => item.serviceId === serviceId) ?? null);
-  }, [serviceId]);
+    if (mode === "supabase") {
+      fetch(`/api/intake/${serviceIdOrToken}`)
+        .then(async (response) => {
+          if (!response.ok) {
+            throw new Error((await response.json()).error ?? "Unable to load service.");
+          }
+          return response.json();
+        })
+        .then(({ service: cloudService }) => {
+          setService({
+            serviceId: cloudService.id,
+            creatorId: "",
+            serviceName: cloudService.name,
+            module: cloudService.module,
+            status: cloudService.status,
+            description: cloudService.description ?? "",
+            deliveryFormat: "Markdown Lite Report + Barber Brief",
+            intakePath: `/intake/${serviceIdOrToken}`,
+            intakeToken: serviceIdOrToken,
+            createdAt: "",
+            updatedAt: ""
+          });
+        })
+        .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load service."));
+      return;
+    }
+
+    const storage = getStorageAdapter();
+    storage
+      .seedInitialData()
+      .then(() => storage.getServiceById(serviceIdOrToken))
+      .then(setService)
+      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load service."));
+  }, [mode, serviceIdOrToken]);
 
   const update = <K extends keyof FanIntake>(field: K, value: FanIntake[K]) => {
     setForm((current) => ({ ...current, [field]: value }));
   };
 
+  if (!service && !message) {
+    return (
+      <AppShell title="Fan Intake" description="Service not found.">
+        <div className="panel">Loading intake form...</div>
+      </AppShell>
+    );
+  }
+
   if (!service) {
     return (
       <AppShell title="Fan Intake" description="Service not found.">
-        <EmptyState title="Service not found" description="Open a valid service intake link from the service menu." />
+        <EmptyState title="Service not found" description={message || "Open a valid service intake link from the service menu."} />
+      </AppShell>
+    );
+  }
+
+  if (submittedCaseId) {
+    return (
+      <AppShell title="Fan Intake" description="Intake submitted.">
+        <section className="panel">
+          <h2>Intake submitted</h2>
+          <p className="muted">Your structured intake was received. No photo, phone, wechat, id card, address, or email is required.</p>
+          <p className="muted">Case reference: {submittedCaseId}</p>
+        </section>
       </AppShell>
     );
   }
@@ -40,13 +95,37 @@ export default function IntakePage() {
       </div>
       <form
         className="form-card"
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault();
+          if (mode === "supabase") {
+            try {
+              const response = await fetch(`/api/intake/${serviceIdOrToken}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  intake: form,
+                  fan_alias: form.fanNickname,
+                  target_scenario: form.targetScenario
+                })
+              });
+              const result = await response.json();
+              if (!response.ok) {
+                throw new Error(result.error ?? "Unable to submit intake.");
+              }
+              setSubmittedCaseId(result.case_id);
+            } catch (error) {
+              setMessage(error instanceof Error ? error.message : "Unable to submit intake.");
+            }
+            return;
+          }
+
+          const storage = getStorageAdapter();
           const nextCase = createCaseFromIntake(service, form);
-          saveCases([nextCase, ...getCases()]);
-          router.push(`/cases/${nextCase.caseId}`);
+          const savedCase = await storage.createCase(nextCase);
+          router.push(`/cases/${savedCase.caseId}`);
         }}
       >
+        {message ? <div className="notice">{message}</div> : null}
         <div className="form-grid">
           <label className="field">
             fan nickname
@@ -175,7 +254,7 @@ export default function IntakePage() {
                 onChange={(event) => update("consentToLocalProcessing", event.target.checked)}
                 type="checkbox"
               />{" "}
-              I understand this CE MVP stores structured intake locally in this browser.
+              I understand this CE MVP stores structured intake in the current {mode === "supabase" ? "Supabase Mode" : "Local Mode"} workflow.
             </span>
           </label>
         </div>

@@ -6,52 +6,100 @@ import { useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import EmptyState from "@/components/EmptyState";
 import FeedbackForm from "@/components/FeedbackForm";
-import { createId, nowIso } from "@/lib/ids";
-import { getCases, getFeedback, getReports, saveCases, saveFeedback, seedInitialData } from "@/lib/storage";
+import { nowIso } from "@/lib/ids";
+import { getStorageMode } from "@/lib/config-public";
+import { getStorageAdapter } from "@/lib/storage";
 import type { FanCase, Feedback, LiteReport } from "@/types";
 
 type FeedbackDraft = Omit<Feedback, "feedbackId" | "reportId" | "caseId" | "createdAt">;
 
 export default function FeedbackPage() {
   const params = useParams();
-  const reportId = String(params.reportId ?? "");
+  const reportIdOrToken = String(params.reportId ?? "");
+  const mode = getStorageMode();
   const [report, setReport] = useState<LiteReport | null>(null);
   const [caseItem, setCaseItem] = useState<FanCase | null>(null);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    seedInitialData();
-    const foundReport = getReports().find((item) => item.reportId === reportId) ?? null;
-    setReport(foundReport);
-    setCaseItem(foundReport ? getCases().find((item) => item.caseId === foundReport.caseId) ?? null : null);
-  }, [reportId]);
-
-  const submit = (draft: FeedbackDraft) => {
-    if (!report || !caseItem) {
+    if (mode === "supabase") {
+      fetch(`/api/reports/${reportIdOrToken}`)
+        .then(async (response) => {
+          const result = await response.json();
+          if (!response.ok) {
+            throw new Error(result.error ?? "Unable to load report.");
+          }
+          return result.report;
+        })
+        .then((cloudReport) => {
+          setReport({
+            reportId: cloudReport.id,
+            caseId: "",
+            title: `Hairstyle Lite Report - ${cloudReport.id.slice(0, 8)}`,
+            markdown: cloudReport.markdown ?? "",
+            barberBrief: cloudReport.barber_brief ?? "",
+            status: cloudReport.status,
+            shareToken: reportIdOrToken,
+            createdAt: "",
+            updatedAt: "",
+            deliveredAt: cloudReport.delivered_at ?? undefined
+          });
+          setCaseItem(null);
+        })
+        .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load report."));
       return;
     }
-    const feedback: Feedback = {
-      feedbackId: createId("feedback"),
+
+    const storage = getStorageAdapter();
+    storage
+      .seedInitialData()
+      .then(() => Promise.all([storage.getReportById(reportIdOrToken), storage.listCases()]))
+      .then(([foundReport, cases]) => {
+        setReport(foundReport);
+        setCaseItem(foundReport ? cases.find((item) => item.caseId === foundReport.caseId) ?? null : null);
+      })
+      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load feedback."));
+  }, [mode, reportIdOrToken]);
+
+  const submit = async (draft: FeedbackDraft) => {
+    if (!report) {
+      return;
+    }
+    if (mode === "supabase") {
+      const response = await fetch(`/api/feedback/${reportIdOrToken}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...draft,
+          consent_to_anonymized_learning: draft.consentToAnonymizedLearning
+        })
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        setMessage(result.error ?? "Unable to submit feedback.");
+        return;
+      }
+      setMessage("Feedback submitted. The creator can review it before extracting candidate knowledge.");
+      return;
+    }
+
+    if (!caseItem) {
+      return;
+    }
+    const storage = getStorageAdapter();
+    const feedback = await storage.createFeedback({
       reportId: report.reportId,
       caseId: caseItem.caseId,
-      createdAt: nowIso(),
       ...draft
-    };
-    saveFeedback([feedback, ...getFeedback().filter((item) => item.reportId !== report.reportId)]);
-    saveCases(
-      getCases().map((item) =>
-        item.caseId === caseItem.caseId
-          ? { ...item, feedbackId: feedback.feedbackId, status: "feedback_received" as const, updatedAt: nowIso() }
-          : item
-      )
-    );
+    });
+    await storage.updateCase(caseItem.caseId, { feedbackId: feedback.feedbackId, status: "feedback_received", updatedAt: nowIso() });
     setMessage("Feedback saved. Case status is now feedback_received.");
   };
 
-  if (!report || !caseItem) {
+  if (!report || (mode === "local" && !caseItem)) {
     return (
       <AppShell title="Feedback" description="Report not found.">
-        <EmptyState title="Report not found" description="Generate and save a report before collecting feedback." />
+        <EmptyState title="Report not found" description={message || "Generate and save a report before collecting feedback."} />
       </AppShell>
     );
   }
@@ -61,16 +109,14 @@ export default function FeedbackPage() {
       <section className="panel">
         <h2>{report.title}</h2>
         <p className="muted">Feedback is stored locally and can be abstracted into Candidate Knowledge only after review.</p>
-        <Link className="button" href={`/reports/${report.reportId}`}>
+        <Link className="button" href={`/reports/${mode === "supabase" && report.shareToken ? report.shareToken : report.reportId}`}>
           View Report
         </Link>
       </section>
       {message ? (
         <div className="notice">
           {message}{" "}
-          <Link href={`/cases/${caseItem.caseId}`}>
-            Back to case
-          </Link>
+          {caseItem ? <Link href={`/cases/${caseItem.caseId}`}>Back to case</Link> : null}
         </div>
       ) : null}
       <FeedbackForm onSubmit={submit} />

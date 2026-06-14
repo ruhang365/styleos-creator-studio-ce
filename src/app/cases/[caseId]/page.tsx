@@ -8,15 +8,7 @@ import EmptyState from "@/components/EmptyState";
 import StatusBadge from "@/components/StatusBadge";
 import TagChip from "@/components/TagChip";
 import { extractCandidateKnowledge } from "@/lib/candidateKnowledge";
-import {
-  getCandidateKnowledge,
-  getCases,
-  getFeedback,
-  getReports,
-  saveCandidateKnowledge,
-  saveCases,
-  seedInitialData
-} from "@/lib/storage";
+import { getStorageAdapter } from "@/lib/storage";
 import { nowIso } from "@/lib/ids";
 import type { CandidateKnowledge, FanCase, Feedback, LiteReport } from "@/types";
 
@@ -29,43 +21,53 @@ export default function CaseDetailPage() {
   const [candidate, setCandidate] = useState<CandidateKnowledge | null>(null);
   const [message, setMessage] = useState("");
 
-  const refresh = () => {
-    const cases = getCases();
-    const foundCase = cases.find((item) => item.caseId === caseId) ?? null;
+  const refresh = async () => {
+    const storage = getStorageAdapter();
+    const [foundCase, reports, feedbackItems, candidates] = await Promise.all([
+      storage.getCaseById(caseId),
+      storage.listReports(),
+      storage.listFeedback(),
+      storage.listCandidateKnowledge()
+    ]);
     setCaseItem(foundCase);
-    setReport(foundCase?.reportId ? getReports().find((item) => item.reportId === foundCase.reportId) ?? null : null);
-    setFeedback(foundCase?.feedbackId ? getFeedback().find((item) => item.feedbackId === foundCase.feedbackId) ?? null : null);
+    setReport(foundCase ? reports.find((item) => item.reportId === foundCase.reportId || item.caseId === foundCase.caseId) ?? null : null);
+    setFeedback(
+      foundCase ? feedbackItems.find((item) => item.feedbackId === foundCase.feedbackId || item.caseId === foundCase.caseId) ?? null : null
+    );
     setCandidate(
       foundCase?.candidateKnowledgeId
-        ? getCandidateKnowledge().find((item) => item.candidate_id === foundCase.candidateKnowledgeId) ?? null
+        ? candidates.find((item) => item.candidate_id === foundCase.candidateKnowledgeId) ?? null
         : null
     );
   };
 
   useEffect(() => {
-    seedInitialData();
-    refresh();
+    const storage = getStorageAdapter();
+    storage
+      .seedInitialData()
+      .then(refresh)
+      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load case."));
   }, [caseId]);
 
-  const extractCandidate = () => {
+  const extractCandidate = async () => {
     if (!caseItem || !report || !feedback) {
       setMessage("Feedback and report are required before extraction.");
       return;
     }
-    const existing = getCandidateKnowledge().find((item) => item.source_case_id === caseItem.caseId);
+    const storage = getStorageAdapter();
+    const candidates = await storage.listCandidateKnowledge();
+    const existing = candidates.find((item) => item.source_case_id === caseItem.caseId);
     const candidateItem = existing ?? extractCandidateKnowledge(caseItem, report, feedback);
-    const nextCandidates = existing
-      ? getCandidateKnowledge().map((item) => (item.candidate_id === existing.candidate_id ? candidateItem : item))
-      : [candidateItem, ...getCandidateKnowledge()];
-    saveCandidateKnowledge(nextCandidates);
-    const nextCases = getCases().map((item) =>
-      item.caseId === caseItem.caseId
-        ? { ...item, status: "candidate_extracted" as const, candidateKnowledgeId: candidateItem.candidate_id, updatedAt: nowIso() }
-        : item
-    );
-    saveCases(nextCases);
+    const savedCandidate = existing
+      ? await storage.updateCandidateKnowledge(existing.candidate_id, candidateItem)
+      : await storage.createCandidateKnowledge(candidateItem);
+    await storage.updateCase(caseItem.caseId, {
+      status: "candidate_extracted",
+      candidateKnowledgeId: savedCandidate.candidate_id,
+      updatedAt: nowIso()
+    });
     setMessage("Candidate knowledge extracted as abstract mapping. No nickname, photo, or contact was copied.");
-    refresh();
+    await refresh();
   };
 
   if (!caseItem) {

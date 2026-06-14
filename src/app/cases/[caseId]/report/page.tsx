@@ -7,24 +7,27 @@ import AppShell from "@/components/AppShell";
 import BarberBriefPreview from "@/components/BarberBriefPreview";
 import EmptyState from "@/components/EmptyState";
 import { hairstyleRules } from "@/data/hairstyleRules";
-import { createId, nowIso } from "@/lib/ids";
+import { nowIso } from "@/lib/ids";
 import { generateLiteReport } from "@/lib/reportGenerator";
 import { copyableMarkdown } from "@/lib/markdown";
-import { getCases, getReports, saveCases, saveReports, seedInitialData } from "@/lib/storage";
+import { getStorageMode } from "@/lib/config-public";
+import { getStorageAdapter } from "@/lib/storage";
 import type { FanCase, LiteReport } from "@/types";
 
 export default function ReportEditorPage() {
   const params = useParams();
   const caseId = String(params.caseId ?? "");
+  const mode = getStorageMode();
   const [caseItem, setCaseItem] = useState<FanCase | null>(null);
   const [report, setReport] = useState<LiteReport | null>(null);
   const [markdown, setMarkdown] = useState("");
   const [barberBrief, setBarberBrief] = useState("");
   const [message, setMessage] = useState("");
 
-  const refresh = () => {
-    const foundCase = getCases().find((item) => item.caseId === caseId) ?? null;
-    const foundReport = foundCase?.reportId ? getReports().find((item) => item.reportId === foundCase.reportId) ?? null : null;
+  const refresh = async () => {
+    const storage = getStorageAdapter();
+    const [foundCase, reports] = await Promise.all([storage.getCaseById(caseId), storage.listReports()]);
+    const foundReport = foundCase ? reports.find((item) => item.reportId === foundCase.reportId || item.caseId === foundCase.caseId) ?? null : null;
     setCaseItem(foundCase);
     setReport(foundReport);
     setMarkdown(foundReport?.markdown ?? "");
@@ -32,8 +35,11 @@ export default function ReportEditorPage() {
   };
 
   useEffect(() => {
-    seedInitialData();
-    refresh();
+    const storage = getStorageAdapter();
+    storage
+      .seedInitialData()
+      .then(refresh)
+      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load report editor."));
   }, [caseId]);
 
   const generate = () => {
@@ -47,14 +53,13 @@ export default function ReportEditorPage() {
     setMessage("Lite Report generated from intake, tags, and selected rules.");
   };
 
-  const save = () => {
+  const save = async () => {
     if (!caseItem || !markdown.trim()) {
       return;
     }
+    const storage = getStorageAdapter();
     const now = nowIso();
-    const reportId = report?.reportId ?? createId("report");
-    const nextReport: LiteReport = {
-      reportId,
+    const nextReportInput = {
       caseId: caseItem.caseId,
       title: `Hairstyle Lite Report - ${caseItem.fanNickname}`,
       markdown,
@@ -64,25 +69,28 @@ export default function ReportEditorPage() {
       updatedAt: now,
       deliveredAt: report?.deliveredAt
     };
-    const reports = getReports();
-    saveReports(report ? reports.map((item) => (item.reportId === report.reportId ? nextReport : item)) : [nextReport, ...reports]);
-    saveCases(
-      getCases().map((item) =>
-        item.caseId === caseItem.caseId ? { ...item, reportId, status: "report_draft" as const, updatedAt: now } : item
-      )
-    );
-    setReport(nextReport);
+    const savedReport: LiteReport = report
+      ? await storage.updateReport(report.reportId, nextReportInput)
+      : await storage.createReport(nextReportInput);
+    await storage.updateCase(caseItem.caseId, { reportId: savedReport.reportId, status: "report_draft", updatedAt: now });
+    setReport(savedReport);
     setMessage("Report saved as draft.");
   };
 
-  const markDelivered = () => {
+  const markDelivered = async () => {
     if (!caseItem || !report) {
       return;
     }
+    const storage = getStorageAdapter();
     const now = nowIso();
-    const nextReport = { ...report, status: "delivered" as const, deliveredAt: now, updatedAt: now, markdown, barberBrief };
-    saveReports(getReports().map((item) => (item.reportId === report.reportId ? nextReport : item)));
-    saveCases(getCases().map((item) => (item.caseId === caseItem.caseId ? { ...item, status: "delivered" as const, updatedAt: now } : item)));
+    const nextReport = await storage.updateReport(report.reportId, {
+      status: "delivered",
+      deliveredAt: now,
+      updatedAt: now,
+      markdown,
+      barberBrief
+    });
+    await storage.updateCase(caseItem.caseId, { status: "delivered", updatedAt: now });
     setReport(nextReport);
     setMessage("Report marked as delivered.");
   };
@@ -123,7 +131,7 @@ export default function ReportEditorPage() {
             Mark as Delivered
           </button>
           {report ? (
-            <Link className="button ghost" href={`/reports/${report.reportId}`}>
+            <Link className="button ghost" href={`/reports/${mode === "supabase" && report.shareToken ? report.shareToken : report.reportId}`}>
               Open Shared Report
             </Link>
           ) : null}

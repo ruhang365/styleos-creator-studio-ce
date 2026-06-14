@@ -34,6 +34,35 @@ StyleOS Alpha reuses the existing ruhang365 Supabase Project and shared `auth.us
 
 The Alpha schema does not introduce workspace or team tables. Creator-owned records use `creator_user_id` directly.
 
+## v0.2.2 Storage Architecture
+
+Creator Studio CE now has two storage adapters behind one app workflow:
+
+- Local adapter: browser localStorage, default mode, no Supabase required.
+- Supabase adapter: existing ruhang365 Supabase Project, shared `auth.users`, dedicated `styleos` schema.
+
+The app chooses the adapter from `NEXT_PUBLIC_STORAGE_MODE`.
+
+If Supabase Mode is requested without a public URL and public key, the app falls back to Local Mode and shows a setup warning.
+
+## Public Token Routes
+
+Supabase Mode uses server route handlers for public fan flows:
+
+- `/api/intake/[token]`
+- `/api/reports/[shareToken]`
+- `/api/feedback/[shareToken]`
+
+These routes use token lookup and return only the data needed for fan intake, shared report reading, and feedback submission.
+
+Service role or secret keys are server-only. They must not enter client bundles.
+
+## Shared Auth
+
+Creator login uses Supabase Auth magic links and the existing ruhang365 `auth.users` table.
+
+CE v0.2.2 does not write to `public.profiles`, does not introduce workspace tables, and does not add a team model.
+
 ## Protocol Integration
 
 CE gets these public structures from `styleos-protocol`:

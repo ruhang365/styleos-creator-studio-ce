@@ -7,7 +7,7 @@ import EmptyState from "@/components/EmptyState";
 import TagChip from "@/components/TagChip";
 import { createId, nowIso } from "@/lib/ids";
 import { generateStyleTags } from "@/lib/tagger";
-import { getCases, saveCases, seedInitialData } from "@/lib/storage";
+import { getStorageAdapter } from "@/lib/storage";
 import type { FanCase, StyleTag } from "@/types";
 
 export default function TagWorkbenchPage() {
@@ -21,20 +21,23 @@ export default function TagWorkbenchPage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    seedInitialData();
-    const found = getCases().find((item) => item.caseId === caseId) ?? null;
-    setCaseItem(found);
-    setTags(found?.tags ?? []);
+    const storage = getStorageAdapter();
+    storage
+      .seedInitialData()
+      .then(() => storage.getCaseById(caseId))
+      .then((found) => {
+        setCaseItem(found);
+        setTags(found?.tags ?? []);
+      })
+      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load case."));
   }, [caseId]);
 
-  const save = () => {
+  const save = async () => {
     if (!caseItem) {
       return;
     }
-    const nextCases = getCases().map((item) =>
-      item.caseId === caseItem.caseId ? { ...item, tags, status: "tagging" as const, updatedAt: nowIso() } : item
-    );
-    saveCases(nextCases);
+    const storage = getStorageAdapter();
+    await storage.updateCase(caseItem.caseId, { tags, status: "tagging", updatedAt: nowIso() });
     setMessage("Tags saved. Case status is now tagging.");
   };
 

@@ -30,6 +30,35 @@ npm run lint
 
 Reset local data from the Dashboard by using `Reset Local Data`, or clear the browser localStorage keys that start with `styleos_ce_`.
 
+## Storage Modes
+
+Local Mode is the default and does not require Supabase:
+
+```bash
+NEXT_PUBLIC_STORAGE_MODE=local
+```
+
+Supabase Mode is optional and uses the existing ruhang365 Supabase Project:
+
+```bash
+NEXT_PUBLIC_STORAGE_MODE=supabase
+NEXT_PUBLIC_SUPABASE_URL=placeholder
+NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder
+SUPABASE_SERVICE_ROLE_KEY=placeholder
+```
+
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` can replace `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+
+`SUPABASE_SECRET_KEY` can replace `SUPABASE_SERVICE_ROLE_KEY`.
+
+Do not commit `.env.local`. Service role or secret keys must only be used in server route handlers.
+
+Setup page: `/setup`
+
+- [Supabase Connection](docs/supabase-connection.md)
+- [Storage Modes](docs/storage-modes.md)
+- [Shareable Cloud Workflow](docs/shareable-cloud-workflow.md)
+
 ## v0.2 Web App Skeleton
 
 The CE app now includes a runnable Next.js App Router skeleton for the Hairstyle Workflow:
@@ -141,6 +170,10 @@ The first product definition focuses on the Hairstyle Suitability Workflow:
 - [Supabase StyleOS Alpha Safety Checklist](docs/supabase-styleos-alpha-safety-checklist.md)
 - [StyleOS Alpha Manual Execution Guide](docs/styleos-alpha-manual-execution-guide.md)
 - [StyleOS Alpha Risk Register](docs/styleos-alpha-risk-register.md)
+- [Supabase Connection](docs/supabase-connection.md)
+- [Storage Modes](docs/storage-modes.md)
+- [Shareable Cloud Workflow](docs/shareable-cloud-workflow.md)
+- [v0.2.2 Supabase Connection](docs/v0.2.2-supabase-connection.md)
 
 ## License
 

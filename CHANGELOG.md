@@ -2,6 +2,18 @@
 
 All notable changes to StyleOS Creator Studio CE will be documented in this file.
 
+## v0.2.2 - Supabase Connection & Shareable Workflow
+
+- Added Supabase optional mode.
+- Added storage adapter abstraction.
+- Added auth helpers.
+- Added shareable intake route.
+- Added shareable report route.
+- Added cloud feedback route.
+- Added setup page.
+- Added storage mode docs.
+- Added candidate knowledge cloud support.
+
 ## v0.2.1-preflight - StyleOS Alpha Supabase Preflight Pack
 
 - Added preflight SQL.

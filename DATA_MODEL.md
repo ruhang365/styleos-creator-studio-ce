@@ -19,6 +19,39 @@ StyleOS Alpha business tables are isolated under the `styleos` schema:
 
 This Alpha draft does not modify existing `public` tables. `public.profiles` may remain the ruhang365 unified profile layer, but the StyleOS Alpha migration does not change it.
 
+## v0.2.2 Storage Fields
+
+Supabase Mode maps CE objects to the existing `styleos` tables:
+
+- `creator_user_id` references `auth.users(id)` and owns creator records.
+- `intake_token` identifies public intake links for services.
+- `share_token` identifies public report and feedback links.
+- `styleos.fan_cases.intake` stores structured text intake only.
+- `styleos.reports.barber_brief` stores the action brief as JSON.
+- `styleos.feedback.consent_to_anonymized_learning` controls candidate reuse.
+
+Candidate knowledge stores:
+
+- `feature_tags`
+- `scenario_tags`
+- `constraints`
+- `selected_rule_ids`
+- `recommendation_summary`
+- `execution_card_summary`
+- `avoid_list`
+- `user_feedback_score`
+- `creator_feedback`
+- `execution_status`
+- `reuse_potential`
+- `consent_status`
+- `anonymization_status`
+- `review_status`
+- `evidence_level`
+- `pro_candidate`
+- `public_rule_candidate`
+
+Candidate knowledge must not store `fan_alias` as a core knowledge field.
+
 ## Entity Overview
 
 | Entity | Purpose | Privacy level | Open-source relation | Pro relation |

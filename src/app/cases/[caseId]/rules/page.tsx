@@ -8,7 +8,7 @@ import RuleCard from "@/components/RuleCard";
 import { hairstyleRules } from "@/data/hairstyleRules";
 import { nowIso } from "@/lib/ids";
 import { matchRules } from "@/lib/ruleMatcher";
-import { getCases, saveCases, seedInitialData } from "@/lib/storage";
+import { getStorageAdapter } from "@/lib/storage";
 import type { FanCase, RuleMatch } from "@/types";
 
 export default function RuleMatchingPage() {
@@ -21,11 +21,16 @@ export default function RuleMatchingPage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    seedInitialData();
-    const found = getCases().find((item) => item.caseId === caseId) ?? null;
-    setCaseItem(found);
-    setMatches(found?.ruleMatches ?? []);
-    setSelectedRuleIds(found?.selectedRuleIds ?? []);
+    const storage = getStorageAdapter();
+    storage
+      .seedInitialData()
+      .then(() => storage.getCaseById(caseId))
+      .then((found) => {
+        setCaseItem(found);
+        setMatches(found?.ruleMatches ?? []);
+        setSelectedRuleIds(found?.selectedRuleIds ?? []);
+      })
+      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load case."));
   }, [caseId]);
 
   const autoMatch = () => {
@@ -37,17 +42,18 @@ export default function RuleMatchingPage() {
     setSelectedRuleIds(nextMatches.filter((match) => match.selected).map((match) => match.ruleId));
   };
 
-  const save = () => {
+  const save = async () => {
     if (!caseItem) {
       return;
     }
     const nextMatches = matches.map((match) => ({ ...match, selected: selectedRuleIds.includes(match.ruleId) }));
-    const nextCases = getCases().map((item) =>
-      item.caseId === caseItem.caseId
-        ? { ...item, ruleMatches: nextMatches, selectedRuleIds, status: "rule_matching" as const, updatedAt: nowIso() }
-        : item
-    );
-    saveCases(nextCases);
+    const storage = getStorageAdapter();
+    await storage.updateCase(caseItem.caseId, {
+      ruleMatches: nextMatches,
+      selectedRuleIds,
+      status: "rule_matching",
+      updatedAt: nowIso()
+    });
     setMessage("Selected rules saved. Case status is now rule_matching.");
   };
 

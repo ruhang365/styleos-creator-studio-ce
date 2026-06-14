@@ -27,20 +27,21 @@
 - Add final apply order, manual execution guide, SQL review, and risk register.
 - Review custom schema grants and Supabase API exposure requirements.
 
-## v0.2.2 - Execute StyleOS Alpha Schema
+## v0.2.2 - Supabase Connection & Shareable Workflow (current / completed)
 
-- Execute reviewed SQL manually in the existing ruhang365 Supabase Project.
-- Verify `styleos` schema, tables, RLS, policies, indexes, grants, and sensitive-field checks.
-- Stop on any preflight or verification failure.
+- Add optional Supabase Mode.
+- Connect Creator Studio CE to the existing ruhang365 Supabase Project.
+- Use `auth.users` and the `styleos` schema.
+- Add token-based public intake, report, and feedback routes.
+- Preserve Local Mode as the default.
 
-## v0.2.3 - Connect Creator Studio CE to Supabase
+## v0.2.3 - Alpha Deployment (next)
 
-- Connect Creator Studio CE to Supabase after schema review.
-- Add server routes for token-based public intake, report, and feedback flows.
-- Keep service role keys out of frontend code.
-- Preserve local-first development mode.
+- Prepare a limited Alpha deployment path.
+- Confirm environment configuration and custom schema exposure.
+- Validate magic link auth and public token workflows in a hosted environment.
 
-## v0.3 - Hairstyle Workflow MVP Refinement (next)
+## v0.3 - Hairstyle Workflow MVP Refinement
 
 - Refine Hairstyle Workflow usability.
 - Improve rule matching transparency.

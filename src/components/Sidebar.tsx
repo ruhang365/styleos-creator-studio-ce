@@ -8,7 +8,8 @@ const navItems = [
   { href: "/services", label: "Services" },
   { href: "/cases", label: "Cases" },
   { href: "/knowledge/candidates", label: "Candidate Queue" },
-  { href: "/login", label: "Creator Profile" }
+  { href: "/login", label: "Creator Profile" },
+  { href: "/setup", label: "Setup" }
 ];
 
 export default function Sidebar() {

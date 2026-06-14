@@ -7,6 +7,8 @@ interface CandidateKnowledgeCardProps {
 }
 
 export default function CandidateKnowledgeCard({ candidate, onStatusChange }: CandidateKnowledgeCardProps) {
+  const proDisabled = candidate.consent_status !== "granted";
+
   return (
     <article className="card">
       <div className="card-row">
@@ -20,14 +22,14 @@ export default function CandidateKnowledgeCard({ candidate, onStatusChange }: Ca
         <strong>Mapping:</strong> {candidate.feature_tags.join(", ")}
       </p>
       <p>{candidate.recommendation_summary}</p>
-      <p className="muted">Execution feedback: {candidate.execution_feedback}</p>
+      <p className="muted">Execution feedback: {candidate.execution_feedback || candidate.execution_card_summary}</p>
       <p className="muted">Score: {candidate.user_feedback_score} / Consent: {candidate.consent_status}</p>
       {onStatusChange ? (
         <div className="actions">
           <button className="button" onClick={() => onStatusChange(candidate.candidate_id, "public")} type="button">
             Mark Public Rule Candidate
           </button>
-          <button className="button" onClick={() => onStatusChange(candidate.candidate_id, "pro")} type="button">
+          <button className="button" disabled={proDisabled} onClick={() => onStatusChange(candidate.candidate_id, "pro")} type="button">
             Mark Pro Candidate
           </button>
           <button className="button" onClick={() => onStatusChange(candidate.candidate_id, "reject")} type="button">

@@ -6,36 +6,37 @@ import AppShell from "@/components/AppShell";
 import CandidateKnowledgeCard from "@/components/CandidateKnowledgeCard";
 import EmptyState from "@/components/EmptyState";
 import { extractCandidateKnowledge } from "@/lib/candidateKnowledge";
-import {
-  getCandidateKnowledge,
-  getCases,
-  getFeedback,
-  getReports,
-  saveCandidateKnowledge,
-  saveCases,
-  seedInitialData
-} from "@/lib/storage";
+import { getStorageMode } from "@/lib/config-public";
+import { getStorageAdapter } from "@/lib/storage";
 import { nowIso } from "@/lib/ids";
 import type { CandidateKnowledge } from "@/types";
 
 export default function CandidateQueuePage() {
+  const mode = getStorageMode();
   const [candidates, setCandidates] = useState<CandidateKnowledge[]>([]);
   const [message, setMessage] = useState("");
 
-  const refresh = () => {
-    setCandidates(getCandidateKnowledge());
+  const refresh = async () => {
+    const storage = getStorageAdapter();
+    setCandidates(await storage.listCandidateKnowledge());
   };
 
   useEffect(() => {
-    seedInitialData();
-    refresh();
+    const storage = getStorageAdapter();
+    storage
+      .seedInitialData()
+      .then(refresh)
+      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load candidate knowledge."));
   }, []);
 
-  const extractFromFeedback = () => {
-    const cases = getCases();
-    const reports = getReports();
-    const feedbackItems = getFeedback();
-    const existing = getCandidateKnowledge();
+  const extractFromFeedback = async () => {
+    const storage = getStorageAdapter();
+    const [cases, reports, feedbackItems, existing] = await Promise.all([
+      storage.listCases(),
+      storage.listReports(),
+      storage.listFeedback(),
+      storage.listCandidateKnowledge()
+    ]);
     const existingSourceIds = new Set(existing.map((item) => item.source_case_id));
 
     const nextCandidates = feedbackItems
@@ -54,56 +55,59 @@ export default function CandidateQueuePage() {
       return;
     }
 
-    saveCandidateKnowledge([...nextCandidates, ...existing]);
-    saveCases(
-      cases.map((caseItem) => {
-        const extracted = nextCandidates.find((candidate) => candidate.source_case_id === caseItem.caseId);
-        return extracted
-          ? { ...caseItem, candidateKnowledgeId: extracted.candidate_id, status: "candidate_extracted" as const, updatedAt: nowIso() }
-          : caseItem;
-      })
+    const savedCandidates = await Promise.all(nextCandidates.map((candidate) => storage.createCandidateKnowledge(candidate)));
+    await Promise.all(
+      savedCandidates.map((candidate) =>
+        storage.updateCase(candidate.source_case_id, {
+          candidateKnowledgeId: candidate.candidate_id,
+          status: "candidate_extracted",
+          updatedAt: nowIso()
+        })
+      )
     );
     setMessage(`Extracted ${nextCandidates.length} candidate knowledge item(s).`);
-    refresh();
+    await refresh();
   };
 
-  const updateStatus = (candidateId: string, action: "public" | "pro" | "reject" | "archive") => {
-    const nextCandidates = getCandidateKnowledge().map((candidate) => {
-      if (candidate.candidate_id !== candidateId) {
-        return candidate;
-      }
-      if (action === "public") {
-        return {
-          ...candidate,
-          public_rule_candidate: true,
-          pro_candidate: false,
-          review_status: "public_rule_candidate" as const,
-          updatedAt: nowIso()
-        };
-      }
-      if (action === "pro") {
-        return {
-          ...candidate,
-          public_rule_candidate: false,
-          pro_candidate: true,
-          review_status: "pro_candidate" as const,
-          updatedAt: nowIso()
-        };
-      }
-      return {
-        ...candidate,
-        public_rule_candidate: false,
-        pro_candidate: false,
-        review_status: action === "reject" ? ("rejected" as const) : ("archived" as const),
-        updatedAt: nowIso()
-      };
-    });
-    saveCandidateKnowledge(nextCandidates);
-    setCandidates(nextCandidates);
+  const updateStatus = async (candidateId: string, action: "public" | "pro" | "reject" | "archive") => {
+    const storage = getStorageAdapter();
+    const candidate = candidates.find((item) => item.candidate_id === candidateId);
+    if (!candidate) {
+      return;
+    }
+    if (action === "pro" && candidate.consent_status !== "granted") {
+      setMessage("Consent is required before marking a candidate as pro_candidate.");
+      return;
+    }
+
+    const updates =
+      action === "public"
+        ? {
+            public_rule_candidate: true,
+            pro_candidate: false,
+            review_status: "public_rule_candidate" as const,
+            updatedAt: nowIso()
+          }
+        : action === "pro"
+          ? {
+              public_rule_candidate: false,
+              pro_candidate: true,
+              review_status: "pro_candidate" as const,
+              updatedAt: nowIso()
+            }
+          : {
+              public_rule_candidate: false,
+              pro_candidate: false,
+              review_status: action === "reject" ? ("rejected" as const) : ("archived" as const),
+              updatedAt: nowIso()
+            };
+
+    await storage.updateCandidateKnowledge(candidateId, updates);
+    await refresh();
   };
 
   return (
-    <AppShell title="Candidate Knowledge Queue" description="Abstract feedback cases into reviewable knowledge candidates.">
+    <AppShell title="Candidate Knowledge Queue" description={`Abstract ${mode === "supabase" ? "cloud" : "local"} feedback cases into reviewable knowledge candidates.`}>
       <section className="page-header">
         <div>
           <h2>Candidate Knowledge Queue</h2>

@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import CaseCard from "@/components/CaseCard";
 import EmptyState from "@/components/EmptyState";
-import { getCases, seedInitialData } from "@/lib/storage";
+import { getStorageMode } from "@/lib/config-public";
+import { getStorageAdapter } from "@/lib/storage";
 import type { CaseStatus, FanCase } from "@/types";
 
 const statuses: CaseStatus[] = [
@@ -13,28 +14,37 @@ const statuses: CaseStatus[] = [
   "tagging",
   "rule_matching",
   "report_draft",
+  "creator_review",
   "delivered",
   "feedback_received",
-  "candidate_extracted"
+  "candidate_extracted",
+  "archived"
 ];
 
 export default function CasesPage() {
+  const mode = getStorageMode();
   const [cases, setCases] = useState<FanCase[]>([]);
   const [filter, setFilter] = useState<CaseStatus | "all">("all");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    seedInitialData();
-    setCases(getCases());
+    const storage = getStorageAdapter();
+    storage
+      .seedInitialData()
+      .then(() => storage.listCases())
+      .then(setCases)
+      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load cases."));
   }, []);
 
   const visibleCases = filter === "all" ? cases : cases.filter((caseItem) => caseItem.status === filter);
 
   return (
-    <AppShell title="Cases" description="All local fan cases, with status filters and next-action routing.">
+    <AppShell title="Cases" description={`All ${mode === "supabase" ? "cloud" : "local"} fan cases, with status filters and next-action routing.`}>
+      {message ? <div className="notice">{message}</div> : null}
       <section className="page-header">
         <div>
           <h2>Case management</h2>
-          <p>Cases remain in browser localStorage. Do not enter real personal data in this CE skeleton.</p>
+          <p>Do not enter real personal identity data or raw photos in this CE skeleton.</p>
         </div>
         <Link className="button primary" href="/services">
           Create from Service

@@ -26,6 +26,16 @@ StyleOS Alpha must not store:
 
 Candidate knowledge may only store abstracted feature-solution-outcome mapping. User personal information is not the core asset of StyleOS.
 
+## v0.2.2 CE Privacy Boundary
+
+Raw photos are not stored in current CE v0.2.2.
+
+Personal identity data is not the core knowledge asset. The app must not collect or preserve phone numbers, WeChat IDs, ID card numbers, addresses, emails, or raw photos in StyleOS business tables.
+
+CandidateKnowledge stores abstracted feature-solution-outcome mapping.
+
+Consent is required before anonymized reuse. If feedback does not grant `consent_to_anonymized_learning`, candidate knowledge must use `consent_status=denied` and must not be marked as `pro_candidate`.
+
 ## 中文核心原则
 
 1. 不收集不必要的个人数据。
