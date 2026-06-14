@@ -7,6 +7,34 @@ StyleOS Creator Studio CE 是入行365 StyleOS 的开源社区版小 B 工作台
 
 This repository is the local-first community edition of Creator Studio. It is not StyleOS Cloud and does not include hosted accounts, payments, production databases, AI APIs, or real user photo upload.
 
+## Current Alpha Status
+
+Alpha URL:
+
+```text
+https://styleos-creator-studio-ce.vercel.app
+```
+
+Hosted Alpha is deployed. Online synthetic E2E is the next required gate before inviting alpha creators.
+
+Current status:
+
+- Hosted Alpha: deployed
+- Hosted smoke test: passed
+- Local API-assisted synthetic E2E: passed
+- Hosted Online Synthetic E2E: next required step
+- Alpha invitations: not ready until hosted E2E and cleanup pass
+- Current workflow: Hairstyle only
+
+Start here:
+
+- [PRD](docs/PRD.md)
+- [Project Handoff](docs/PROJECT_HANDOFF.md)
+- [Current Status](docs/CURRENT_STATUS.md)
+- [Alpha Ready Checklist](docs/ALPHA_READY_CHECKLIST.md)
+- [Online E2E Runbook](docs/ONLINE_E2E_RUNBOOK.md)
+- [Codex Continuation Guide](docs/CODEX_CONTINUATION_GUIDE.md)
+
 ## Run locally
 
 ```bash
@@ -69,7 +97,7 @@ v0.2.2 now supports a complete synthetic E2E flow with service creation, fan int
 
 ## Alpha Deployment
 
-v0.2.3 prepares the project for a hosted Alpha deployment. The Alpha is planned as an invite-only Web SaaS test for 3-5 small-B creators. It is not deployed by this repository change.
+v0.2.3 prepared the project for a hosted Alpha deployment. The hosted Alpha is now deployed and remains invite-only until Hosted Online Synthetic E2E passes.
 
 - [Alpha Deployment](docs/alpha-deployment.md)
 - [Vercel Deployment Guide](docs/vercel-deployment-guide.md)
@@ -176,6 +204,26 @@ The first product definition focuses on the Hairstyle Suitability Workflow:
 
 ## Documentation Map
 
+- [PRD](docs/PRD.md)
+- [Project Handoff](docs/PROJECT_HANDOFF.md)
+- [Current Status](docs/CURRENT_STATUS.md)
+- [Product Narrative](docs/PRODUCT_NARRATIVE.md)
+- [Technical Architecture Summary](docs/TECHNICAL_ARCHITECTURE_SUMMARY.md)
+- [Supabase Schema Summary](docs/SUPABASE_SCHEMA_SUMMARY.md)
+- [Hosted Alpha Status](docs/HOSTED_ALPHA_STATUS.md)
+- [Online E2E Runbook](docs/ONLINE_E2E_RUNBOOK.md)
+- [Alpha Ready Checklist](docs/ALPHA_READY_CHECKLIST.md)
+- [Alpha User Onboarding Plan](docs/ALPHA_USER_ONBOARDING_PLAN.md)
+- [Alpha Feedback Operations](docs/ALPHA_FEEDBACK_OPERATIONS.md)
+- [Next 30 Days Roadmap](docs/NEXT_30_DAYS_ROADMAP.md)
+- [Product Decisions Log](docs/PRODUCT_DECISIONS_LOG.md)
+- [Development Rules](docs/DEVELOPMENT_RULES.md)
+- [Testing Strategy](docs/TESTING_STRATEGY.md)
+- [Release Process](docs/RELEASE_PROCESS.md)
+- [Open Core Strategy](docs/OPEN_CORE_STRATEGY.md)
+- [Data and Privacy Principles](docs/DATA_AND_PRIVACY_PRINCIPLES.md)
+- [Known Issues and Limitations](docs/KNOWN_ISSUES_AND_LIMITATIONS.md)
+- [Codex Continuation Guide](docs/CODEX_CONTINUATION_GUIDE.md)
 - [Product](PRODUCT.md)
 - [Architecture](ARCHITECTURE.md)
 - [MVP Scope](MVP_SCOPE.md)
@@ -209,6 +257,21 @@ The first product definition focuses on the Hairstyle Suitability Workflow:
 - [Vercel Deployment Guide](docs/vercel-deployment-guide.md)
 - [Supabase Alpha Production Settings](docs/supabase-alpha-production-settings.md)
 - [Post-deployment E2E](docs/post-deployment-e2e.md)
+- [MVP Scope Lock](project/MVP_SCOPE_LOCK.md)
+- [Alpha Scope Lock](project/ALPHA_SCOPE_LOCK.md)
+- [Backlog](project/BACKLOG.md)
+- [Priority Issues](project/PRIORITY_ISSUES.md)
+- [Release Milestones](project/RELEASE_MILESTONES.md)
+- [Daily Alpha Checklist](ops/DAILY_ALPHA_CHECKLIST.md)
+- [Incident Response](ops/INCIDENT_RESPONSE.md)
+- [Data Cleanup Runbook](ops/DATA_CLEANUP_RUNBOOK.md)
+- [Supabase Monitoring Checklist](ops/SUPABASE_MONITORING_CHECKLIST.md)
+- [Vercel Monitoring Checklist](ops/VERCEL_MONITORING_CHECKLIST.md)
+- [Alpha Small-B Invite Short](launch/alpha-small-b-invite-short.md)
+- [Alpha Small-B Invite Long](launch/alpha-small-b-invite-long.md)
+- [Alpha Onboarding Message](launch/alpha-onboarding-message.md)
+- [Alpha Test Task List](launch/alpha-test-task-list.md)
+- [Alpha Feedback Summary Template](launch/alpha-feedback-summary-template.md)
 
 ## License
 

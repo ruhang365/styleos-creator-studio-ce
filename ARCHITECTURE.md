@@ -83,6 +83,41 @@ The hosted Alpha target is Vercel. The app still uses the existing ruhang365 Sup
 
 The Alpha deployment preparation does not create a Vercel project, does not execute SQL, and does not modify database structure.
 
+## Current Hosted Alpha Architecture
+
+The hosted Alpha is deployed at:
+
+```text
+https://styleos-creator-studio-ce.vercel.app
+```
+
+It uses:
+
+- Vercel-hosted Next.js App Router
+- Supabase Mode
+- existing ruhang365 Supabase Project
+- shared `auth.users`
+- dedicated `styleos` schema
+- public token route handlers
+- Candidate Knowledge Queue
+
+The next architecture gate is Hosted Online Synthetic E2E. Real Alpha invitations should wait until the hosted workflow and cleanup are verified.
+
+## Open-source / Cloud / Pro Layers
+
+```mermaid
+flowchart TB
+    Protocol["StyleOS Protocol: open standard"] --> CE["Creator Studio CE: AGPL community product"]
+    CE --> Cloud["StyleOS Cloud: future hosted commercial service"]
+    CE --> Pro["StyleOS Pro: future closed advanced knowledge"]
+    Protocol --> Community["Community trust and interoperability"]
+```
+
+- StyleOS Protocol defines public standards and starter rule structures.
+- Creator Studio CE proves the runnable workflow.
+- StyleOS Cloud may provide hosted reliability, accounts, limits, and operations.
+- StyleOS Pro may provide advanced knowledge, expert-reviewed rules, and verified evidence.
+
 ## Shared Auth
 
 Creator login uses Supabase Auth magic links and the existing ruhang365 `auth.users` table.

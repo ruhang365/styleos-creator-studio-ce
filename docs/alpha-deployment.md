@@ -1,6 +1,12 @@
 # Alpha Deployment
 
-v0.2.3 prepares StyleOS Creator Studio CE for a hosted Alpha deployment. This document describes the deployment target and boundaries. It does not mean the Alpha has already been deployed.
+v0.2.3 prepared StyleOS Creator Studio CE for a hosted Alpha deployment. The Hosted Alpha is now deployed at:
+
+```text
+https://styleos-creator-studio-ce.vercel.app
+```
+
+This document describes the deployment target and boundaries. Hosted Online Synthetic E2E is still required before inviting Alpha creators.
 
 ## Deployment Goal
 
@@ -35,7 +41,7 @@ The Alpha should stay web-first until the service flow, consent flow, report flo
 
 Use Vercel for the Alpha deployment because the project is a Next.js App Router app and does not need custom infrastructure for this phase.
 
-Deployment instructions are in [Vercel Deployment Guide](vercel-deployment-guide.md).
+Deployment instructions are in [Vercel Deployment Guide](vercel-deployment-guide.md). Current hosted status is summarized in [Hosted Alpha Status](HOSTED_ALPHA_STATUS.md).
 
 ## Supabase Scope
 

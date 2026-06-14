@@ -42,24 +42,32 @@
 - Add Vercel guide, Supabase production settings, env var guide, smoke test, access policy, onboarding, operations checklist, and launch templates.
 - Prepare for hosted Alpha without deploying or changing database structure.
 
-## v0.2.4 - Hosted Alpha Deployment
+## v0.2.4 - Project Handoff & Alpha Readiness Pack
 
-- Deploy the hosted Alpha after manual Vercel and Supabase configuration.
-- Validate `/api/health`, `/setup`, magic link Auth, and token routes on the hosted domain.
-- Keep the Alpha invite-only.
+- Add project handoff docs, PRD, current status, and product narrative.
+- Add Alpha readiness checklist and hosted online E2E runbook.
+- Add operations runbooks, backlog, release milestones, and launch materials.
+- Keep the next gate focused on Hosted Online Synthetic E2E.
 
-## v0.2.5 - Alpha Feedback Pack
+## v0.2.5 - Hosted Online E2E
 
-- Collect feedback from 3-5 invited small-B testers.
-- Summarize workflow friction, report usefulness, and onboarding gaps.
-- Prioritize refinement before expanding access.
+- Run full hosted synthetic E2E.
+- Verify service, intake, case, report, feedback, Candidate Knowledge, and consent_records.
+- Clean up all synthetic rows and confirm six `styleos` table counts return to baseline.
+
+## v0.2.6 - Alpha Creator Onboarding
+
+- Invite 3-5 small-B Alpha testers after hosted E2E passes.
+- Keep testing synthetic-data-first.
+- Collect and classify P0/P1/P2 feedback.
+- Fix blockers before expanding access.
 
 ## v0.3 - Hairstyle Workflow MVP Refinement
 
 - Refine Hairstyle Workflow usability.
 - Improve rule matching transparency.
 - Improve report editing ergonomics.
-- Add stronger validation for consent, anonymization, and candidate extraction.
+- Add stronger validation for consent, anonymization, and Candidate Knowledge review.
 
 ## v0.4 - Report Generator
 

@@ -91,3 +91,29 @@ Candidate knowledge may only store abstracted mappings:
 - review status
 
 It must not store identity data as reusable knowledge.
+
+## Alpha Handoff Privacy Rules
+
+The current Hosted Alpha is not ready for real small-B usage until Hosted Online Synthetic E2E passes.
+
+Alpha testers must be told:
+
+- use synthetic data first
+- do not upload real photos
+- do not enter phone numbers
+- do not enter WeChat IDs
+- do not enter ID card numbers
+- do not enter addresses
+- do not enter real client records
+
+Feedback may enter Candidate Knowledge only when anonymized-learning consent exists and the resulting data is abstracted.
+
+## Durable Asset Definition
+
+The durable StyleOS asset is not personal identity data. It is:
+
+```text
+Feature Tags -> Styling Recommendation -> Execution Feedback -> Rule Evidence
+```
+
+Candidate Knowledge should preserve this abstract structure and avoid retaining fan identity.

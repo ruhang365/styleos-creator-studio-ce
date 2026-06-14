@@ -2,6 +2,17 @@
 
 All notable changes to StyleOS Creator Studio CE will be documented in this file.
 
+## v0.2.4 - Project Handoff & Alpha Readiness Pack
+
+- Added handoff docs.
+- Added PRD.
+- Added alpha readiness checklist.
+- Added online E2E runbook.
+- Added operations runbooks.
+- Added alpha onboarding materials.
+- Added backlog and release milestones.
+- Added Codex continuation guide.
+
 ## v0.2.3 - Alpha Deployment Preparation Pack
 
 - Added Alpha deployment docs.
