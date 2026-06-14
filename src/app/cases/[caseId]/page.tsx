@@ -35,11 +35,12 @@ export default function CaseDetailPage() {
     setFeedback(
       foundCase ? feedbackItems.find((item) => item.feedbackId === foundCase.feedbackId || item.caseId === foundCase.caseId) ?? null : null
     );
-    setCandidate(
-      foundCase?.candidateKnowledgeId
-        ? candidates.find((item) => item.candidate_id === foundCase.candidateKnowledgeId) ?? null
-        : null
-    );
+    const candidateForCase = foundCase
+      ? candidates.find(
+          (item) => item.candidate_id === foundCase.candidateKnowledgeId || item.source_case_id === foundCase.caseId
+        ) ?? null
+      : null;
+    setCandidate(candidateForCase);
   };
 
   useEffect(() => {
@@ -64,11 +65,19 @@ export default function CaseDetailPage() {
     const savedCandidate = existing
       ? await storage.updateCandidateKnowledge(existing.candidate_id, candidateItem)
       : await storage.createCandidateKnowledge(candidateItem);
+    const now = nowIso();
     await storage.updateCase(caseItem.caseId, {
       status: "candidate_extracted",
       candidateKnowledgeId: savedCandidate.candidate_id,
-      updatedAt: nowIso()
+      updatedAt: now
     });
+    setCaseItem({
+      ...caseItem,
+      status: "candidate_extracted",
+      candidateKnowledgeId: savedCandidate.candidate_id,
+      updatedAt: now
+    });
+    setCandidate(savedCandidate);
     setMessage("Candidate knowledge extracted as abstract mapping. No nickname, photo, or contact was copied.");
     await refresh();
   };

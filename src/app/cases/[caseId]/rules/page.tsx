@@ -19,9 +19,11 @@ export default function RuleMatchingPage() {
   const [matches, setMatches] = useState<RuleMatch[]>([]);
   const [selectedRuleIds, setSelectedRuleIds] = useState<string[]>([]);
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const storage = getStorageAdapter();
+    setIsLoading(true);
     storage
       .seedInitialData()
       .then(() => storage.getCaseById(caseId))
@@ -30,7 +32,8 @@ export default function RuleMatchingPage() {
         setMatches(found?.ruleMatches ?? []);
         setSelectedRuleIds(found?.selectedRuleIds ?? []);
       })
-      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load case."));
+      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load case."))
+      .finally(() => setIsLoading(false));
   }, [caseId]);
 
   const autoMatch = () => {
@@ -56,6 +59,14 @@ export default function RuleMatchingPage() {
     });
     setMessage("Selected rules saved. Case status is now rule_matching.");
   };
+
+  if (!caseItem && isLoading) {
+    return (
+      <AppShell title="Rule Matching" description="Loading case.">
+        <EmptyState title="Loading case" description="Loading the cloud fan case for the current creator session." />
+      </AppShell>
+    );
+  }
 
   if (!caseItem) {
     return (

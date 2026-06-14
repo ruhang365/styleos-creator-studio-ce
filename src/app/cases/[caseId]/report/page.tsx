@@ -24,6 +24,7 @@ export default function ReportEditorPage() {
   const [markdown, setMarkdown] = useState("");
   const [barberBrief, setBarberBrief] = useState("");
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const refresh = async () => {
     const storage = getStorageAdapter();
@@ -37,10 +38,12 @@ export default function ReportEditorPage() {
 
   useEffect(() => {
     const storage = getStorageAdapter();
+    setIsLoading(true);
     storage
       .seedInitialData()
       .then(refresh)
-      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load report editor."));
+      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load report editor."))
+      .finally(() => setIsLoading(false));
   }, [caseId]);
 
   const generate = () => {
@@ -109,6 +112,14 @@ export default function ReportEditorPage() {
     setReport(nextReport);
     setMessage("Report marked as delivered.");
   };
+
+  if (!caseItem && isLoading) {
+    return (
+      <AppShell title="Report Editor" description="Loading case.">
+        <EmptyState title="Loading case" description="Loading the cloud fan case for the current creator session." />
+      </AppShell>
+    );
+  }
 
   if (!caseItem) {
     return (
