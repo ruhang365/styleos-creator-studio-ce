@@ -85,6 +85,10 @@ export async function completeAuthCallbackFromUrl(url: string): Promise<AuthCall
   if (code) {
     const { error } = await client.auth.exchangeCodeForSession(code);
     if (error) {
+      const { data } = await client.auth.getSession();
+      if (data.session) {
+        return { ok: true };
+      }
       return { ok: false, error: safeAuthError(error, "Unable to exchange the magic link code.") };
     }
     return { ok: true };
