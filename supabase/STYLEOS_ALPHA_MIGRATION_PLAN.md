@@ -50,9 +50,14 @@ StyleOS business tables should live in a dedicated `styleos` schema so Alpha dat
 
 Run only after review:
 
-1. `styleos-alpha-schema.sql`
-2. `styleos-alpha-indexes.sql`
-3. `styleos-alpha-rls.sql`
+1. `styleos-alpha-preflight.sql`
+2. confirm preflight rollback leaves no `styleos` schema residue
+3. `styleos-alpha-schema.sql`
+4. `styleos-alpha-indexes.sql`
+5. `styleos-alpha-rls.sql`
+6. `styleos-alpha-verify.sql`
+
+If any step fails, stop and review before continuing.
 
 ## 7. Verification SQL
 
@@ -87,6 +92,7 @@ Do not use `drop schema styleos cascade` blindly in production. If rollback fail
 - Public intake, report, and feedback routes are not opened through direct anon table access.
 - Token-based public access should be implemented through server routes.
 - `styleos` schema exposure through Supabase Data API must be reviewed before frontend integration.
+- Custom schema grants are included for `authenticated` and `service_role`, but `anon` is intentionally not granted broad table privileges.
 - Candidate knowledge remains `E0` until reviewed and upgraded.
 
 ## 10. Next Step

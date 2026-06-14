@@ -8,6 +8,7 @@ Use this checklist before running any StyleOS Alpha SQL against the existing ruh
 - [ ] Confirm the SQL has been manually reviewed.
 - [ ] Confirm this is the intended ruhang365 Supabase Project.
 - [ ] Confirm no migration has been run from this draft without approval.
+- [ ] Confirm `styleos-alpha-preflight.sql` has passed and rolled back cleanly.
 
 ## Schema Boundary
 
@@ -15,11 +16,13 @@ Use this checklist before running any StyleOS Alpha SQL against the existing ruh
 - [ ] Confirm `styleos` schema does not exist or can be safely created.
 - [ ] Confirm all StyleOS business tables are under `styleos`.
 - [ ] Confirm Alpha does not add workspace or team tables.
+- [ ] Confirm Supabase API settings for custom schema exposure are reviewed before SDK access.
 
 ## RLS and Access
 
 - [ ] Confirm RLS is enabled on every `styleos` table.
 - [ ] Confirm `anon` has no broad permissions on StyleOS tables.
+- [ ] Confirm `authenticated` and `service_role` grants are present if `styleos` schema will be accessed through Supabase APIs.
 - [ ] Confirm public intake will use a server route and `intake_token`.
 - [ ] Confirm public report access will use a server route and `share_token`.
 - [ ] Confirm public feedback will use a server route and `share_token`.

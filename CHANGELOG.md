@@ -2,6 +2,16 @@
 
 All notable changes to StyleOS Creator Studio CE will be documented in this file.
 
+## v0.2.1-preflight - StyleOS Alpha Supabase Preflight Pack
+
+- Added preflight SQL.
+- Added verification SQL.
+- Added final apply order.
+- Added manual execution guide.
+- Added SQL review.
+- Added risk register.
+- Added grant / custom schema review notes.
+
 ## v0.2.1 - StyleOS Alpha Supabase Schema Draft
 
 - Added styleos schema SQL draft.

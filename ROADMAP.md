@@ -20,7 +20,20 @@
 - Add draft tables, indexes, RLS policies, rollback, migration plan, and safety checklist.
 - Do not execute SQL until manual review is complete.
 
-## v0.2.2 - Supabase Connection and Cloud Persistence
+## v0.2.1-preflight - Supabase SQL Preflight Pack
+
+- Add preflight SQL wrapped in `begin` / `rollback`.
+- Add post-apply verification SQL.
+- Add final apply order, manual execution guide, SQL review, and risk register.
+- Review custom schema grants and Supabase API exposure requirements.
+
+## v0.2.2 - Execute StyleOS Alpha Schema
+
+- Execute reviewed SQL manually in the existing ruhang365 Supabase Project.
+- Verify `styleos` schema, tables, RLS, policies, indexes, grants, and sensitive-field checks.
+- Stop on any preflight or verification failure.
+
+## v0.2.3 - Connect Creator Studio CE to Supabase
 
 - Connect Creator Studio CE to Supabase after schema review.
 - Add server routes for token-based public intake, report, and feedback flows.

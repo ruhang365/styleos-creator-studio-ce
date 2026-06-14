@@ -5,6 +5,9 @@
 
 create schema if not exists styleos;
 
+grant usage on schema styleos to authenticated;
+grant usage on schema styleos to service_role;
+
 create or replace function styleos.set_updated_at()
 returns trigger
 language plpgsql
@@ -166,3 +169,15 @@ drop trigger if exists set_updated_at on styleos.candidate_knowledge;
 create trigger set_updated_at
 before update on styleos.candidate_knowledge
 for each row execute function styleos.set_updated_at();
+
+grant select, insert, update, delete on all tables in schema styleos to authenticated;
+grant select, insert, update, delete on all tables in schema styleos to service_role;
+
+alter default privileges in schema styleos
+grant select, insert, update, delete on tables to authenticated;
+
+alter default privileges in schema styleos
+grant select, insert, update, delete on tables to service_role;
+
+-- Do not grant broad anon access.
+-- Public intake, report, and feedback should be implemented through server routes and token validation.

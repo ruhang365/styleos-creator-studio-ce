@@ -58,6 +58,16 @@ This repository includes SQL draft files only. They require human review before 
 - [Supabase StyleOS Alpha Schema](docs/supabase-styleos-alpha-schema.md)
 - [Supabase StyleOS Alpha Safety Checklist](docs/supabase-styleos-alpha-safety-checklist.md)
 
+## Supabase Alpha Preflight
+
+StyleOS Alpha reuses the existing ruhang365 Supabase Project and adds a dedicated `styleos` schema. Before running any SQL, review the preflight pack.
+
+- [Preflight SQL](supabase/styleos-alpha-preflight.sql)
+- [Verify SQL](supabase/styleos-alpha-verify.sql)
+- [Final Apply Order](supabase/styleos-alpha-final-apply-order.md)
+- [Manual Execution Guide](docs/styleos-alpha-manual-execution-guide.md)
+- [Risk Register](docs/styleos-alpha-risk-register.md)
+
 ## Relationship with styleos-protocol
 
 - `ruhang365/styleos-protocol` is the open standard library.
@@ -129,6 +139,8 @@ The first product definition focuses on the Hairstyle Suitability Workflow:
 - [v0.2 Web App Skeleton](docs/v0.2-web-app-skeleton.md)
 - [Supabase StyleOS Alpha Schema](docs/supabase-styleos-alpha-schema.md)
 - [Supabase StyleOS Alpha Safety Checklist](docs/supabase-styleos-alpha-safety-checklist.md)
+- [StyleOS Alpha Manual Execution Guide](docs/styleos-alpha-manual-execution-guide.md)
+- [StyleOS Alpha Risk Register](docs/styleos-alpha-risk-register.md)
 
 ## License
 
