@@ -2,6 +2,17 @@
 
 All notable changes to StyleOS Creator Studio CE will be documented in this file.
 
+## v0.2.3 - Alpha Deployment Preparation Pack
+
+- Added Alpha deployment docs.
+- Added Vercel deployment guide.
+- Added Alpha env vars guide.
+- Added health check route.
+- Added Alpha smoke test.
+- Added Alpha access policy.
+- Added creator onboarding materials.
+- Added Alpha invitation and feedback templates.
+
 ## v0.2.2-case-visibility-fix - API-created Case Visibility
 
 - Fixed Supabase fan case visibility in Creator UI.

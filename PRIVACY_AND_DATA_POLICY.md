@@ -36,6 +36,17 @@ CandidateKnowledge stores abstracted feature-solution-outcome mapping.
 
 Consent is required before anonymized reuse. If feedback does not grant `consent_to_anonymized_learning`, candidate knowledge must use `consent_status=denied` and must not be marked as `pro_candidate`.
 
+## Alpha Phase Data Principles
+
+The hosted Alpha must use synthetic or low-risk test data first.
+
+- Do not upload photos.
+- Do not collect sensitive personal information.
+- Do not enter phone numbers, WeChat IDs, ID card numbers, addresses, emails, payment records, or private messages.
+- Candidate Knowledge may only store abstract feature-solution-outcome structure.
+- Alpha testers must not upload real sensitive materials.
+- Public feedback and GitHub issues must use sanitized examples only.
+
 ## 中文核心原则
 
 1. 不收集不必要的个人数据。

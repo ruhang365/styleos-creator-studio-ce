@@ -57,6 +57,32 @@ These routes use token lookup and return only the data needed for fan intake, sh
 
 Service role or secret keys are server-only. They must not enter client bundles.
 
+## Health Check Route
+
+- `/api/health`
+
+This route returns safe deployment readiness metadata only. It does not use public fan tokens, does not query business data, and does not expose secrets.
+
+## v0.2.3 Hosted Alpha Layer
+
+The Alpha preparation layer keeps the same application architecture and adds deployment readiness around it:
+
+```mermaid
+flowchart LR
+    A[Invited Alpha Creator] --> B[Vercel-hosted Next.js App]
+    B --> C[/api/health]
+    B --> D[Supabase Auth magic link]
+    B --> E[Token route handlers]
+    E --> F[ruhang365 Supabase Project]
+    F --> G[styleos schema]
+```
+
+The hosted Alpha target is Vercel. The app still uses the existing ruhang365 Supabase Project, shared `auth.users`, and the dedicated `styleos` schema.
+
+`/api/health` returns only configuration booleans, app version, storage mode, Alpha mode, and timestamp. It does not query business data and does not expose secrets.
+
+The Alpha deployment preparation does not create a Vercel project, does not execute SQL, and does not modify database structure.
+
 ## Shared Auth
 
 Creator login uses Supabase Auth magic links and the existing ruhang365 `auth.users` table.

@@ -67,6 +67,20 @@ v0.2.2 now supports a complete synthetic E2E flow with service creation, fan int
 - [E2E Testing](docs/e2e-testing.md)
 - [Supabase Schema Access Notes](docs/supabase-schema-access-notes.md)
 
+## Alpha Deployment
+
+v0.2.3 prepares the project for a hosted Alpha deployment. The Alpha is planned as an invite-only Web SaaS test for 3-5 small-B creators. It is not deployed by this repository change.
+
+- [Alpha Deployment](docs/alpha-deployment.md)
+- [Vercel Deployment Guide](docs/vercel-deployment-guide.md)
+- [Alpha Env Vars](docs/alpha-env-vars.md)
+- [Alpha Smoke Test](docs/alpha-smoke-test.md)
+- [Alpha Access Policy](docs/alpha-access-policy.md)
+
+## Health Check
+
+`GET /api/health` returns a safe JSON status for app version, storage mode, Supabase configuration booleans, Alpha mode, and timestamp. It does not query business data or expose secrets.
+
 ## v0.2 Web App Skeleton
 
 The CE app now includes a runnable Next.js App Router skeleton for the Hairstyle Workflow:
@@ -185,6 +199,16 @@ The first product definition focuses on the Hairstyle Suitability Workflow:
 - [E2E Testing](docs/e2e-testing.md)
 - [Supabase Schema Access Notes](docs/supabase-schema-access-notes.md)
 - [v0.2.2 Supabase Connection](docs/v0.2.2-supabase-connection.md)
+- [Alpha Deployment](docs/alpha-deployment.md)
+- [Alpha Env Vars](docs/alpha-env-vars.md)
+- [Alpha Smoke Test](docs/alpha-smoke-test.md)
+- [Alpha Access Policy](docs/alpha-access-policy.md)
+- [Alpha Creator Onboarding](docs/alpha-creator-onboarding.md)
+- [Alpha Operations Checklist](docs/alpha-operations-checklist.md)
+- [Alpha Known Limitations](docs/alpha-known-limitations.md)
+- [Vercel Deployment Guide](docs/vercel-deployment-guide.md)
+- [Supabase Alpha Production Settings](docs/supabase-alpha-production-settings.md)
+- [Post-deployment E2E](docs/post-deployment-e2e.md)
 
 ## License
 

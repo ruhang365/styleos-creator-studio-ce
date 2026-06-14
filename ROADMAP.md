@@ -35,11 +35,24 @@
 - Add token-based public intake, report, and feedback routes.
 - Preserve Local Mode as the default.
 
-## v0.2.3 - Alpha Deployment (next)
+## v0.2.3 - Alpha Deployment Preparation Pack (current / completed)
 
-- Prepare a limited Alpha deployment path.
-- Confirm environment configuration and custom schema exposure.
-- Validate magic link auth and public token workflows in a hosted environment.
+- Add Alpha deployment preparation docs.
+- Add health check route.
+- Add Vercel guide, Supabase production settings, env var guide, smoke test, access policy, onboarding, operations checklist, and launch templates.
+- Prepare for hosted Alpha without deploying or changing database structure.
+
+## v0.2.4 - Hosted Alpha Deployment
+
+- Deploy the hosted Alpha after manual Vercel and Supabase configuration.
+- Validate `/api/health`, `/setup`, magic link Auth, and token routes on the hosted domain.
+- Keep the Alpha invite-only.
+
+## v0.2.5 - Alpha Feedback Pack
+
+- Collect feedback from 3-5 invited small-B testers.
+- Summarize workflow friction, report usefulness, and onboarding gaps.
+- Prioritize refinement before expanding access.
 
 ## v0.3 - Hairstyle Workflow MVP Refinement
 
