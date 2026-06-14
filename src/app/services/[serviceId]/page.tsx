@@ -20,9 +20,11 @@ export default function ServiceDetailPage() {
   const [service, setService] = useState<Service | null>(null);
   const [cases, setCases] = useState<FanCase[]>([]);
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const storage = getStorageAdapter();
+    setIsLoading(true);
     storage
       .seedInitialData()
       .then(() => Promise.all([storage.getServiceById(serviceId), storage.listCases()]))
@@ -30,7 +32,8 @@ export default function ServiceDetailPage() {
         setService(nextService);
         setCases(nextCases.filter((caseItem) => caseItem.serviceId === serviceId));
       })
-      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load service."));
+      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load service."))
+      .finally(() => setIsLoading(false));
   }, [serviceId]);
 
   const createSynthetic = async () => {
@@ -42,6 +45,14 @@ export default function ServiceDetailPage() {
     const savedCase = await storage.createCase(nextCase);
     router.push(`/cases/${savedCase.caseId}`);
   };
+
+  if (!service && isLoading) {
+    return (
+      <AppShell title="Service Detail" description="Loading service.">
+        <EmptyState title="Loading service" description="Loading the cloud service for the current creator session." />
+      </AppShell>
+    );
+  }
 
   if (!service) {
     return (

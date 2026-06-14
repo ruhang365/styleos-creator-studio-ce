@@ -23,6 +23,41 @@ function removeSensitiveFields(value: unknown): unknown {
   return value;
 }
 
+function stringField(value: unknown) {
+  return typeof value === "string" ? value : "";
+}
+
+function normalizeIntakeAliases(value: Record<string, unknown>) {
+  const next = { ...value };
+
+  const aliasMap: Array<[string, string]> = [
+    ["faceShape", "faceShapeTag"],
+    ["constraints", "workplaceSchoolConstraints"],
+    ["serviceProcessingConsent", "consentToLocalProcessing"]
+  ];
+
+  aliasMap.forEach(([from, to]) => {
+    if (next[to] === undefined && next[from] !== undefined) {
+      next[to] = next[from];
+    }
+  });
+
+  if (next.fanNickname === undefined && next.fan_alias !== undefined) {
+    next.fanNickname = next.fan_alias;
+  }
+  if (next.targetScenario === undefined && next.target_scenario !== undefined) {
+    next.targetScenario = next.target_scenario;
+  }
+  if (next.currentHairstyleConcern === undefined && next.current_hairstyle_concern !== undefined) {
+    next.currentHairstyleConcern = next.current_hairstyle_concern;
+  }
+  if (next.stylingGoal === undefined && next.styling_goal !== undefined) {
+    next.stylingGoal = next.styling_goal;
+  }
+
+  return next;
+}
+
 export async function GET(_: Request, { params }: { params: { token: string } }) {
   try {
     const client = getStyleosServiceClient();
@@ -72,11 +107,13 @@ export async function POST(request: Request, { params }: { params: { token: stri
 
     const body = (await request.json()) as Record<string, unknown>;
     const rawIntake = body.intake && typeof body.intake === "object" ? body.intake : body;
-    const intake = removeSensitiveFields(rawIntake) as Record<string, unknown>;
+    const intake = normalizeIntakeAliases(removeSensitiveFields(rawIntake) as Record<string, unknown>);
     const fanAlias = sanitizeText(String(body.fan_alias ?? intake.fanNickname ?? "fan_alias"), 80) || "fan_alias";
     const targetScenario = sanitizeText(String(body.target_scenario ?? intake.targetScenario ?? ""), 160);
-    const consentValue = Boolean(intake.consentToLocalProcessing ?? body.consent_to_local_processing ?? body.consentToLocalProcessing);
-    const consentMarkers = extractSyntheticMarkers(String(intake.creatorNotes ?? ""), String(body.consent_note ?? ""));
+    const consentValue = Boolean(
+      intake.consentToLocalProcessing ?? body.consent_to_local_processing ?? body.consentToLocalProcessing ?? body.serviceProcessingConsent
+    );
+    const consentMarkers = extractSyntheticMarkers(stringField(intake.creatorNotes), stringField(body.consent_note));
 
     const { data: fanCase, error: caseError } = await client
       .from("fan_cases")
