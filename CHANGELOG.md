@@ -2,6 +2,14 @@
 
 All notable changes to StyleOS Creator Studio CE will be documented in this file.
 
+## v0.2.2-auth-fix - Magic Link Callback Fix
+
+- Fixed magic link callback handling.
+- Added code flow session exchange.
+- Added hash token fallback.
+- Added auth diagnostics.
+- Added magic link auth docs.
+
 ## v0.2.2 - Supabase Connection & Shareable Workflow
 
 - Added Supabase optional mode.

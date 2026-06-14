@@ -53,7 +53,7 @@ export default function LoginPage() {
               }
               setMessage("Magic link sent. Open the link in this browser to complete login.");
             } catch (error) {
-              setMessage(error instanceof Error ? error.message : "Unable to send magic link.");
+              setMessage("Unable to send magic link. Use an existing internal test account and check redirect URL settings.");
             }
           }}
         >

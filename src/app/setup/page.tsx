@@ -7,6 +7,7 @@ import {
   getStorageMode,
   isSupabaseModeRequestedButIncomplete
 } from "@/lib/config";
+import SetupAuthDiagnostics from "@/app/setup/SetupAuthDiagnostics";
 import SetupUserStatus from "@/app/setup/SetupUserStatus";
 
 export default function SetupPage() {
@@ -40,6 +41,7 @@ export default function SetupPage() {
           <p className="muted">
             Current user: <SetupUserStatus mode={mode} />
           </p>
+          <SetupAuthDiagnostics mode={mode} />
         </article>
       </section>
 
@@ -54,6 +56,9 @@ export default function SetupPage() {
           </Link>
           <Link className="button" href="/docs/shareable-cloud-workflow.md">
             Shareable workflow
+          </Link>
+          <Link className="button" href="/docs/auth-magic-link.md">
+            Magic link auth
           </Link>
         </div>
       </section>

@@ -58,6 +58,7 @@ Setup page: `/setup`
 - [Supabase Connection](docs/supabase-connection.md)
 - [Storage Modes](docs/storage-modes.md)
 - [Shareable Cloud Workflow](docs/shareable-cloud-workflow.md)
+- [Magic Link Auth](docs/auth-magic-link.md)
 
 ## v0.2 Web App Skeleton
 
@@ -173,6 +174,7 @@ The first product definition focuses on the Hairstyle Suitability Workflow:
 - [Supabase Connection](docs/supabase-connection.md)
 - [Storage Modes](docs/storage-modes.md)
 - [Shareable Cloud Workflow](docs/shareable-cloud-workflow.md)
+- [Magic Link Auth](docs/auth-magic-link.md)
 - [v0.2.2 Supabase Connection](docs/v0.2.2-supabase-connection.md)
 
 ## License

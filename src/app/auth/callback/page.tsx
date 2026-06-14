@@ -4,28 +4,36 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AppShell from "@/components/AppShell";
-import { getSession } from "@/lib/supabase/auth";
+import { completeAuthCallbackFromUrl } from "@/lib/supabase/auth";
+
+type CallbackStatus = "checking" | "success" | "error";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
+  const [status, setStatus] = useState<CallbackStatus>("checking");
   const [error, setError] = useState("");
 
   useEffect(() => {
     let mounted = true;
-    getSession()
-      .then((session) => {
+
+    completeAuthCallbackFromUrl(window.location.href)
+      .then((result) => {
         if (!mounted) {
           return;
         }
-        if (session) {
+        if (result.ok) {
+          setStatus("success");
+          window.history.replaceState(null, "", "/auth/callback");
           router.replace("/dashboard");
           return;
         }
-        setError("No Supabase session was found after callback.");
+        setStatus("error");
+        setError(result.error ?? "Unable to complete login.");
       })
-      .catch((currentError) => {
+      .catch(() => {
         if (mounted) {
-          setError(currentError instanceof Error ? currentError.message : "Unable to complete login.");
+          setStatus("error");
+          setError("Unable to complete login.");
         }
       });
 
@@ -36,7 +44,7 @@ export default function AuthCallbackPage() {
 
   return (
     <AppShell title="Completing Login" description="Finishing Supabase magic link sign-in.">
-      {error ? (
+      {status === "error" ? (
         <section className="panel">
           <h2>Login failed</h2>
           <p className="muted">{error}</p>
@@ -44,6 +52,8 @@ export default function AuthCallbackPage() {
             Back to login
           </Link>
         </section>
+      ) : status === "success" ? (
+        <div className="panel">Login complete. Redirecting to dashboard...</div>
       ) : (
         <div className="panel">Completing login...</div>
       )}
