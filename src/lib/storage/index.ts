@@ -4,6 +4,7 @@ import { supabaseAdapter } from "@/lib/storage/supabaseAdapter";
 import {
   getCandidateKnowledgeSync,
   getCasesSync,
+  getConsentRecordsSync,
   getCreatorSync,
   getFeedbackSync,
   getReportsSync,
@@ -11,6 +12,7 @@ import {
   resetAllDataSync,
   saveCandidateKnowledgeSync,
   saveCasesSync,
+  saveConsentRecordsSync,
   saveCreatorSync,
   saveFeedbackSync,
   saveReportsSync,
@@ -48,6 +50,10 @@ export async function listFeedback() {
   return getStorageAdapter().listFeedback();
 }
 
+export async function listConsentRecords() {
+  return getStorageAdapter().listConsentRecords();
+}
+
 export async function listCandidateKnowledge() {
   return getStorageAdapter().listCandidateKnowledge();
 }
@@ -64,5 +70,7 @@ export const getReports = getReportsSync;
 export const saveReports = saveReportsSync;
 export const getFeedback = getFeedbackSync;
 export const saveFeedback = saveFeedbackSync;
+export const getConsentRecords = getConsentRecordsSync;
+export const saveConsentRecords = saveConsentRecordsSync;
 export const getCandidateKnowledge = getCandidateKnowledgeSync;
 export const saveCandidateKnowledge = saveCandidateKnowledgeSync;

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getStyleosServiceClient } from "@/lib/supabase/server";
 import { sanitizeText } from "@/lib/sanitizer";
+import { appendSyntheticMarkers, extractSyntheticMarkers } from "@/lib/syntheticMarkers";
 import { createShareToken } from "@/lib/tokens";
 
 const sensitiveFieldPatterns = ["phone", "wechat", "id_card", "address", "photo", "image", "email"];
@@ -74,6 +75,8 @@ export async function POST(request: Request, { params }: { params: { token: stri
     const intake = removeSensitiveFields(rawIntake) as Record<string, unknown>;
     const fanAlias = sanitizeText(String(body.fan_alias ?? intake.fanNickname ?? "fan_alias"), 80) || "fan_alias";
     const targetScenario = sanitizeText(String(body.target_scenario ?? intake.targetScenario ?? ""), 160);
+    const consentValue = Boolean(intake.consentToLocalProcessing ?? body.consent_to_local_processing ?? body.consentToLocalProcessing);
+    const consentMarkers = extractSyntheticMarkers(String(intake.creatorNotes ?? ""), String(body.consent_note ?? ""));
 
     const { data: fanCase, error: caseError } = await client
       .from("fan_cases")
@@ -95,12 +98,32 @@ export async function POST(request: Request, { params }: { params: { token: stri
       throw caseError;
     }
 
+    const { error: consentError } = await client.from("consent_records").insert({
+      case_id: fanCase.id,
+      report_id: null,
+      consent_type: "service_processing",
+      consent_value: consentValue,
+      consent_note: appendSyntheticMarkers(
+        sanitizeText(
+          consentValue
+            ? "Service processing consent captured from the intake form."
+            : "Service processing consent was not granted in the intake form."
+        ),
+        consentMarkers
+      )
+    });
+
+    if (consentError) {
+      throw new Error("Unable to record intake consent.");
+    }
+
     return NextResponse.json({
       ok: true,
       case_id: fanCase.id,
       status: fanCase.status
     });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to submit intake." }, { status: 500 });
+    const message = error instanceof Error && error.message === "Unable to record intake consent." ? error.message : "Unable to submit intake.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -122,6 +122,14 @@ export default function IntakePage() {
           const storage = getStorageAdapter();
           const nextCase = createCaseFromIntake(service, form);
           const savedCase = await storage.createCase(nextCase);
+          await storage.createConsentRecord({
+            caseId: savedCase.caseId,
+            consentType: "service_processing",
+            consentValue: form.consentToLocalProcessing,
+            consentNote: form.consentToLocalProcessing
+              ? "Service processing consent captured from the local intake form."
+              : "Service processing consent was not granted in the local intake form."
+          });
           router.push(`/cases/${savedCase.caseId}`);
         }}
       >
@@ -215,30 +223,31 @@ export default function IntakePage() {
           <label className="field">
             willingness to cut short
             <select value={form.willingnessToCutShort} onChange={(event) => update("willingnessToCutShort", event.target.value)}>
-              <option value="low">low</option>
-              <option value="medium">medium</option>
-              <option value="high">high</option>
+              <option value="no">no</option>
+              <option value="maybe">maybe</option>
+              <option value="yes">yes</option>
             </select>
           </label>
           <label className="field">
             willingness to perm
             <select value={form.willingnessToPerm} onChange={(event) => update("willingnessToPerm", event.target.value)}>
-              <option value="low">low</option>
-              <option value="medium">medium</option>
-              <option value="high">high</option>
+              <option value="no">no</option>
+              <option value="maybe">maybe</option>
+              <option value="yes">yes</option>
             </select>
           </label>
           <label className="field">
             willingness to color
             <select value={form.willingnessToColor} onChange={(event) => update("willingnessToColor", event.target.value)}>
-              <option value="low">low</option>
-              <option value="medium">medium</option>
-              <option value="high">high</option>
+              <option value="no">no</option>
+              <option value="maybe">maybe</option>
+              <option value="yes">yes</option>
             </select>
           </label>
           <label className="field full">
             workplace / school constraints
             <textarea
+              placeholder="client-facing, workplace conservative, limited styling time"
               value={form.workplaceSchoolConstraints}
               onChange={(event) => update("workplaceSchoolConstraints", event.target.value)}
             />

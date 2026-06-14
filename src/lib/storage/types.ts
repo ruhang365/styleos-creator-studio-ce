@@ -1,4 +1,4 @@
-import type { CandidateKnowledge, Creator, FanCase, Feedback, LiteReport, Service } from "@/types";
+import type { CandidateKnowledge, ConsentRecord, Creator, FanCase, Feedback, LiteReport, Service } from "@/types";
 
 export type ServiceInput = Omit<Service, "serviceId" | "createdAt" | "updatedAt" | "intakePath" | "intakeToken"> &
   Partial<Pick<Service, "serviceId" | "createdAt" | "updatedAt" | "intakePath" | "intakeToken">>;
@@ -10,6 +10,9 @@ export type ReportInput = Omit<LiteReport, "reportId" | "createdAt" | "updatedAt
   Partial<Pick<LiteReport, "reportId" | "createdAt" | "updatedAt" | "shareToken">>;
 
 export type FeedbackInput = Omit<Feedback, "feedbackId" | "createdAt"> & Partial<Pick<Feedback, "feedbackId" | "createdAt">>;
+
+export type ConsentRecordInput = Omit<ConsentRecord, "consentId" | "createdAt"> &
+  Partial<Pick<ConsentRecord, "consentId" | "createdAt">>;
 
 export type CandidateKnowledgeInput = Omit<CandidateKnowledge, "candidate_id" | "createdAt" | "updatedAt"> &
   Partial<Pick<CandidateKnowledge, "candidate_id" | "createdAt" | "updatedAt">>;
@@ -37,6 +40,9 @@ export interface StorageAdapter {
 
   listFeedback(): Promise<Feedback[]>;
   createFeedback(feedback: FeedbackInput): Promise<Feedback>;
+
+  listConsentRecords(): Promise<ConsentRecord[]>;
+  createConsentRecord(consent: ConsentRecordInput): Promise<ConsentRecord>;
 
   listCandidateKnowledge(): Promise<CandidateKnowledge[]>;
   createCandidateKnowledge(candidate: CandidateKnowledgeInput): Promise<CandidateKnowledge>;

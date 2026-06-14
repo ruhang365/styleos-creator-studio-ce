@@ -60,6 +60,13 @@ Setup page: `/setup`
 - [Shareable Cloud Workflow](docs/shareable-cloud-workflow.md)
 - [Magic Link Auth](docs/auth-magic-link.md)
 
+## E2E Test Readiness
+
+v0.2.2 now supports a complete synthetic E2E flow with service creation, fan intake, rule matching, report delivery, feedback, candidate knowledge extraction, and cleanup verification.
+
+- [E2E Testing](docs/e2e-testing.md)
+- [Supabase Schema Access Notes](docs/supabase-schema-access-notes.md)
+
 ## v0.2 Web App Skeleton
 
 The CE app now includes a runnable Next.js App Router skeleton for the Hairstyle Workflow:
@@ -175,6 +182,8 @@ The first product definition focuses on the Hairstyle Suitability Workflow:
 - [Storage Modes](docs/storage-modes.md)
 - [Shareable Cloud Workflow](docs/shareable-cloud-workflow.md)
 - [Magic Link Auth](docs/auth-magic-link.md)
+- [E2E Testing](docs/e2e-testing.md)
+- [Supabase Schema Access Notes](docs/supabase-schema-access-notes.md)
 - [v0.2.2 Supabase Connection](docs/v0.2.2-supabase-connection.md)
 
 ## License

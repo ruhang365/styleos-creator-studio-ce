@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
+import { sanitizeText } from "@/lib/sanitizer";
 import { getStyleosServiceClient } from "@/lib/supabase/server";
+import { appendSyntheticMarkers, extractSyntheticMarkers } from "@/lib/syntheticMarkers";
 
 function booleanFromChoice(value: unknown) {
   return value === true || value === "yes" || value === "planned";
@@ -49,11 +51,31 @@ export async function POST(request: Request, { params }: { params: { shareToken:
       throw feedbackError;
     }
 
+    const feedbackText = String(body.feedback_text ?? body.creatorNote ?? "");
+    const consentMarkers = extractSyntheticMarkers(feedbackText, String(body.most_useful ?? body.mostUsefulPart ?? ""));
+    const { error: consentError } = await client.from("consent_records").insert({
+      case_id: report.case_id,
+      report_id: report.id,
+      consent_type: "anonymized_learning",
+      consent_value: consent,
+      consent_note: appendSyntheticMarkers(
+        sanitizeText(
+          consent ? "Fan allowed anonymized learning from this feedback." : "Fan did not allow anonymized learning from this feedback."
+        ),
+        consentMarkers
+      )
+    });
+
+    if (consentError) {
+      throw new Error("Unable to record feedback consent.");
+    }
+
     return NextResponse.json({
       ok: true,
       feedback_id: feedback.id
     });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to submit feedback." }, { status: 500 });
+    const message = error instanceof Error && error.message === "Unable to record feedback consent." ? error.message : "Unable to submit feedback.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

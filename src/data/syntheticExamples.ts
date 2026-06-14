@@ -13,9 +13,9 @@ export const syntheticFanIntake: FanIntake = {
   hairShape: "flat_crown",
   crownHeight: "low",
   maintenanceWillingness: "medium",
-  willingnessToCutShort: "medium",
-  willingnessToPerm: "low",
-  willingnessToColor: "low",
+  willingnessToCutShort: "maybe",
+  willingnessToPerm: "no",
+  willingnessToColor: "no",
   workplaceSchoolConstraints: "needs conservative daily look",
   creatorNotes: "Synthetic local MVP case. No real photo, name, contact, or private profile.",
   consentToLocalProcessing: true

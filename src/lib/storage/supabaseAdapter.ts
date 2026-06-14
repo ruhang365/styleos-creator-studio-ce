@@ -1,10 +1,11 @@
 import { getCurrentUser } from "@/lib/supabase/auth";
 import { getStyleosBrowserClient } from "@/lib/supabase/client";
 import { createIntakeToken, createShareToken } from "@/lib/tokens";
-import type { CandidateKnowledge, Creator, FanCase, Feedback, LiteReport, Service, ServiceStatus } from "@/types";
+import type { CandidateKnowledge, ConsentRecord, Creator, FanCase, Feedback, LiteReport, Service, ServiceStatus } from "@/types";
 import type {
   CandidateKnowledgeInput,
   CaseInput,
+  ConsentRecordInput,
   FeedbackInput,
   ReportInput,
   ServiceInput,
@@ -92,6 +93,16 @@ interface CandidateKnowledgeRow {
   public_rule_candidate: boolean;
   created_at: string;
   updated_at: string;
+}
+
+interface ConsentRecordRow {
+  id: string;
+  case_id: string | null;
+  report_id: string | null;
+  consent_type: ConsentRecord["consentType"];
+  consent_value: boolean;
+  consent_note: string | null;
+  created_at: string;
 }
 
 function requireStyleosClient() {
@@ -219,6 +230,18 @@ function mapCandidate(row: CandidateKnowledgeRow): CandidateKnowledge {
     public_rule_candidate: row.public_rule_candidate,
     createdAt: row.created_at,
     updatedAt: row.updated_at
+  };
+}
+
+function mapConsentRecord(row: ConsentRecordRow): ConsentRecord {
+  return {
+    consentId: row.id,
+    caseId: row.case_id ?? undefined,
+    reportId: row.report_id ?? undefined,
+    consentType: row.consent_type,
+    consentValue: row.consent_value,
+    consentNote: row.consent_note ?? "",
+    createdAt: row.created_at
   };
 }
 
@@ -452,7 +475,45 @@ export const supabaseAdapter: StorageAdapter = {
     if (error) {
       throw error;
     }
-    return mapFeedback(data as FeedbackRow);
+    const savedFeedback = mapFeedback(data as FeedbackRow);
+    await this.createConsentRecord({
+      caseId: savedFeedback.caseId,
+      reportId: savedFeedback.reportId,
+      consentType: "anonymized_learning",
+      consentValue: savedFeedback.consentToAnonymizedLearning,
+      consentNote: savedFeedback.consentToAnonymizedLearning
+        ? "Fan allowed anonymized learning from this feedback."
+        : "Fan did not allow anonymized learning from this feedback."
+    });
+    return savedFeedback;
+  },
+  async listConsentRecords() {
+    await requireUser();
+    const client = requireStyleosClient();
+    const { data, error } = await client.from("consent_records").select("*").order("created_at", { ascending: false });
+    if (error) {
+      throw error;
+    }
+    return ((data ?? []) as ConsentRecordRow[]).map(mapConsentRecord);
+  },
+  async createConsentRecord(consent: ConsentRecordInput) {
+    await requireUser();
+    const client = requireStyleosClient();
+    const { data, error } = await client
+      .from("consent_records")
+      .insert({
+        case_id: consent.caseId ?? null,
+        report_id: consent.reportId ?? null,
+        consent_type: consent.consentType,
+        consent_value: consent.consentValue,
+        consent_note: consent.consentNote
+      })
+      .select("*")
+      .single();
+    if (error) {
+      throw error;
+    }
+    return mapConsentRecord(data as ConsentRecordRow);
   },
   async listCandidateKnowledge() {
     await requireUser();

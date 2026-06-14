@@ -1,10 +1,11 @@
 import { defaultCreator, seedServices } from "@/data/seedServices";
 import { createId, nowIso } from "@/lib/ids";
 import { createIntakeToken, createShareToken } from "@/lib/tokens";
-import type { CandidateKnowledge, Creator, FanCase, Feedback, LiteReport, Service } from "@/types";
+import type { CandidateKnowledge, ConsentRecord, Creator, FanCase, Feedback, LiteReport, Service } from "@/types";
 import type {
   CandidateKnowledgeInput,
   CaseInput,
+  ConsentRecordInput,
   FeedbackInput,
   ReportInput,
   ServiceInput,
@@ -18,6 +19,7 @@ const keys = {
   cases: "styleos_ce_cases",
   reports: "styleos_ce_reports",
   feedback: "styleos_ce_feedback",
+  consentRecords: "styleos_ce_consent_records",
   candidates: "styleos_ce_candidates"
 };
 
@@ -133,6 +135,7 @@ export function seedInitialDataSync() {
   writeJson(keys.cases, []);
   writeJson(keys.reports, []);
   writeJson(keys.feedback, []);
+  writeJson(keys.consentRecords, []);
   writeJson(keys.candidates, []);
   setRaw(keys.initialized, "true");
 }
@@ -191,6 +194,15 @@ export function getFeedbackSync() {
 
 export function saveFeedbackSync(feedback: Feedback[]) {
   writeJson(keys.feedback, feedback);
+}
+
+export function getConsentRecordsSync() {
+  seedInitialDataSync();
+  return readJson<ConsentRecord[]>(keys.consentRecords, []);
+}
+
+export function saveConsentRecordsSync(records: ConsentRecord[]) {
+  writeJson(keys.consentRecords, records);
 }
 
 export function getCandidateKnowledgeSync() {
@@ -310,6 +322,27 @@ export const localStorageAdapter: StorageAdapter = {
       createdAt: feedback.createdAt ?? nowIso()
     };
     saveFeedbackSync([next, ...getFeedbackSync().filter((item) => item.reportId !== next.reportId)]);
+    await this.createConsentRecord({
+      caseId: next.caseId,
+      reportId: next.reportId,
+      consentType: "anonymized_learning",
+      consentValue: next.consentToAnonymizedLearning,
+      consentNote: next.consentToAnonymizedLearning
+        ? "Fan allowed anonymized learning from this feedback."
+        : "Fan did not allow anonymized learning from this feedback."
+    });
+    return next;
+  },
+  async listConsentRecords() {
+    return getConsentRecordsSync();
+  },
+  async createConsentRecord(consent: ConsentRecordInput) {
+    const next: ConsentRecord = {
+      ...consent,
+      consentId: consent.consentId ?? createId("consent"),
+      createdAt: consent.createdAt ?? nowIso()
+    };
+    saveConsentRecordsSync([next, ...getConsentRecordsSync()]);
     return next;
   },
   async listCandidateKnowledge() {

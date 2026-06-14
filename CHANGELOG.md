@@ -2,6 +2,15 @@
 
 All notable changes to StyleOS Creator Studio CE will be documented in this file.
 
+## v0.2.2-e2e-fix - E2E Traceability and Consent Fixes
+
+- Improved Candidate Knowledge source traceability.
+- Preserved synthetic E2E marker in abstracted summaries when present.
+- Added consent_records creation for intake and feedback.
+- Added independent Generate Barber Brief action.
+- Improved intake enum options.
+- Added E2E testing and schema access notes.
+
 ## v0.2.2-auth-fix - Magic Link Callback Fix
 
 - Fixed magic link callback handling.

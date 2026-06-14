@@ -147,6 +147,18 @@ export interface Feedback {
   createdAt: string;
 }
 
+export type ConsentType = "service_processing" | "anonymized_learning";
+
+export interface ConsentRecord {
+  consentId: string;
+  caseId?: string;
+  reportId?: string;
+  consentType: ConsentType;
+  consentValue: boolean;
+  consentNote: string;
+  createdAt: string;
+}
+
 export interface CandidateKnowledge {
   candidate_id: string;
   source_case_id: string;

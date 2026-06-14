@@ -8,6 +8,7 @@ import BarberBriefPreview from "@/components/BarberBriefPreview";
 import EmptyState from "@/components/EmptyState";
 import { hairstyleRules } from "@/data/hairstyleRules";
 import { nowIso } from "@/lib/ids";
+import { generateBarberBrief } from "@/lib/barberBriefGenerator";
 import { generateLiteReport } from "@/lib/reportGenerator";
 import { copyableMarkdown } from "@/lib/markdown";
 import { getStorageMode } from "@/lib/config-public";
@@ -53,8 +54,18 @@ export default function ReportEditorPage() {
     setMessage("Lite Report generated from intake, tags, and selected rules.");
   };
 
+  const generateBrief = () => {
+    if (!caseItem) {
+      return;
+    }
+    const selectedRules = hairstyleRules.filter((rule) => caseItem.selectedRuleIds.includes(rule.rule_id));
+    setBarberBrief(generateBarberBrief(caseItem, selectedRules));
+    setMessage("Barber Brief generated from intake and selected rules.");
+  };
+
   const save = async () => {
     if (!caseItem || !markdown.trim()) {
+      setMessage("Generate or write the Lite Report before saving.");
       return;
     }
     const storage = getStorageAdapter();
@@ -81,6 +92,10 @@ export default function ReportEditorPage() {
     if (!caseItem || !report) {
       return;
     }
+    if (!markdown.trim() || !barberBrief.trim()) {
+      setMessage("Generate both the Lite Report and Barber Brief before marking delivered.");
+      return;
+    }
     const storage = getStorageAdapter();
     const now = nowIso();
     const nextReport = await storage.updateReport(report.reportId, {
@@ -104,12 +119,15 @@ export default function ReportEditorPage() {
   }
 
   return (
-    <AppShell title="Report Editor" description="Generate, edit, copy, print, and deliver a local Lite Report.">
+    <AppShell title="Report Editor" description="Generate, edit, copy, print, and deliver a Lite Report with Barber Brief.">
       {message ? <div className="notice">{message}</div> : null}
       <section className="panel">
         <div className="actions">
           <button className="button primary" onClick={generate} type="button">
             Generate Lite Report
+          </button>
+          <button className="button" onClick={generateBrief} type="button">
+            Generate Barber Brief
           </button>
           <button className="button" onClick={save} type="button">
             Save Report

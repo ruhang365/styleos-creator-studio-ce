@@ -35,7 +35,7 @@ export function generateLiteReport(caseItem: FanCase, selectedRules: RuleCard[])
     heading("Avoid List", bullets(avoidList.length > 0 ? avoidList : ["No avoid list generated yet."])),
     heading(
       "Hair Color Direction",
-      intake.willingnessToColor === "low"
+      intake.willingnessToColor === "low" || intake.willingnessToColor === "no"
         ? "Keep color natural. Use cut and shape as the main refresh lever."
         : "Use color as an optional supporting lever after shape direction is confirmed."
     ),

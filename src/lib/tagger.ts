@@ -15,6 +15,20 @@ function normalize(value: string) {
   return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
 }
 
+function willingnessIntensity(value: string) {
+  const normalized = normalize(value);
+  if (normalized === "yes") {
+    return "high";
+  }
+  if (normalized === "no") {
+    return "low";
+  }
+  if (normalized === "maybe" || normalized === "not_sure") {
+    return "medium";
+  }
+  return normalized;
+}
+
 export function generateStyleTags(intake: FanIntake): StyleTag[] {
   const tags: StyleTag[] = [];
   const scenario = normalize(intake.targetScenario);
@@ -37,6 +51,9 @@ export function generateStyleTags(intake: FanIntake): StyleTag[] {
   tags.push(generated("Constraint", `cut_short_${normalize(intake.willingnessToCutShort)}`, intake.willingnessToCutShort));
   tags.push(generated("Constraint", `perm_${normalize(intake.willingnessToPerm)}`, intake.willingnessToPerm));
   tags.push(generated("Constraint", `color_${normalize(intake.willingnessToColor)}`, intake.willingnessToColor));
+  tags.push(generated("Constraint", `cut_short_${willingnessIntensity(intake.willingnessToCutShort)}`, intake.willingnessToCutShort));
+  tags.push(generated("Constraint", `perm_${willingnessIntensity(intake.willingnessToPerm)}`, intake.willingnessToPerm));
+  tags.push(generated("Constraint", `color_${willingnessIntensity(intake.willingnessToColor)}`, intake.willingnessToColor));
 
   if (goal.includes("lift") || concern.includes("flat")) {
     tags.push(generated("Goal", "goal_lift", intake.stylingGoal));
