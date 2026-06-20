@@ -2,13 +2,14 @@
 
 ## Week 1
 
-- Run Hosted Online Synthetic E2E.
-- Verify cleanup returns all six `styleos` tables to baseline.
-- Prepare 3-5 small-B Alpha testers.
-- Fix blocking P0 issues from E2E or smoke tests.
+- Complete PRD and v0 UI Brief.
+- Generate first UI options in Vercel v0.
+- Integrate selected UI without changing auth, storage, API routes, Supabase schema, or privacy boundaries.
+- Rerun local and hosted E2E after UI integration.
 
 ## Week 2
 
+- Prepare 1-3 guided Alpha testers.
 - Improve onboarding.
 - Improve report editor usability.
 - Improve Barber Brief structure.

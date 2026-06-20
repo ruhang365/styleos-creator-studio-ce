@@ -27,10 +27,12 @@ The current product is a Web SaaS-style Alpha running as a Next.js application. 
 - Vercel Hosted Alpha
 - hosted smoke test
 - local API-assisted synthetic E2E
+- hosted API-assisted synthetic E2E
+- hosted E2E cleanup verification
 
 ## What Must Not Be Done Yet
 
-- Do not invite real small-B Alpha creators before Hosted Online Synthetic E2E passes.
+- Do not invite broad real small-B Alpha creators before UI polish and guided internal testing.
 - Do not upload real photos.
 - Do not collect phone, WeChat, ID card, address, or private identity data.
 - Do not add payment.
@@ -61,7 +63,7 @@ Alpha URL:
 https://styleos-creator-studio-ce.vercel.app
 ```
 
-Hosted Alpha is deployed. Online synthetic E2E is the next required gate before inviting Alpha creators.
+Hosted Alpha is deployed. Hosted Online Synthetic E2E has passed and cleanup has been verified. The next gate is Alpha UI polish and guided creator testing.
 
 ## Current Database Structure
 
@@ -80,14 +82,14 @@ The current Alpha does not introduce workspace or team tables and does not modif
 
 - Local API-assisted synthetic E2E: passed.
 - Hosted Alpha smoke test: passed.
-- Hosted Alpha Online Synthetic E2E: not yet completed.
-- Final cleanup after local E2E: verified.
+- Hosted Alpha Online Synthetic E2E: passed.
+- Final cleanup after local and hosted E2E: verified.
 
 ## Next Priorities
 
-1. Run Hosted Online Synthetic E2E.
-2. Verify test data cleanup on the hosted Alpha.
-3. Prepare 3-5 small-B Alpha testers with synthetic-data-only instructions.
+1. Complete Alpha UI polish using the PRD and v0 UI Brief.
+2. Rerun local and hosted E2E after UI integration.
+3. Prepare 1-3 guided Alpha testers with synthetic-data-first instructions.
 4. Collect Alpha feedback.
 5. Fix P0 workflow issues before building new modules.
 

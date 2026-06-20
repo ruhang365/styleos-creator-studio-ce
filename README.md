@@ -15,7 +15,7 @@ Alpha URL:
 https://styleos-creator-studio-ce.vercel.app
 ```
 
-Hosted Alpha is deployed. Online synthetic E2E is the next required gate before inviting alpha creators.
+Hosted Alpha is deployed. Hosted Online Synthetic E2E has passed and cleanup has been verified. The next product gate is Alpha UI polish before guided creator testing.
 
 Current status:
 
@@ -23,12 +23,14 @@ Current status:
 - Hosted smoke test: passed
 - Local API-assisted synthetic E2E: passed
 - Hosted Online Synthetic E2E: passed
-- Alpha invitations: ready for controlled 1-3 account setup after server allowlist is configured
+- Alpha invite-only allowlist: configured
+- Alpha invitations: ready for controlled 1-3 account guided testing
 - Current workflow: Hairstyle only
 
 Start here:
 
 - [PRD](docs/PRD.md)
+- [v0 UI Brief](docs/v0-ui-brief.md)
 - [Project Handoff](docs/PROJECT_HANDOFF.md)
 - [Current Status](docs/CURRENT_STATUS.md)
 - [Alpha Ready Checklist](docs/ALPHA_READY_CHECKLIST.md)
@@ -205,6 +207,7 @@ The first product definition focuses on the Hairstyle Suitability Workflow:
 ## Documentation Map
 
 - [PRD](docs/PRD.md)
+- [v0 UI Brief](docs/v0-ui-brief.md)
 - [Project Handoff](docs/PROJECT_HANDOFF.md)
 - [Current Status](docs/CURRENT_STATUS.md)
 - [Product Narrative](docs/PRODUCT_NARRATIVE.md)
