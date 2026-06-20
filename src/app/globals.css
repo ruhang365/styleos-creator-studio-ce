@@ -704,6 +704,124 @@ h4 {
   line-height: 1;
 }
 
+/* ---------- Task-first home ---------- */
+
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.task-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  padding: 22px 22px 24px;
+}
+
+.task-card.primary {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.task-card h2 {
+  margin: 4px 0 0;
+  font-size: 19px;
+}
+
+.task-card p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.task-card .button {
+  margin-top: 12px;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.task-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--accent);
+}
+
+.task-card.primary .task-icon {
+  border-color: var(--accent-line);
+}
+
+.panel.subtle {
+  background: var(--surface-muted);
+}
+
+.tool-meta {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  padding: 0 18px;
+}
+
+.tool-meta > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 15px 2px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.tool-meta > summary::-webkit-details-marker {
+  display: none;
+}
+
+.tool-meta[open] > summary {
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 16px;
+}
+
+.tool-meta .meta-block {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  padding: 16px;
+}
+
+.tool-meta .meta-block h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.tool-meta .meta-block p {
+  margin: 0 0 6px;
+  font-size: 12.5px;
+}
+
+.tool-meta .meta-block .button {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tool-meta {
+  margin-bottom: 18px;
+}
+
 /* ---------- Workflow stepper ---------- */
 
 .flow-steps {
@@ -884,7 +1002,8 @@ h4 {
     grid-template-columns: 1fr;
   }
 
-  .flow-steps {
+  .flow-steps,
+  .task-grid {
     grid-template-columns: 1fr;
   }
 
