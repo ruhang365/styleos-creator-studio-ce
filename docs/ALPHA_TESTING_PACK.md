@@ -35,6 +35,7 @@ This Alpha is not for paid client delivery, broad public access, or real persona
 - Feedback form: [Alpha Feedback Form](../launch/alpha-feedback-form.md)
 - Feedback summary: [Alpha Feedback Summary Template](../launch/alpha-feedback-summary-template.md)
 - Daily checklist: [Daily Alpha Checklist](../ops/DAILY_ALPHA_CHECKLIST.md)
+- Per-test run template: [Alpha Test Run Template](../ops/ALPHA_TEST_RUN_TEMPLATE.md)
 - Incident response: [Incident Response](../ops/INCIDENT_RESPONSE.md)
 
 ## Pre-Test Checklist
@@ -99,3 +100,6 @@ Invite the next tester only when:
 - the daily Alpha checklist is reviewed
 - the feedback summary has a clear next action
 
+## Recordkeeping Rule
+
+Use the per-test run template for internal notes, but keep it sanitized. Store only tester type, workflow observations, severity classification, and next action. Do not store tester email, raw private messages, screenshots with personal data, or tokenized links in repo docs.

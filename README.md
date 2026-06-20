@@ -269,6 +269,7 @@ The first product definition focuses on the Hairstyle Suitability Workflow:
 - [Priority Issues](project/PRIORITY_ISSUES.md)
 - [Release Milestones](project/RELEASE_MILESTONES.md)
 - [Daily Alpha Checklist](ops/DAILY_ALPHA_CHECKLIST.md)
+- [Alpha Test Run Template](ops/ALPHA_TEST_RUN_TEMPLATE.md)
 - [Incident Response](ops/INCIDENT_RESPONSE.md)
 - [Data Cleanup Runbook](ops/DATA_CLEANUP_RUNBOOK.md)
 - [Supabase Monitoring Checklist](ops/SUPABASE_MONITORING_CHECKLIST.md)
