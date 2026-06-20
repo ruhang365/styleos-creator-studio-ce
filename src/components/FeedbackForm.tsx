@@ -12,7 +12,7 @@ interface FeedbackFormProps {
 export default function FeedbackForm({ onSubmit }: FeedbackFormProps) {
   const [draft, setDraft] = useState<FeedbackDraft>({
     easyToUnderstand: "yes",
-    mostUsefulPart: "Barber Brief",
+    mostUsefulPart: "理发师沟通卡",
     willUseBarberBrief: "yes",
     showedToHairstylist: "planned",
     satisfactionScore: 4,
@@ -30,47 +30,47 @@ export default function FeedbackForm({ onSubmit }: FeedbackFormProps) {
     >
       <div className="form-grid">
         <label className="field">
-          Was the report easy to understand?
+          报告是否容易理解？
           <select
             value={draft.easyToUnderstand}
             onChange={(event) => setDraft({ ...draft, easyToUnderstand: event.target.value as FeedbackDraft["easyToUnderstand"] })}
           >
-            <option value="yes">yes</option>
-            <option value="partly">partly</option>
-            <option value="no">no</option>
+            <option value="yes">容易理解</option>
+            <option value="partly">部分理解</option>
+            <option value="no">不太理解</option>
           </select>
         </label>
         <label className="field">
-          Which part was most useful?
+          哪一部分最有帮助？
           <input
             value={draft.mostUsefulPart}
             onChange={(event) => setDraft({ ...draft, mostUsefulPart: event.target.value })}
           />
         </label>
         <label className="field">
-          Will you use the barber brief?
+          是否会使用理发师沟通卡？
           <select
             value={draft.willUseBarberBrief}
             onChange={(event) => setDraft({ ...draft, willUseBarberBrief: event.target.value as FeedbackDraft["willUseBarberBrief"] })}
           >
-            <option value="yes">yes</option>
-            <option value="not_sure">not sure</option>
-            <option value="no">no</option>
+            <option value="yes">会使用</option>
+            <option value="not_sure">还不确定</option>
+            <option value="no">暂不使用</option>
           </select>
         </label>
         <label className="field">
-          Did you show it to a hairstylist?
+          是否已经给理发师看过？
           <select
             value={draft.showedToHairstylist}
             onChange={(event) => setDraft({ ...draft, showedToHairstylist: event.target.value as FeedbackDraft["showedToHairstylist"] })}
           >
-            <option value="yes">yes</option>
-            <option value="planned">planned</option>
-            <option value="no">no</option>
+            <option value="yes">已经看过</option>
+            <option value="planned">准备使用</option>
+            <option value="no">还没有</option>
           </select>
         </label>
         <label className="field">
-          Satisfaction score 1-5
+          满意度评分 1-5
           <input
             max="5"
             min="1"
@@ -80,7 +80,7 @@ export default function FeedbackForm({ onSubmit }: FeedbackFormProps) {
           />
         </label>
         <label className="field full">
-          Creator note
+          反馈说明
           <textarea
             value={draft.creatorNote}
             onChange={(event) => setDraft({ ...draft, creatorNote: event.target.value })}
@@ -93,12 +93,12 @@ export default function FeedbackForm({ onSubmit }: FeedbackFormProps) {
               onChange={(event) => setDraft({ ...draft, consentToAnonymizedLearning: event.target.checked })}
               type="checkbox"
             />{" "}
-            Consent to anonymized learning
+            同意将本次反馈脱敏后用于改进候选知识
           </span>
         </label>
       </div>
       <button className="button primary" type="submit">
-        Submit Feedback
+        提交反馈
       </button>
     </form>
   );

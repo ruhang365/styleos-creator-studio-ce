@@ -28,12 +28,12 @@ export default function AuthCallbackPage() {
           return;
         }
         setStatus("error");
-        setError(result.error ?? "Unable to complete login.");
+        setError(result.error ?? "无法完成登录。");
       })
       .catch(() => {
         if (mounted) {
           setStatus("error");
-          setError("Unable to complete login.");
+          setError("无法完成登录。");
         }
       });
 
@@ -43,19 +43,19 @@ export default function AuthCallbackPage() {
   }, [router]);
 
   return (
-    <AppShell title="Completing Login" description="Finishing Supabase magic link sign-in.">
+    <AppShell title="正在完成登录" description="正在处理邮箱魔法链接登录。">
       {status === "error" ? (
         <section className="panel">
-          <h2>Login failed</h2>
+          <h2>登录失败</h2>
           <p className="muted">{error}</p>
           <Link className="button primary" href="/login">
-            Back to login
+            返回登录
           </Link>
         </section>
       ) : status === "success" ? (
-        <div className="panel">Login complete. Redirecting to dashboard...</div>
+        <div className="panel">登录完成，正在进入工作台...</div>
       ) : (
-        <div className="panel">Completing login...</div>
+        <div className="panel">正在完成登录...</div>
       )}
     </AppShell>
   );

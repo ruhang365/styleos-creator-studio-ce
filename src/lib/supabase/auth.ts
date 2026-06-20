@@ -8,7 +8,7 @@ export interface AuthCallbackResult {
 function requireBrowserClient() {
   const client = getSupabaseBrowserClient();
   if (!client) {
-    throw new Error("Supabase is not configured.");
+    throw new Error("云端登录尚未配置。");
   }
   return client;
 }
@@ -66,19 +66,19 @@ export async function getSession() {
 export async function completeAuthCallbackFromUrl(url: string): Promise<AuthCallbackResult> {
   const client = getSupabaseBrowserClient();
   if (!client) {
-    return { ok: false, error: "Supabase is not configured." };
+    return { ok: false, error: "云端登录尚未配置。" };
   }
 
   let parsedUrl: URL;
   try {
     parsedUrl = new URL(url);
   } catch {
-    return { ok: false, error: "Invalid auth callback URL." };
+    return { ok: false, error: "登录回调链接无效。" };
   }
 
   const callbackError = parsedUrl.searchParams.get("error_description") || parsedUrl.searchParams.get("error");
   if (callbackError) {
-    return { ok: false, error: "Supabase rejected the sign-in link." };
+    return { ok: false, error: "登录链接已被拒绝或已失效。" };
   }
 
   const code = parsedUrl.searchParams.get("code");
@@ -89,7 +89,7 @@ export async function completeAuthCallbackFromUrl(url: string): Promise<AuthCall
       if (data.session) {
         return { ok: true };
       }
-      return { ok: false, error: safeAuthError(error, "Unable to exchange the magic link code.") };
+      return { ok: false, error: safeAuthError(error, "无法完成登录链接校验。") };
     }
     return { ok: true };
   }
@@ -103,7 +103,7 @@ export async function completeAuthCallbackFromUrl(url: string): Promise<AuthCall
       refresh_token: refreshToken
     });
     if (error) {
-      return { ok: false, error: safeAuthError(error, "Unable to save the magic link session.") };
+      return { ok: false, error: safeAuthError(error, "无法保存登录会话。") };
     }
     return { ok: true };
   }
@@ -113,5 +113,5 @@ export async function completeAuthCallbackFromUrl(url: string): Promise<AuthCall
     return { ok: true };
   }
 
-  return { ok: false, error: "Missing auth callback parameters." };
+  return { ok: false, error: "登录回调缺少必要参数。" };
 }

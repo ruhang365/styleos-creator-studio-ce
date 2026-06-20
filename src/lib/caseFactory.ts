@@ -5,18 +5,18 @@ import { sanitizeText } from "@/lib/sanitizer";
 
 export function createCaseFromIntake(service: Service, intake: FanIntake): FanCase {
   const now = nowIso();
-  const fanNickname = sanitizeText(intake.fanNickname || "synthetic_user", 80);
+  const fanNickname = sanitizeText(intake.fanNickname || "体验顾客", 80);
 
   return {
     caseId: createId("case"),
     serviceId: service.serviceId,
     serviceName: service.serviceName,
-    fanNickname: fanNickname || "synthetic_user",
+    fanNickname: fanNickname || "体验顾客",
     targetScenario: sanitizeText(intake.targetScenario, 160),
     status: "intake_submitted",
     intake: {
       ...intake,
-      fanNickname: fanNickname || "synthetic_user"
+      fanNickname: fanNickname || "体验顾客"
     },
     tags: [],
     ruleMatches: [],
@@ -29,6 +29,6 @@ export function createCaseFromIntake(service: Service, intake: FanIntake): FanCa
 export function createSyntheticFanCase(service: Service) {
   return createCaseFromIntake(service, {
     ...syntheticFanIntake,
-    fanNickname: `synthetic_user_${Date.now().toString(36).slice(-4)}`
+    fanNickname: `体验顾客-${Date.now().toString(36).slice(-4)}`
   });
 }

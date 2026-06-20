@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import EmptyState from "@/components/EmptyState";
 import TagChip from "@/components/TagChip";
+import WorkflowSteps from "@/components/WorkflowSteps";
 import { createId, nowIso } from "@/lib/ids";
 import { generateStyleTags } from "@/lib/tagger";
 import { getStorageAdapter } from "@/lib/storage";
@@ -29,7 +30,7 @@ export default function TagWorkbenchPage() {
         setCaseItem(found);
         setTags(found?.tags ?? []);
       })
-      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load case."));
+      .catch((error) => setMessage(error instanceof Error ? error.message : "无法加载案例。"));
   }, [caseId]);
 
   const save = async () => {
@@ -38,53 +39,56 @@ export default function TagWorkbenchPage() {
     }
     const storage = getStorageAdapter();
     await storage.updateCase(caseItem.caseId, { tags, status: "tagging", updatedAt: nowIso() });
-    setMessage("Tags saved. Case status is now tagging.");
+    setMessage("标签已保存，案例状态更新为“标签中”。");
   };
 
   if (!caseItem) {
     return (
-      <AppShell title="Tag Workbench" description="Case not found.">
-        <EmptyState title="Case not found" description="Return to the case list and open a valid case." />
+      <AppShell title="生成发型标签" description="未找到案例。">
+        <EmptyState title="未找到案例" description="返回案例记录，重新打开一个有效案例。" />
       </AppShell>
     );
   }
 
   return (
-    <AppShell title="Tag Workbench" description="Generate initial style tags from intake, then adjust manually.">
+    <AppShell title="生成发型标签" description="第 2 步 · 从采集信息自动生成标签，再手动微调。">
+      <section className="panel">
+        <WorkflowSteps activeKey="tags" />
+      </section>
       {message ? <div className="notice">{message}</div> : null}
       <section className="panel">
-        <h3>Intake basis</h3>
-        <p className="muted">{caseItem.intake.currentHairstyleConcern}</p>
-        <p className="muted">{caseItem.intake.stylingGoal}</p>
+        <h3>采集依据</h3>
+        <p className="muted">当前困扰：{caseItem.intake.currentHairstyleConcern}</p>
+        <p className="muted">造型目标：{caseItem.intake.stylingGoal}</p>
         <div className="actions">
           <button className="button primary" onClick={() => setTags(generateStyleTags(caseItem.intake))} type="button">
-            Generate Tags
+            自动生成标签
           </button>
           <button className="button" onClick={save} type="button">
-            Save Tags
+            保存标签
           </button>
           <button className="button ghost" onClick={() => router.push(`/cases/${caseItem.caseId}/rules`)} type="button">
-            Continue to Rules
+            下一步：匹配规则
           </button>
         </div>
       </section>
 
       <section className="form-card">
-        <h3>Manually add tag</h3>
+        <h3>手动添加标签</h3>
         <div className="form-grid">
           <label className="field">
-            Tag group
+            标签分组
             <select value={manualGroup} onChange={(event) => setManualGroup(event.target.value as StyleTag["group"])}>
-              <option value="Basic">Basic</option>
-              <option value="Face & Proportion">Face & Proportion</option>
-              <option value="Hair Attribute">Hair Attribute</option>
-              <option value="Goal">Goal</option>
-              <option value="Constraint">Constraint</option>
+              <option value="Basic">基础</option>
+              <option value="Face & Proportion">脸型与比例</option>
+              <option value="Hair Attribute">发质属性</option>
+              <option value="Goal">造型目标</option>
+              <option value="Constraint">限制条件</option>
             </select>
           </label>
           <label className="field">
-            Tag label
-            <input value={manualTag} onChange={(event) => setManualTag(event.target.value)} placeholder="goal_clean_outline" />
+            标签名称
+            <input value={manualTag} onChange={(event) => setManualTag(event.target.value)} placeholder="例如：goal_clean_outline" />
           </label>
         </div>
         <button
@@ -107,16 +111,20 @@ export default function TagWorkbenchPage() {
           }}
           type="button"
         >
-          Add Tag
+          添加标签
         </button>
       </section>
 
       <section className="panel">
-        <h3>Selected tags</h3>
+        <h3>已选标签</h3>
         <div className="chips">
-          {tags.map((tag) => (
-            <TagChip key={tag.tagId} onRemove={(tagId) => setTags(tags.filter((item) => item.tagId !== tagId))} tag={tag} />
-          ))}
+          {tags.length > 0 ? (
+            tags.map((tag) => (
+              <TagChip key={tag.tagId} onRemove={(tagId) => setTags(tags.filter((item) => item.tagId !== tagId))} tag={tag} />
+            ))
+          ) : (
+            <p className="muted">尚未生成或添加标签。</p>
+          )}
         </div>
       </section>
     </AppShell>

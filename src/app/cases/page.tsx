@@ -9,17 +9,19 @@ import { getStorageMode } from "@/lib/config-public";
 import { getStorageAdapter } from "@/lib/storage";
 import type { CaseStatus, FanCase } from "@/types";
 
-const statuses: CaseStatus[] = [
-  "intake_submitted",
-  "tagging",
-  "rule_matching",
-  "report_draft",
-  "creator_review",
-  "delivered",
-  "feedback_received",
-  "candidate_extracted",
-  "archived"
-];
+const statusLabels: Record<CaseStatus, string> = {
+  intake_submitted: "已采集",
+  tagging: "标签中",
+  rule_matching: "规则匹配",
+  report_draft: "报告草稿",
+  creator_review: "待审阅",
+  delivered: "已交付",
+  feedback_received: "已反馈",
+  candidate_extracted: "已提炼",
+  archived: "已归档"
+};
+
+const statuses = Object.keys(statusLabels) as CaseStatus[];
 
 export default function CasesPage() {
   const mode = getStorageMode();
@@ -35,40 +37,40 @@ export default function CasesPage() {
       .seedInitialData()
       .then(() => storage.listCases())
       .then(setCases)
-      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load cases."))
+      .catch((error) => setMessage(error instanceof Error ? error.message : "无法加载案例。"))
       .finally(() => setIsLoading(false));
   }, []);
 
   const visibleCases = filter === "all" ? cases : cases.filter((caseItem) => caseItem.status === filter);
 
   return (
-    <AppShell title="Cases" description={`All ${mode === "supabase" ? "cloud" : "local"} fan cases, with status filters and next-action routing.`}>
+    <AppShell title="案例记录" description={`全部发型咨询案例，按状态筛选并跟进下一步 · ${mode === "supabase" ? "云端工作区" : "本地工作区"}`}>
       {message ? <div className="notice">{message}</div> : null}
       <section className="page-header">
         <div>
-          <h2>Case management</h2>
-          <p>Do not enter real personal identity data or raw photos in this CE skeleton.</p>
+          <h2>咨询案例</h2>
+          <p>请勿在此处录入真实身份信息或原始照片，CE 仅记录结构化特征标签。</p>
         </div>
         <Link className="button primary" href="/services">
-          Create from Service
+          从服务开始咨询
         </Link>
       </section>
 
       <div className="filter-row">
         <button className={filter === "all" ? "active" : ""} onClick={() => setFilter("all")} type="button">
-          all
+          全部
         </button>
         {statuses.map((status) => (
           <button className={filter === status ? "active" : ""} key={status} onClick={() => setFilter(status)} type="button">
-            {status.replaceAll("_", " ")}
+            {statusLabels[status]}
           </button>
         ))}
       </div>
 
       {isLoading ? (
-        <EmptyState title="Loading cases" description="Loading cloud fan cases for the current creator session." />
+        <EmptyState title="正在加载案例" description="正在加载当前工作区的发型咨询案例。" />
       ) : visibleCases.length === 0 ? (
-        <EmptyState title="No cases found" description="Create a synthetic fan case from Dashboard or a service detail page." />
+        <EmptyState title="没有符合条件的案例" description="从“发型咨询”工作台开始新咨询，或录入一个体验案例。" />
       ) : (
         <section className="grid two">
           {visibleCases.map((caseItem) => (

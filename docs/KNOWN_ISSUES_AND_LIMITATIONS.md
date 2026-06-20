@@ -15,8 +15,8 @@
 
 ## Alpha Limits
 
-- Hosted Online Synthetic E2E has not yet completed.
-- Real small-B invitations should wait until E2E passes.
+- Hosted Online Synthetic E2E has passed and cleanup has been verified.
+- Broad real small-B invitations should wait until Alpha UI polish and guided internal testing.
 - Candidate Knowledge still requires manual review.
 - Alpha testers should use synthetic data first.
 

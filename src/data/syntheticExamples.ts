@@ -1,10 +1,10 @@
 import type { FanIntake } from "@/types";
 
 export const syntheticFanIntake: FanIntake = {
-  fanNickname: "synthetic_user",
-  targetScenario: "first professional profile photo and daily commute",
-  currentHairstyleConcern: "shape feels flat on top and wide near the cheek area",
-  stylingGoal: "cleaner outline, more lift, easier morning routine",
+  fanNickname: "体验顾客",
+  targetScenario: "通勤与会议场景",
+  currentHairstyleConcern: "头顶容易扁塌，两侧视觉偏宽，希望整体轮廓更清爽。",
+  stylingGoal: "减少下颌线压迫感，增加头顶支撑，同时保持早上好打理。",
   faceShapeTag: "round",
   foreheadImpression: "medium",
   jawlineSignal: "soft",
@@ -16,15 +16,15 @@ export const syntheticFanIntake: FanIntake = {
   willingnessToCutShort: "maybe",
   willingnessToPerm: "no",
   willingnessToColor: "no",
-  workplaceSchoolConstraints: "needs conservative daily look",
-  creatorNotes: "Synthetic local MVP case. No real photo, name, contact, or private profile.",
+  workplaceSchoolConstraints: "需要适合面客和日常通勤，单位风格偏稳重。",
+  creatorNotes: "体验案例。无真实照片、姓名、联系方式或隐私信息。",
   consentToLocalProcessing: true
 };
 
 export const sampleScenarioOptions = [
-  "daily commute",
-  "first professional profile photo",
-  "job interview",
-  "school or workplace refresh",
-  "low-maintenance weekend look"
+  "日常通勤",
+  "职业头像拍摄",
+  "面试准备",
+  "校园或职场形象更新",
+  "低打理周末造型"
 ];

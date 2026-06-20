@@ -116,7 +116,7 @@ function requireStyleosClient() {
 async function requireUser() {
   const user = await getCurrentUser();
   if (!user) {
-    throw new Error("Supabase Mode requires creator login.");
+    throw new Error("云端模式需要先完成创作者登录。");
   }
   return user;
 }
@@ -140,7 +140,7 @@ function mapService(row: ServiceRow): Service {
     status: row.status,
     description: row.description ?? "",
     priceNote: row.price_note ?? "",
-    deliveryFormat: row.delivery_format ?? "Markdown Lite Report + Barber Brief",
+    deliveryFormat: row.delivery_format ?? "顾客报告 Lite Report + 理发师沟通卡 Barber Brief",
     intakeToken: row.intake_token,
     intakePath: `/intake/${row.intake_token}`,
     createdAt: row.created_at,
@@ -148,7 +148,7 @@ function mapService(row: ServiceRow): Service {
   };
 }
 
-function mapCase(row: CaseRow, serviceName = "Hairstyle Service"): FanCase {
+function mapCase(row: CaseRow, serviceName = "发型咨询服务"): FanCase {
   return {
     caseId: row.id,
     creatorId: row.creator_user_id,
@@ -202,7 +202,7 @@ function mapReport(row: ReportRow): LiteReport {
   return {
     reportId: row.id,
     caseId: row.case_id,
-    title: `Hairstyle Lite Report - ${row.id.slice(0, 8)}`,
+    title: `顾客报告 - ${row.id.slice(0, 8)}`,
     markdown: row.markdown ?? "",
     barberBrief: getBarberBriefText(row.barber_brief),
     status: row.status,
@@ -529,8 +529,8 @@ export const supabaseAdapter: StorageAdapter = {
       consentType: "anonymized_learning",
       consentValue: savedFeedback.consentToAnonymizedLearning,
       consentNote: savedFeedback.consentToAnonymizedLearning
-        ? "Fan allowed anonymized learning from this feedback."
-        : "Fan did not allow anonymized learning from this feedback."
+        ? "顾客同意将本次反馈脱敏后用于候选知识提炼。"
+        : "顾客未同意将本次反馈用于候选知识提炼。"
     });
     return savedFeedback;
   },
@@ -623,7 +623,7 @@ export const supabaseAdapter: StorageAdapter = {
     return mapCandidate(data as CandidateKnowledgeRow);
   },
   async resetAllData() {
-    throw new Error("Cloud reset is disabled. Use Local Mode reset only.");
+    throw new Error("云端模式不支持一键重置，请在本地模式中使用重置。");
   },
   async seedInitialData() {
     return;

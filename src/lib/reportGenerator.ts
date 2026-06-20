@@ -11,53 +11,53 @@ export function generateLiteReport(caseItem: FanCase, selectedRules: RuleCard[])
   const barberBrief = generateBarberBrief(caseItem, selectedRules);
 
   const markdown = [
-    `# Hairstyle Lite Report - ${caseItem.fanNickname}`,
+    `# 顾客报告 Lite Report - ${caseItem.fanNickname}`,
     "",
     heading(
-      "Summary",
-      `This local CE report converts synthetic intake into a hairstyle direction for ${intake.targetScenario}. The current goal is ${intake.stylingGoal}.`
+      "咨询摘要",
+      `这份 CE 报告把结构化采集信息整理成适用于「${intake.targetScenario}」的发型方向。当前目标是：${intake.stylingGoal}。`
     ),
-    heading("Input Tags", bullets(tags.length > 0 ? tags : ["No tags saved yet."])),
+    heading("发型标签", bullets(tags.length > 0 ? tags : ["还没有保存标签。"])),
     heading(
-      "Hairstyle Direction",
+      "发型方向",
       recommendations.length > 0
         ? bullets(recommendations)
-        : "Generate tags and match rules before using this report with a real workflow."
+        : "请先生成标签并匹配规则，再将报告用于真实咨询流程。"
     ),
     heading(
-      "Suitable Options",
+      "适合选项",
       bullets([
-        "A shape-led refresh that respects the user's maintenance level.",
-        "A clear barber brief that focuses on cut, side volume, crown height, and front line.",
-        "A conservative fallback if the user is not ready for strong change."
+        "以轮廓调整为主，匹配顾客可接受的打理强度。",
+        "把剪裁、两侧体积、头顶高度和刘海/前发线写进理发师沟通卡。",
+        "如果顾客暂时不想大改，保留稳妥过渡方案。"
       ])
     ),
-    heading("Avoid List", bullets(avoidList.length > 0 ? avoidList : ["No avoid list generated yet."])),
+    heading("避免项", bullets(avoidList.length > 0 ? avoidList : ["还没有生成避免项。"])),
     heading(
-      "Hair Color Direction",
+      "染发方向",
       intake.willingnessToColor === "low" || intake.willingnessToColor === "no"
-        ? "Keep color natural. Use cut and shape as the main refresh lever."
-        : "Use color as an optional supporting lever after shape direction is confirmed."
+        ? "保持自然发色，把剪裁和轮廓作为主要调整杠杆。"
+        : "先确认轮廓方向，再把发色作为辅助调整选项。"
     ),
     barberBrief,
     heading(
-      "Next Action Checklist",
+      "下一步动作",
       bullets([
-        "Creator reviews selected rules.",
-        "Creator edits wording before delivery.",
-        "Fan reads the report.",
-        "Fan optionally shares Barber Brief with a hairstylist.",
-        "Creator collects feedback before extracting candidate knowledge."
+        "创作者复核已选择的规则。",
+        "交付前调整报告措辞。",
+        "顾客阅读报告。",
+        "顾客可将 Barber Brief 给理发师沟通。",
+        "创作者收集反馈后，再决定是否提炼候选知识。"
       ])
     ),
     heading(
-      "Disclaimer",
-      `StyleOS Creator Studio CE is a local-first community edition. It does not upload real photos, connect payment, call AI APIs, or provide medical beauty advice. ${limitations.join(" ")}`
+      "使用说明",
+      `StyleOS Creator Studio CE 当前不上传真实照片、不包含支付、不调用 AI API，也不提供医疗美容建议。${limitations.join(" ")}`
     )
   ].join("\n\n");
 
   return {
-    title: `Hairstyle Lite Report - ${caseItem.fanNickname}`,
+    title: `顾客报告 - ${caseItem.fanNickname}`,
     markdown,
     barberBrief
   };

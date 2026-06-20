@@ -2,18 +2,20 @@
 
 ## Snapshot
 
-StyleOS Creator Studio CE is in Hosted Alpha readiness.
+StyleOS Creator Studio CE is in Hosted Alpha readiness and entering Alpha UI polish.
 
 - Hosted Alpha deployed: yes
 - Hosted Alpha URL: `https://styleos-creator-studio-ce.vercel.app`
 - Hosted smoke test: passed
 - Local full API-assisted synthetic E2E: passed
 - Hosted Alpha Online Synthetic E2E: passed
+- Alpha invite-only allowlist: configured
+- Hosted magic link login: passed
 - Current supported workflow: Hairstyle Workflow only
 
 ## Current Gate
 
-The next required gate is configuring the server-only Alpha allowlist and running a login smoke test for an approved test account. Do not invite real small-B Alpha users before the allowlist is configured.
+The next required gate is Alpha UI polish and guided 1-3 account internal testing. Do not broaden Alpha access before the guided test produces usable feedback and any P0 blockers are fixed.
 
 ## What Works
 
@@ -38,4 +40,4 @@ The next required gate is configuring the server-only Alpha allowlist and runnin
 
 ## Current Recommendation
 
-Configure invite-only Alpha access, prepare 1-3 approved test accounts, and run a guided Alpha test with synthetic or low-risk data only.
+Use the complete [PRD](PRD.md) and [v0 UI Brief](v0-ui-brief.md) to improve the UI before inviting controlled Alpha testers. Keep tests synthetic or low-risk until the project owner approves real service usage.

@@ -27,7 +27,7 @@ export default function FeedbackPage() {
         .then(async (response) => {
           const result = await response.json();
           if (!response.ok) {
-            throw new Error(result.error ?? "Unable to load report.");
+            throw new Error(result.error ?? "无法加载报告。");
           }
           return result.report;
         })
@@ -35,7 +35,7 @@ export default function FeedbackPage() {
           setReport({
             reportId: cloudReport.id,
             caseId: "",
-            title: `Hairstyle Lite Report - ${cloudReport.id.slice(0, 8)}`,
+            title: `顾客报告 - ${cloudReport.id.slice(0, 8)}`,
             markdown: cloudReport.markdown ?? "",
             barberBrief: cloudReport.barber_brief ?? "",
             status: cloudReport.status,
@@ -46,7 +46,7 @@ export default function FeedbackPage() {
           });
           setCaseItem(null);
         })
-        .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load report."));
+        .catch((error) => setMessage(error instanceof Error ? error.message : "无法加载报告。"));
       return;
     }
 
@@ -58,7 +58,7 @@ export default function FeedbackPage() {
         setReport(foundReport);
         setCaseItem(foundReport ? cases.find((item) => item.caseId === foundReport.caseId) ?? null : null);
       })
-      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load feedback."));
+      .catch((error) => setMessage(error instanceof Error ? error.message : "无法加载反馈表。"));
   }, [mode, reportIdOrToken]);
 
   const submit = async (draft: FeedbackDraft) => {
@@ -76,10 +76,10 @@ export default function FeedbackPage() {
       });
       const result = await response.json();
       if (!response.ok) {
-        setMessage(result.error ?? "Unable to submit feedback.");
+        setMessage(result.error ?? "无法提交反馈。");
         return;
       }
-      setMessage("Feedback submitted. The creator can review it before extracting candidate knowledge.");
+      setMessage("反馈已提交。创作者会先复核，再决定是否提炼为候选知识。");
       return;
     }
 
@@ -93,30 +93,30 @@ export default function FeedbackPage() {
       ...draft
     });
     await storage.updateCase(caseItem.caseId, { feedbackId: feedback.feedbackId, status: "feedback_received", updatedAt: nowIso() });
-    setMessage("Feedback saved. Case status is now feedback_received.");
+    setMessage("反馈已保存，案例状态已更新。");
   };
 
   if (!report || (mode === "local" && !caseItem)) {
     return (
-      <AppShell title="Feedback" description="Report not found.">
-        <EmptyState title="Report not found" description={message || "Generate and save a report before collecting feedback."} />
+      <AppShell title="顾客反馈" description="未找到报告。">
+        <EmptyState title="未找到报告" description={message || "请先由创作者生成并保存报告。"} />
       </AppShell>
     );
   }
 
   return (
-    <AppShell title="Feedback" description="Collect lightweight feedback for a local CE report.">
+    <AppShell title="顾客反馈" description="反馈会在授权后用于提炼脱敏的候选知识。">
       <section className="panel">
         <h2>{report.title}</h2>
-        <p className="muted">Feedback is stored locally and can be abstracted into Candidate Knowledge only after review.</p>
+        <p className="muted">反馈会先进入创作者复核流程；只有勾选脱敏学习授权后，才会用于候选知识提炼。</p>
         <Link className="button" href={`/reports/${mode === "supabase" && report.shareToken ? report.shareToken : report.reportId}`}>
-          View Report
+          查看报告
         </Link>
       </section>
       {message ? (
         <div className="notice">
           {message}{" "}
-          {caseItem ? <Link href={`/cases/${caseItem.caseId}`}>Back to case</Link> : null}
+          {caseItem ? <Link href={`/cases/${caseItem.caseId}`}>返回案例</Link> : null}
         </div>
       ) : null}
       <FeedbackForm onSubmit={submit} />

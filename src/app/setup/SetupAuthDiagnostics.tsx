@@ -12,17 +12,17 @@ interface AuthDiagnosticState {
 
 export default function SetupAuthDiagnostics({ mode }: { mode: StorageMode }) {
   const [state, setState] = useState<AuthDiagnosticState>({
-    sessionExists: mode === "local" ? "local mode" : "checking",
-    userAuthenticated: mode === "local" ? "local mode" : "checking",
-    callbackRouteAvailable: "yes"
+    sessionExists: mode === "local" ? "本地模式" : "检查中",
+    userAuthenticated: mode === "local" ? "本地模式" : "检查中",
+    callbackRouteAvailable: "可用"
   });
 
   useEffect(() => {
     if (mode === "local") {
       setState({
-        sessionExists: "local mode",
-        userAuthenticated: "local mode",
-        callbackRouteAvailable: "yes"
+        sessionExists: "本地模式",
+        userAuthenticated: "本地模式",
+        callbackRouteAvailable: "可用"
       });
       return;
     }
@@ -34,9 +34,9 @@ export default function SetupAuthDiagnostics({ mode }: { mode: StorageMode }) {
           return;
         }
         setState({
-          sessionExists: session ? "yes" : "no",
-          userAuthenticated: user ? "yes" : "no",
-          callbackRouteAvailable: "yes"
+          sessionExists: session ? "有" : "无",
+          userAuthenticated: user ? "已登录" : "未登录",
+          callbackRouteAvailable: "可用"
         });
       })
       .catch(() => {
@@ -44,9 +44,9 @@ export default function SetupAuthDiagnostics({ mode }: { mode: StorageMode }) {
           return;
         }
         setState({
-          sessionExists: "no",
-          userAuthenticated: "no",
-          callbackRouteAvailable: "yes"
+          sessionExists: "无",
+          userAuthenticated: "未登录",
+          callbackRouteAvailable: "可用"
         });
       });
 
@@ -57,9 +57,9 @@ export default function SetupAuthDiagnostics({ mode }: { mode: StorageMode }) {
 
   return (
     <>
-      <p className="muted">Session exists: {state.sessionExists}</p>
-      <p className="muted">User authenticated: {state.userAuthenticated}</p>
-      <p className="muted">Callback route available: {state.callbackRouteAvailable}</p>
+      <p className="muted">登录会话：{state.sessionExists}</p>
+      <p className="muted">登录状态：{state.userAuthenticated}</p>
+      <p className="muted">回调页面：{state.callbackRouteAvailable}</p>
     </>
   );
 }

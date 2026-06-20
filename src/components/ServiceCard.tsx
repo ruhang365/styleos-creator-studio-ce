@@ -18,13 +18,13 @@ export default function ServiceCard({ service, caseCount }: ServiceCardProps) {
         <StatusBadge status={service.status} />
       </div>
       <p>{service.description}</p>
-      <p className="muted">Cases: {caseCount}</p>
+      <p className="muted">关联案例：{caseCount}</p>
       <div className="actions">
         <Link className="button" href={`/services/${service.serviceId}`}>
-          Open Service
+          管理服务
         </Link>
         <Link className="button ghost" href={service.intakePath}>
-          Intake Form
+          打开采集表
         </Link>
       </div>
     </article>

@@ -23,7 +23,7 @@ export async function GET(_: Request, { params }: { params: { shareToken: string
       throw error;
     }
     if (!data) {
-      return NextResponse.json({ error: "Report not found." }, { status: 404 });
+      return NextResponse.json({ error: "未找到报告。" }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -36,6 +36,6 @@ export async function GET(_: Request, { params }: { params: { shareToken: string
       }
     });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to load report." }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "无法加载报告。" }, { status: 500 });
   }
 }

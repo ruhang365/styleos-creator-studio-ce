@@ -5,11 +5,11 @@ import type { StorageMode } from "@/lib/config-public";
 import { getCurrentUser } from "@/lib/supabase/auth";
 
 export default function SetupUserStatus({ mode }: { mode: StorageMode }) {
-  const [status, setStatus] = useState(mode === "local" ? "local mode" : "checking");
+  const [status, setStatus] = useState(mode === "local" ? "本地模式" : "检查中");
 
   useEffect(() => {
     if (mode === "local") {
-      setStatus("local mode");
+      setStatus("本地模式");
       return;
     }
 
@@ -17,12 +17,12 @@ export default function SetupUserStatus({ mode }: { mode: StorageMode }) {
     getCurrentUser()
       .then((user) => {
         if (mounted) {
-          setStatus(user ? "logged in" : "not logged in");
+          setStatus(user ? "已登录" : "未登录");
         }
       })
       .catch(() => {
         if (mounted) {
-          setStatus("not logged in");
+          setStatus("未登录");
         }
       });
 

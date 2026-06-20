@@ -21,49 +21,49 @@ export default function SetupPage() {
   const alphaAccessConfigured = !alphaMode || isAlphaAccessConfigured();
 
   return (
-    <AppShell title="Setup" description="Storage mode and Supabase connection status for Creator Studio CE.">
+    <AppShell title="设置" description="查看工作区连接状态、登录状态与 Alpha 运行状态。">
       {incomplete ? (
         <div className="notice">
-          Supabase Mode was requested, but public Supabase configuration is incomplete. The app has fallen back to Local Mode.
+          已选择云端模式，但公开连接配置尚不完整，当前自动回退到本地模式。
         </div>
       ) : null}
 
       <section className="grid two">
         <article className="panel">
-          <h2>Storage</h2>
-          <p className="muted">Requested storage mode: {requestedMode}</p>
-          <p className="muted">Current storage mode: {mode}</p>
-          <p className="muted">Supabase configured: {publicConfig.isConfigured ? "yes" : "no"}</p>
-          <p className="muted">Alpha invite-only mode: {alphaMode ? "yes" : "no"}</p>
-          <p className="muted">Alpha allowlist configured: {alphaAccessConfigured ? "yes" : "no"}</p>
+          <h2>运行状态</h2>
+          <p className="muted">期望模式：{requestedMode === "supabase" ? "云端模式" : "本地模式"}</p>
+          <p className="muted">当前模式：{mode === "supabase" ? "云端模式" : "本地模式"}</p>
+          <p className="muted">云端连接：{publicConfig.isConfigured ? "已配置" : "未配置"}</p>
+          <p className="muted">邀请制 Alpha：{alphaMode ? "已开启" : "未开启"}</p>
+          <p className="muted">邀请名单：{alphaAccessConfigured ? "已配置" : "未配置"}</p>
         </article>
 
         <article className="panel">
-          <h2>Supabase</h2>
-          <p className="muted">Public URL configured: {publicConfig.url ? "yes" : "no"}</p>
-          <p className="muted">Public key configured: {publicConfig.publicKey ? "yes" : "no"}</p>
-          <p className="muted">Server secret configured: {serverConfig.isServerConfigured ? "yes" : "no"}</p>
+          <h2>连接状态</h2>
+          <p className="muted">公开 URL：{publicConfig.url ? "已配置" : "未配置"}</p>
+          <p className="muted">公开访问密钥：{publicConfig.publicKey ? "已配置" : "未配置"}</p>
+          <p className="muted">服务端密钥：{serverConfig.isServerConfigured ? "已配置" : "未配置"}</p>
           <p className="muted">
-            Current user: <SetupUserStatus mode={mode} />
+            当前用户：<SetupUserStatus mode={mode} />
           </p>
           <SetupAuthDiagnostics mode={mode} />
         </article>
       </section>
 
       <section className="panel">
-        <h2>Docs</h2>
+        <h2>运维文档</h2>
         <div className="actions">
           <Link className="button" href="/docs/supabase-connection.md">
-            Supabase connection
+            云端连接
           </Link>
           <Link className="button" href="/docs/storage-modes.md">
-            Storage modes
+            存储模式
           </Link>
           <Link className="button" href="/docs/shareable-cloud-workflow.md">
-            Shareable workflow
+            分享流程
           </Link>
           <Link className="button" href="/docs/auth-magic-link.md">
-            Magic link auth
+            邮箱登录
           </Link>
         </div>
       </section>

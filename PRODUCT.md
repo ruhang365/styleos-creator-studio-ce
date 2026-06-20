@@ -46,8 +46,8 @@ It includes:
 
 ## Product Stage
 
-This repository is currently in Hosted Alpha readiness.
+This repository is currently in Hosted Alpha readiness and Alpha UI polish.
 
-The app includes a runnable Next.js CE workflow with Local Mode, optional Supabase Mode, Magic Link Auth, public token routes, and a hosted Alpha deployment. Hosted Online Synthetic E2E is the next required gate before inviting Alpha creators.
+The app includes a runnable Next.js CE workflow with Local Mode, optional Supabase Mode, Magic Link Auth, public token routes, and a hosted Alpha deployment. Hosted Online Synthetic E2E has passed. The next gate is Alpha UI polish and guided creator testing.
 
 See [PRD](docs/PRD.md), [Current Status](docs/CURRENT_STATUS.md), and [Project Handoff](docs/PROJECT_HANDOFF.md).

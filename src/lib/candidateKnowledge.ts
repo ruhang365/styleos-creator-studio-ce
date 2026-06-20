@@ -12,10 +12,10 @@ export function extractCandidateKnowledge(caseItem: FanCase, report: LiteReport,
   const sourceSummary = appendSyntheticMarkers(
     sanitizeText(
       [
-        `Rule recommendation: ${recommendationSummary(selectedRules)}`,
-        `Scenario: ${caseItem.targetScenario}`,
-        `Report status: ${report.status}`,
-        `Feedback score: ${feedback.satisfactionScore}`
+        `规则建议：${recommendationSummary(selectedRules)}`,
+        `场景：${caseItem.targetScenario}`,
+        `报告状态：${report.status}`,
+        `反馈评分：${feedback.satisfactionScore}`
       ].join(" ")
     ),
     markers
@@ -23,15 +23,15 @@ export function extractCandidateKnowledge(caseItem: FanCase, report: LiteReport,
   const feedbackSummary = appendSyntheticMarkers(
     sanitizeText(
       [
-        `Useful part: ${feedback.mostUsefulPart}.`,
-        `Barber brief: ${feedback.willUseBarberBrief}.`,
-        `Hairstylist usage: ${feedback.showedToHairstylist}.`,
-        `Report status: ${report.status}.`
+        `有帮助的部分：${feedback.mostUsefulPart}。`,
+        `理发师沟通卡使用意愿：${feedback.willUseBarberBrief}。`,
+        `给理发师使用状态：${feedback.showedToHairstylist}。`,
+        `报告状态：${report.status}。`
       ].join(" ")
     ),
     markers
   );
-  const creatorFeedback = appendSyntheticMarkers(sanitizeText(feedback.creatorNote || "No creator note supplied."), markers);
+  const creatorFeedback = appendSyntheticMarkers(sanitizeText(feedback.creatorNote || "暂无反馈说明。"), markers);
 
   return {
     candidate_id: createId("candidate"),

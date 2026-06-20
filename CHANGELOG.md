@@ -2,6 +2,13 @@
 
 All notable changes to StyleOS Creator Studio CE will be documented in this file.
 
+## Unreleased - Complete PRD and v0 UI Brief
+
+- Expanded the PRD into a full product requirements document.
+- Added target users, product goals, user journeys, page requirements, data boundaries, Alpha acceptance criteria, risks, metrics, and release plan.
+- Added Vercel v0 UI brief and prompt pack.
+- Clarified that v0 should only generate UI and must not change auth, storage, API routes, Supabase schema, or privacy rules.
+
 ## v0.2.4 - Project Handoff & Alpha Readiness Pack
 
 - Added handoff docs.
