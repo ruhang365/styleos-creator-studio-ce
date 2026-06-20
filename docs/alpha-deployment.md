@@ -6,7 +6,7 @@ v0.2.3 prepared StyleOS Creator Studio CE for a hosted Alpha deployment. The Hos
 https://styleos-creator-studio-ce.vercel.app
 ```
 
-This document describes the deployment target and boundaries. Hosted Online Synthetic E2E is still required before inviting Alpha creators.
+This document describes the deployment target and boundaries. Hosted Online Synthetic E2E has passed after Alpha UI integration, and cleanup has been verified. Alpha access should remain limited to guided tester onboarding.
 
 ## Deployment Goal
 

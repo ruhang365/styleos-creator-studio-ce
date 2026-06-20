@@ -15,8 +15,8 @@ Use this checklist before inviting 3-5 small-B Alpha creators.
 - [x] Public feedback route accepts synthetic feedback.
 - [x] `consent_records` increases by 2 during E2E and returns to baseline after cleanup.
 - [x] Candidate Knowledge keeps `source_case_id` and marker evidence in synthetic E2E.
-- [ ] Alpha UI polish completed.
-- [ ] v0 UI integration passes local and hosted E2E.
+- [x] Alpha UI polish completed.
+- [x] v0 UI integration passes local and hosted E2E.
 
 ## Alpha Operations
 

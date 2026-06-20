@@ -186,6 +186,7 @@ Hosted Alpha has passed:
 - invite-only allowlist configuration
 - hosted magic link login check
 - hosted API-assisted synthetic E2E
+- post-UI hosted synthetic E2E
 - cleanup verification
 
 Current database baseline after cleanup:
@@ -197,7 +198,7 @@ Current database baseline after cleanup:
 - `styleos.candidate_knowledge`: 0
 - `styleos.consent_records`: 0
 
-The next product step is UI polish and guided Alpha onboarding, not a new module.
+The next product step is guided Alpha onboarding and feedback review, not a new module.
 
 ## 9. Core User Journeys
 

@@ -2,7 +2,7 @@
 
 ## Audience
 
-Invite only 3-5 small-B testers after Hosted Online Synthetic E2E passes.
+Invite only 3-5 small-B testers after Hosted Online Synthetic E2E and post-UI cleanup verification pass.
 
 Target profiles:
 

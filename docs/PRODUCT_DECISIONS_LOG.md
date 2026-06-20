@@ -12,7 +12,8 @@
 | Isolate StyleOS data in `styleos` schema | Active | Avoids modifying existing ruhang365 public business tables. |
 | Do not collect raw photos as a core asset | Active | Core asset is abstract feature-solution-outcome mapping. |
 | Alpha does not include payment, AI API, or image upload | Active | Avoids scope expansion before workflow validation. |
-| Hosted Online E2E is required before real Alpha invites | Active | Prevents onboarding users before cleanup and hosted workflow are proven. |
+| Hosted Online E2E is required before real Alpha invites | Completed | Hosted workflow and cleanup have been verified. |
+| Guided Alpha feedback is required before broader access | Active | Keeps onboarding controlled until P0/P1 feedback is understood and resolved. |
 
 ## Core Asset Decision
 
