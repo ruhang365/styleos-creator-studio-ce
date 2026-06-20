@@ -12,6 +12,7 @@ All notable changes to StyleOS Creator Studio CE will be documented in this file
 - Verified local and hosted E2E after UI integration.
 - Verified hosted synthetic test cleanup returned all six `styleos` tables to baseline.
 - Updated Alpha status docs for guided tester onboarding as the next gate.
+- Added the Alpha testing pack and expanded invite, task, feedback, and daily checklist materials for guided testers.
 
 ## v0.2.4 - Project Handoff & Alpha Readiness Pack
 

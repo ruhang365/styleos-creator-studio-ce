@@ -46,6 +46,8 @@ They must not:
 6. Classify feedback into P0, P1, and P2.
 7. Decide whether they can continue to a second test.
 
+Use [Alpha Testing Pack](ALPHA_TESTING_PACK.md) as the operator-facing runbook for invites, task links, stop conditions, feedback classification, and next-tester decisions.
+
 ## Success Signals
 
 - Creator can explain what the workflow does.

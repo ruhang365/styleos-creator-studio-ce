@@ -218,6 +218,7 @@ The first product definition focuses on the Hairstyle Suitability Workflow:
 - [Hosted Alpha Status](docs/HOSTED_ALPHA_STATUS.md)
 - [Online E2E Runbook](docs/ONLINE_E2E_RUNBOOK.md)
 - [Alpha Ready Checklist](docs/ALPHA_READY_CHECKLIST.md)
+- [Alpha Testing Pack](docs/ALPHA_TESTING_PACK.md)
 - [Alpha User Onboarding Plan](docs/ALPHA_USER_ONBOARDING_PLAN.md)
 - [Alpha Feedback Operations](docs/ALPHA_FEEDBACK_OPERATIONS.md)
 - [Next 30 Days Roadmap](docs/NEXT_30_DAYS_ROADMAP.md)
