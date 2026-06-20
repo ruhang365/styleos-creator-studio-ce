@@ -9,6 +9,7 @@
 ## Workflow Completion
 
 - Login:
+- Dashboard understanding:
 - Service creation:
 - Fan intake:
 - Case review:
@@ -27,7 +28,14 @@
 
 - 
 
-## Highest-value Moment
+## Output Quality
+
+- Lite Report clarity:
+- Lite Report editability:
+- Barber Brief usefulness:
+- Candidate Knowledge usefulness:
+
+## Highest-Value Moment
 
 - 
 
@@ -46,6 +54,12 @@
 - P0:
 - P1:
 - P2:
+
+## Next Tester Decision
+
+- Can invite next tester: yes / no
+- Reason:
+- Required fix before next tester:
 
 ## Recommended Next Action
 

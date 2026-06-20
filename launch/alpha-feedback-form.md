@@ -7,6 +7,7 @@ Use this template for Alpha tester feedback. Do not include real customer data.
 - Your role:
 - Your service type:
 - Are you testing with synthetic data: yes / no
+- Did you avoid real photos and sensitive personal data: yes / no
 
 ## Product Understanding
 
@@ -20,6 +21,7 @@ Use this template for Alpha tester feedback. Do not include real customer data.
 - Which step felt most stuck?
 - Would you use this in a real creator workflow?
 - Would you use it to serve fans?
+- Would the 5-step workflow help you explain your service to a fan?
 
 ## Feature Feedback
 
@@ -27,6 +29,14 @@ Use this template for Alpha tester feedback. Do not include real customer data.
 - What wording or page felt unclear?
 - What output would you want to edit more?
 - What should be removed or simplified?
+- What would you need before using this with real clients later?
+
+## Output Feedback
+
+- Did the Lite Report feel clear to a customer?
+- Did the Barber Brief feel useful for communication with a hairstylist?
+- Did the Candidate Knowledge feel like reusable learning?
+- What would you change in the report before sending it?
 
 ## Co-creation
 

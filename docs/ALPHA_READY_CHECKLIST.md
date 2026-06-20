@@ -22,9 +22,10 @@ Use this checklist before inviting 3-5 small-B Alpha creators.
 
 - [ ] 1-3 approved test accounts are prepared for guided UI feedback.
 - [x] Alpha access strategy is confirmed.
-- [ ] Alpha onboarding message is ready.
-- [ ] Alpha test task list is ready.
-- [ ] Alpha feedback summary template is ready.
+- [x] Alpha testing pack is ready.
+- [x] Alpha onboarding message is ready.
+- [x] Alpha test task list is ready.
+- [x] Alpha feedback summary template is ready.
 - [ ] Daily Alpha checklist owner is assigned.
 - [ ] Incident response owner is assigned.
 

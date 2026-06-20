@@ -10,19 +10,33 @@
 
 1. Log in.
 2. Open dashboard.
-3. Create a synthetic Hairstyle service.
-4. Open the service detail page.
-5. Submit synthetic fan intake.
-6. Open the new case.
-7. Generate tags.
-8. Match and save rules.
-9. Generate Lite Report.
-10. Generate Barber Brief.
-11. Mark report delivered.
-12. Open shared report.
-13. Submit synthetic feedback.
-14. Open Candidate Knowledge Queue.
-15. Review whether the candidate knowledge feels useful.
+3. Confirm the 5-step workflow is understandable.
+4. Create a synthetic Hairstyle service.
+5. Open the service detail page.
+6. Open the intake form.
+7. Submit synthetic fan intake.
+8. Open the new case.
+9. Generate tags.
+10. Match and save rules.
+11. Generate Lite Report.
+12. Generate Barber Brief.
+13. Save the report.
+14. Mark report delivered.
+15. Open shared report.
+16. Submit synthetic feedback.
+17. Open Candidate Knowledge Queue.
+18. Review whether the candidate knowledge feels useful.
+
+## Synthetic Intake Scenario
+
+Use this kind of fictional input if you do not want to invent your own:
+
+- fan alias: 体验顾客 A
+- scenario: 通勤和日常拍照都想显得清爽
+- current concern: 两侧容易蓬，头顶容易塌
+- styling goal: 低打理成本，轮廓更干净
+- constraints: 不想夸张染烫，适合办公室
+- consent: choose the consent option only for this synthetic test
 
 ## Feedback Questions
 
