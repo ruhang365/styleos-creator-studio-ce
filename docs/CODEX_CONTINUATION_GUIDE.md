@@ -2,7 +2,7 @@
 
 ## Current Priority
 
-The next priority is Hosted Online Synthetic E2E. Do not start new modules before that gate passes.
+The next priority is guided 1-3 account Alpha testing preparation. Alpha UI polish, v0 UI integration, local build verification, hosted synthetic E2E, and cleanup verification have passed. Do not start new modules before guided Alpha feedback is reviewed.
 
 ## Required Startup Checks
 
@@ -36,7 +36,7 @@ Read the relevant docs before editing:
 
 ## Typical Next Instructions
 
-- Run Hosted Online Synthetic E2E.
+- Prepare guided Alpha tester onboarding and feedback capture.
 - Fix a P0 Alpha blocker.
 - Improve report editor usability.
 - Improve Barber Brief clarity.
@@ -51,6 +51,7 @@ Move from Hosted Alpha readiness to small-B Alpha only if:
 - login is stable
 - no secrets are exposed
 - Alpha onboarding and feedback process are ready
+- guided testers agree to synthetic-data-first usage
 
 ## How To Run E2E
 

@@ -15,7 +15,7 @@ Alpha URL:
 https://styleos-creator-studio-ce.vercel.app
 ```
 
-Hosted Alpha is deployed. Hosted Online Synthetic E2E has passed and cleanup has been verified. The next product gate is Alpha UI polish before guided creator testing.
+Hosted Alpha is deployed. Alpha UI polish and v0 UI integration are complete. Hosted Online Synthetic E2E has passed after UI integration, and cleanup has been verified. The next product gate is guided 1-3 account Alpha testing with synthetic data first.
 
 Current status:
 
@@ -23,6 +23,8 @@ Current status:
 - Hosted smoke test: passed
 - Local API-assisted synthetic E2E: passed
 - Hosted Online Synthetic E2E: passed
+- Alpha UI polish and v0 UI integration: passed
+- Post-UI hosted synthetic E2E cleanup: verified
 - Alpha invite-only allowlist: configured
 - Alpha invitations: ready for controlled 1-3 account guided testing
 - Current workflow: Hairstyle only

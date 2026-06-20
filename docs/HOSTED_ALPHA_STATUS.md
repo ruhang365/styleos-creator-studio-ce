@@ -13,7 +13,9 @@ https://styleos-creator-studio-ce.vercel.app
 - Supabase configured: yes in hosted Alpha
 - Storage mode: Supabase Mode
 - Auth: Supabase Magic Link Auth
-- Current gate: Hosted Online Synthetic E2E
+- Current gate: guided 1-3 account Alpha testing preparation
+- Alpha UI polish and v0 UI integration: passed
+- Post-UI hosted synthetic E2E cleanup: verified
 
 ## Available Pages
 
@@ -38,8 +40,8 @@ https://styleos-creator-studio-ce.vercel.app
 - No team workspace.
 - No StyleOS Pro review workflow.
 - Candidate Knowledge still requires manual review.
-- Real small-B Alpha invitations should wait until Hosted Online Synthetic E2E passes.
+- Real small-B Alpha invitations should stay limited to guided 1-3 account testing until P0 feedback is resolved.
 
 ## Next Required Action
 
-Run Hosted Online Synthetic E2E with synthetic data only, then verify cleanup and table counts.
+Prepare guided Alpha onboarding, test task list, feedback capture, and daily ownership. Keep tester data synthetic first.

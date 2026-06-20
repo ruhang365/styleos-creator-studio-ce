@@ -47,7 +47,7 @@
 - Add project handoff docs, PRD, current status, and product narrative.
 - Add Alpha readiness checklist and hosted online E2E runbook.
 - Add operations runbooks, backlog, release milestones, and launch materials.
-- Keep the next gate focused on Hosted Online Synthetic E2E.
+- Established Hosted Online Synthetic E2E as the next gate at that stage.
 
 ## v0.2.5 - Hosted Online E2E (completed)
 
@@ -55,15 +55,15 @@
 - Verify service, intake, case, report, feedback, Candidate Knowledge, and consent_records.
 - Clean up all synthetic rows and confirm six `styleos` table counts return to baseline.
 
-## v0.2.6 - Alpha UI Polish and v0 Design Pass (current / planned)
+## v0.2.6 - Alpha UI Polish and v0 Design Pass (completed)
 
 - Complete product PRD.
 - Add v0 UI brief and prompt pack.
 - Generate UI options in Vercel v0.
 - Integrate selected UI without changing storage, auth, API routes, Supabase schema, or privacy boundaries.
-- Rerun local and hosted E2E after UI integration.
+- Rerun local and hosted E2E after UI integration and verify cleanup.
 
-## v0.2.7 - Alpha Creator Onboarding
+## v0.2.7 - Alpha Creator Onboarding (current / planned)
 
 - Invite 3-5 small-B Alpha testers after hosted E2E passes.
 - Keep testing synthetic-data-first.

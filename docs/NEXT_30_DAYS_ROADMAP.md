@@ -5,7 +5,7 @@
 - Complete PRD and v0 UI Brief.
 - Generate first UI options in Vercel v0.
 - Integrate selected UI without changing auth, storage, API routes, Supabase schema, or privacy boundaries.
-- Rerun local and hosted E2E after UI integration.
+- Rerun local and hosted E2E after UI integration. Completed.
 
 ## Week 2
 
@@ -14,6 +14,7 @@
 - Improve report editor usability.
 - Improve Barber Brief structure.
 - Improve case flow clarity.
+- Fix any P0/P1 findings from the first guided tester before inviting the next tester.
 
 ## Week 3
 
