@@ -51,7 +51,7 @@ export default function CandidateQueuePage() {
       .filter((item): item is CandidateKnowledge => Boolean(item));
 
     if (nextCandidates.length === 0) {
-      setMessage("No new feedback case is ready for extraction.");
+      setMessage("暂无可提炼的反馈案例。");
       return;
     }
 
@@ -65,7 +65,7 @@ export default function CandidateQueuePage() {
         })
       )
     );
-    setMessage(`Extracted ${nextCandidates.length} candidate knowledge item(s).`);
+    setMessage(`已提炼 ${nextCandidates.length} 条候选知识。`);
     await refresh();
   };
 
@@ -76,7 +76,7 @@ export default function CandidateQueuePage() {
       return;
     }
     if (action === "pro" && candidate.consent_status !== "granted") {
-      setMessage("Consent is required before marking a candidate as pro_candidate.");
+      setMessage("标记为 Pro 候选前需要先获得授权同意。");
       return;
     }
 
@@ -107,17 +107,16 @@ export default function CandidateQueuePage() {
   };
 
   return (
-    <AppShell title="Candidate Knowledge Queue" description={`Abstract ${mode === "supabase" ? "cloud" : "local"} feedback cases into reviewable knowledge candidates.`}>
+    <AppShell title="知识候选" description={`把反馈完成的案例提炼成可复用、可审阅的经验 · ${mode === "supabase" ? "云端工作区" : "本地工作区"}`}>
       <section className="page-header">
         <div>
-          <h2>Candidate Knowledge Queue</h2>
+          <h2>候选知识队列</h2>
           <p>
-            CandidateKnowledge does not save real names, photos, or contacts. It stores abstract feature tags, recommendation summary,
-            execution feedback, and review status.
+            候选知识不会保存真实姓名、照片或联系方式，只沉淀抽象的特征标签、方案要点、执行反馈与审阅状态。
           </p>
         </div>
         <button className="button primary" onClick={extractFromFeedback} type="button">
-          Extract from feedback case
+          从反馈案例提炼
         </button>
       </section>
 
@@ -125,11 +124,11 @@ export default function CandidateQueuePage() {
 
       {candidates.length === 0 ? (
         <EmptyState
-          title="No candidates yet"
-          description="Deliver a report, collect feedback, then extract a candidate knowledge item."
+          title="还没有候选知识"
+          description="先交付报告、收集顾客反馈，再从案例中提炼一条候选知识。"
           action={
             <Link className="button" href="/cases">
-              View Cases
+              查看案例
             </Link>
           }
         />

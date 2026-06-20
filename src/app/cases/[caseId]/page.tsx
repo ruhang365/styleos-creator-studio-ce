@@ -7,10 +7,21 @@ import AppShell from "@/components/AppShell";
 import EmptyState from "@/components/EmptyState";
 import StatusBadge from "@/components/StatusBadge";
 import TagChip from "@/components/TagChip";
+import WorkflowSteps from "@/components/WorkflowSteps";
 import { extractCandidateKnowledge } from "@/lib/candidateKnowledge";
 import { getStorageAdapter } from "@/lib/storage";
 import { nowIso } from "@/lib/ids";
-import type { CandidateKnowledge, FanCase, Feedback, LiteReport } from "@/types";
+import type { CandidateKnowledge, CaseStatus, FanCase, Feedback, LiteReport } from "@/types";
+
+const stepForStatus: Partial<Record<CaseStatus, string>> = {
+  intake_submitted: "tags",
+  tagging: "rules",
+  rule_matching: "report",
+  report_draft: "report",
+  creator_review: "report",
+  delivered: "brief",
+  feedback_received: "brief"
+};
 
 export default function CaseDetailPage() {
   const params = useParams();
@@ -49,13 +60,13 @@ export default function CaseDetailPage() {
     storage
       .seedInitialData()
       .then(refresh)
-      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load case."))
+      .catch((error) => setMessage(error instanceof Error ? error.message : "无法加载案例。"))
       .finally(() => setIsLoading(false));
   }, [caseId]);
 
   const extractCandidate = async () => {
     if (!caseItem || !report || !feedback) {
-      setMessage("Feedback and report are required before extraction.");
+      setMessage("需要先有报告和顾客反馈，才能提炼候选知识。");
       return;
     }
     const storage = getStorageAdapter();
@@ -78,28 +89,28 @@ export default function CaseDetailPage() {
       updatedAt: now
     });
     setCandidate(savedCandidate);
-    setMessage("Candidate knowledge extracted as abstract mapping. No nickname, photo, or contact was copied.");
+    setMessage("已提炼为抽象的候选知识，未复制昵称、照片或联系方式。");
     await refresh();
   };
 
   if (!caseItem && isLoading) {
     return (
-      <AppShell title="Case Detail" description="Loading case.">
-        <EmptyState title="Loading case" description="Loading the cloud fan case for the current creator session." />
+      <AppShell title="案例详情" description="正在加载案例。">
+        <EmptyState title="正在加载案例" description="正在加载当前工作区的发型咨询案例。" />
       </AppShell>
     );
   }
 
   if (!caseItem) {
     return (
-      <AppShell title="Case Detail" description="Case not found.">
-        <EmptyState title="Case not found" description="Return to the case list and open a local case." />
+      <AppShell title="案例详情" description="未找到案例。">
+        <EmptyState title="未找到案例" description="返回案例记录，重新打开一个案例。" />
       </AppShell>
     );
   }
 
   return (
-    <AppShell title={`Case: ${caseItem.fanNickname}`} description="Intake summary, tags, rule matches, report, feedback, and candidate status.">
+    <AppShell title={`案例：${caseItem.fanNickname}`} description="采集摘要、标签、规则匹配、报告、反馈与候选知识状态。">
       <section className="panel">
         <div className="card-row">
           <div>
@@ -108,27 +119,28 @@ export default function CaseDetailPage() {
           </div>
           <StatusBadge status={caseItem.status} />
         </div>
-        <div className="actions">
+        <WorkflowSteps activeKey={stepForStatus[caseItem.status]} />
+        <div className="actions" style={{ marginTop: 16 }}>
           <Link className="button primary" href={`/cases/${caseItem.caseId}/tags`}>
-            Go to Tag Workbench
+            生成发型标签
           </Link>
           <Link className="button" href={`/cases/${caseItem.caseId}/rules`}>
-            Match Rules
+            匹配发型规则
           </Link>
           <Link className="button" href={`/cases/${caseItem.caseId}/report`}>
-            Generate Report
+            生成报告与沟通卡
           </Link>
           {caseItem.reportId ? (
             <Link className="button" href={`/feedback/${caseItem.reportId}`}>
-              View Feedback
+              查看反馈
             </Link>
           ) : (
             <button className="button" disabled type="button">
-              View Feedback
+              查看反馈
             </button>
           )}
           <button className="button" onClick={extractCandidate} type="button">
-            Extract Candidate Knowledge
+            提炼候选知识
           </button>
         </div>
       </section>
@@ -137,25 +149,25 @@ export default function CaseDetailPage() {
 
       <section className="grid two">
         <article className="panel">
-          <h3>Intake summary</h3>
-          <p><strong>Goal:</strong> {caseItem.intake.stylingGoal}</p>
-          <p><strong>Concern:</strong> {caseItem.intake.currentHairstyleConcern}</p>
-          <p><strong>Constraints:</strong> {caseItem.intake.workplaceSchoolConstraints}</p>
+          <h3>采集摘要</h3>
+          <p><strong>造型目标：</strong>{caseItem.intake.stylingGoal}</p>
+          <p><strong>当前困扰：</strong>{caseItem.intake.currentHairstyleConcern}</p>
+          <p><strong>限制条件：</strong>{caseItem.intake.workplaceSchoolConstraints}</p>
         </article>
         <article className="panel">
-          <h3>Status summary</h3>
-          <p className="muted">Selected tags: {caseItem.tags.length}</p>
-          <p className="muted">Matched rules: {caseItem.selectedRuleIds.length}</p>
-          <p className="muted">Report status: {report?.status ?? "not generated"}</p>
-          <p className="muted">Feedback summary: {feedback ? `${feedback.satisfactionScore}/5` : "not received"}</p>
-          <p className="muted">Candidate knowledge: {candidate?.review_status ?? "not extracted"}</p>
+          <h3>进度概览</h3>
+          <p className="muted">已选标签：{caseItem.tags.length}</p>
+          <p className="muted">匹配规则：{caseItem.selectedRuleIds.length}</p>
+          <p className="muted">报告状态：{report ? <StatusBadge status={report.status} /> : "未生成"}</p>
+          <p className="muted">反馈评分：{feedback ? `${feedback.satisfactionScore}/5` : "未收集"}</p>
+          <p className="muted">候选知识：{candidate?.review_status ?? "未提炼"}</p>
         </article>
       </section>
 
       <section className="panel">
-        <h3>Selected tags</h3>
+        <h3>已选标签</h3>
         <div className="chips">
-          {caseItem.tags.length > 0 ? caseItem.tags.map((tag) => <TagChip key={tag.tagId} tag={tag} />) : <p className="muted">No tags saved yet.</p>}
+          {caseItem.tags.length > 0 ? caseItem.tags.map((tag) => <TagChip key={tag.tagId} tag={tag} />) : <p className="muted">尚未保存标签。</p>}
         </div>
       </section>
     </AppShell>

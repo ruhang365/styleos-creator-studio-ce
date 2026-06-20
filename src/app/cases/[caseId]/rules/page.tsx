@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import EmptyState from "@/components/EmptyState";
 import RuleCard from "@/components/RuleCard";
+import WorkflowSteps from "@/components/WorkflowSteps";
 import { hairstyleRules } from "@/data/hairstyleRules";
 import { nowIso } from "@/lib/ids";
 import { matchRules } from "@/lib/ruleMatcher";
@@ -32,7 +33,7 @@ export default function RuleMatchingPage() {
         setMatches(found?.ruleMatches ?? []);
         setSelectedRuleIds(found?.selectedRuleIds ?? []);
       })
-      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load case."))
+      .catch((error) => setMessage(error instanceof Error ? error.message : "无法加载案例。"))
       .finally(() => setIsLoading(false));
   }, [caseId]);
 
@@ -57,41 +58,44 @@ export default function RuleMatchingPage() {
       status: "rule_matching",
       updatedAt: nowIso()
     });
-    setMessage("Selected rules saved. Case status is now rule_matching.");
+    setMessage("已保存所选规则，案例状态更新为“规则匹配”。");
   };
 
   if (!caseItem && isLoading) {
     return (
-      <AppShell title="Rule Matching" description="Loading case.">
-        <EmptyState title="Loading case" description="Loading the cloud fan case for the current creator session." />
+      <AppShell title="匹配发型规则" description="正在加载案例。">
+        <EmptyState title="正在加载案例" description="正在加载当前工作区的发型咨询案例。" />
       </AppShell>
     );
   }
 
   if (!caseItem) {
     return (
-      <AppShell title="Rule Matching" description="Case not found.">
-        <EmptyState title="Case not found" description="Return to the case list and open a valid case." />
+      <AppShell title="匹配发型规则" description="未找到案例。">
+        <EmptyState title="未找到案例" description="返回案例记录，重新打开一个有效案例。" />
       </AppShell>
     );
   }
 
   return (
-    <AppShell title="Rule Matching" description="Match local hairstyle seed rules against saved Style Tags.">
+    <AppShell title="匹配发型规则" description="第 3 步 · 用已保存的标签匹配本地发型方案规则。">
+      <section className="panel">
+        <WorkflowSteps activeKey="rules" />
+      </section>
       {caseItem.tags.length === 0 ? (
-        <div className="notice">No tags saved yet. Open Tag Workbench first for better matches.</div>
+        <div className="notice">尚未保存标签，建议先完成“生成发型标签”再匹配，效果更准。</div>
       ) : null}
       {message ? <div className="notice">{message}</div> : null}
       <section className="panel">
         <div className="actions">
           <button className="button primary" onClick={autoMatch} type="button">
-            Auto Match Rules
+            自动匹配规则
           </button>
           <button className="button" onClick={save} type="button">
-            Save Selected Rules
+            保存所选规则
           </button>
           <button className="button ghost" onClick={() => router.push(`/cases/${caseItem.caseId}/report`)} type="button">
-            Continue to Report
+            下一步：生成报告
           </button>
         </div>
       </section>

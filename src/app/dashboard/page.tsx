@@ -3,10 +3,15 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
+import CaseCard from "@/components/CaseCard";
+import EmptyState from "@/components/EmptyState";
+import WorkflowSteps from "@/components/WorkflowSteps";
 import { createSyntheticFanCase } from "@/lib/caseFactory";
 import { getStorageMode, isSupabaseModeRequestedButIncomplete } from "@/lib/config-public";
 import { getStorageAdapter } from "@/lib/storage";
 import type { CandidateKnowledge, Creator, FanCase, LiteReport, Service } from "@/types";
+
+const PENDING_STATUSES = ["intake_submitted", "tagging", "rule_matching", "report_draft", "creator_review", "delivered"];
 
 export default function DashboardPage() {
   const mode = getStorageMode();
@@ -34,7 +39,7 @@ export default function DashboardPage() {
       setReports(nextReports);
       setCandidates(nextCandidates);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Unable to load dashboard data.");
+      setMessage(error instanceof Error ? error.message : "无法加载工作台数据。");
     }
   };
 
@@ -46,92 +51,134 @@ export default function DashboardPage() {
     const storage = getStorageAdapter();
     const service = services[0] ?? (await storage.listServices())[0];
     if (!service) {
-      setMessage("Create a service before adding a synthetic case.");
+      setMessage("请先创建一个服务，再录入体验案例。");
       return;
     }
     const nextCase = createSyntheticFanCase(service);
     const savedCase = await storage.createCase(nextCase);
     await refresh();
-    setMessage(`Created synthetic case ${savedCase.fanNickname}.`);
+    setMessage(`已录入体验案例：${savedCase.fanNickname}。`);
   };
 
   const resetLocal = async () => {
     const storage = getStorageAdapter();
     await storage.resetAllData();
     await refresh();
-    setMessage("Local data reset to CE seed state.");
+    setMessage("本地数据已重置为 CE 初始示例。");
   };
 
-  const pendingCases = cases.filter((caseItem) => !["delivered", "feedback_received", "candidate_extracted"].includes(caseItem.status));
+  const pendingCases = cases
+    .filter((caseItem) => PENDING_STATUSES.includes(caseItem.status))
+    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
   const deliveredReports = reports.filter((report) => report.status === "delivered");
+  const startHref = services[0]?.intakePath ?? "/services/new";
 
   return (
-    <AppShell title="Dashboard" description={`${mode === "supabase" ? "Supabase" : "Local"} creator workspace for the Hairstyle Workflow MVP.`}>
+    <AppShell
+      title="发型咨询工作台"
+      description={`从顾客采集到沟通卡的完整造型咨询流程 · ${mode === "supabase" ? "云端工作区" : "本地工作区"}`}
+    >
       {isSupabaseModeRequestedButIncomplete() ? (
-        <div className="notice">Supabase Mode was requested but is not fully configured. The app is using Local Mode.</div>
+        <div className="notice">已选择 Supabase 云端模式，但配置尚不完整，当前自动使用本地模式。</div>
       ) : null}
+
       <section className="page-header">
         <div>
-          <h2>{creator?.studioName ?? "StyleOS Local Studio"}</h2>
-          <p>{creator?.displayName ?? "Synthetic Creator"} · {mode === "supabase" ? "Supabase Mode" : "Local Mode"} · hairstyle workflow only.</p>
+          <h2>{creator?.studioName ?? "我的造型工作室"}</h2>
+          <p>
+            {creator?.displayName ?? "造型顾问"} · 跟着下面 5 步，把一次粉丝咨询做成顾客方案和理发师沟通卡。
+          </p>
         </div>
         <div className="actions">
-          <Link className="button primary" href="/services/new">
-            Create Hairstyle Service
+          <Link className="button primary" href={startHref}>
+            开始新咨询
           </Link>
           <button className="button" onClick={createSynthetic} type="button">
-            New Synthetic Fan Case
+            录入体验案例
           </button>
-          <Link className="button" href="/knowledge/candidates">
-            View Candidate Queue
+          <Link className="button ghost" href="/cases">
+            查看全部案例
           </Link>
         </div>
       </section>
 
       {message ? <div className="notice">{message}</div> : null}
 
-      <section className="grid five">
+      <section className="panel">
+        <div className="card-row">
+          <h3>造型咨询流程</h3>
+          <span className="muted">5 步走完一次咨询</span>
+        </div>
+        <p className="muted" style={{ marginTop: 0 }}>
+          每个新案例都会沿着这条流程推进，案例详情页会高亮当前所在步骤。
+        </p>
+        <WorkflowSteps />
+      </section>
+
+      <section className="grid four">
         <article className="panel metric">
-          <span className="muted">Total services</span>
+          <span className="muted">服务入口</span>
           <strong>{services.length}</strong>
         </article>
         <article className="panel metric">
-          <span className="muted">Total cases</span>
+          <span className="muted">咨询案例</span>
           <strong>{cases.length}</strong>
         </article>
         <article className="panel metric">
-          <span className="muted">Pending cases</span>
+          <span className="muted">待处理</span>
           <strong>{pendingCases.length}</strong>
         </article>
         <article className="panel metric">
-          <span className="muted">Delivered reports</span>
+          <span className="muted">已交付报告</span>
           <strong>{deliveredReports.length}</strong>
         </article>
-        <article className="panel metric">
-          <span className="muted">Candidate knowledge</span>
-          <strong>{candidates.length}</strong>
-        </article>
+      </section>
+
+      <section className="panel">
+        <div className="card-row">
+          <h3>待处理咨询</h3>
+          <Link className="button ghost" href="/cases">
+            全部案例
+          </Link>
+        </div>
+        {pendingCases.length === 0 ? (
+          <EmptyState
+            title="暂无待处理咨询"
+            description="点击“开始新咨询”采集一位顾客，或先录入一个体验案例熟悉流程。"
+            action={
+              <Link className="button primary" href={startHref}>
+                开始新咨询
+              </Link>
+            }
+          />
+        ) : (
+          <section className="grid two">
+            {pendingCases.slice(0, 4).map((caseItem) => (
+              <CaseCard caseItem={caseItem} key={caseItem.caseId} />
+            ))}
+          </section>
+        )}
       </section>
 
       <section className="grid two">
         <div className="panel">
-          <h3>Creator profile</h3>
-          <p className="muted">Display name: {creator?.displayName}</p>
-          <p className="muted">Creator type: {creator?.creatorType}</p>
-          <p className="muted">Focus area: {creator?.focusArea}</p>
-          <Link className="button" href="/login">
-            Edit Local Profile
+          <h3>顾问资料</h3>
+          <p className="muted">昵称：{creator?.displayName ?? "—"}</p>
+          <p className="muted">顾问类型：{creator?.creatorType ?? "—"}</p>
+          <p className="muted">擅长方向：{creator?.focusArea ?? "—"}</p>
+          <Link className="button" href="/setup">
+            前往设置
           </Link>
         </div>
         <div className="panel">
-          <h3>Data controls</h3>
+          <h3>数据控制</h3>
           <p className="muted">
             {mode === "local"
-              ? "Reset removes localStorage records and restores only synthetic CE seed data."
-              : "Cloud reset is disabled in CE. Use Supabase dashboard procedures for cloud data governance."}
+              ? "重置会清除本地存储记录，仅恢复 CE 初始示例数据。"
+              : "云端模式下 CE 不提供一键重置，请在 Supabase 控制台执行数据治理操作。"}
           </p>
           <button className="button danger" disabled={mode !== "local"} onClick={resetLocal} type="button">
-            Reset Local Data
+            重置本地数据
           </button>
         </div>
       </section>

@@ -13,7 +13,7 @@ export default function TopNav({ title, description }: TopNavProps) {
         {description ? <p>{description}</p> : null}
       </div>
       <Link className="button ghost" href="/">
-        Home
+        返回首页
       </Link>
     </header>
   );

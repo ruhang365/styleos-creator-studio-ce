@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import EmptyState from "@/components/EmptyState";
+import WorkflowSteps from "@/components/WorkflowSteps";
 import { syntheticFanIntake } from "@/data/syntheticExamples";
 import { createCaseFromIntake } from "@/lib/caseFactory";
 import { getStorageMode } from "@/lib/config-public";
@@ -25,7 +26,7 @@ export default function IntakePage() {
       fetch(`/api/intake/${serviceIdOrToken}`)
         .then(async (response) => {
           if (!response.ok) {
-            throw new Error((await response.json()).error ?? "Unable to load service.");
+            throw new Error((await response.json()).error ?? "无法加载服务。");
           }
           return response.json();
         })
@@ -44,7 +45,7 @@ export default function IntakePage() {
             updatedAt: ""
           });
         })
-        .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load service."));
+        .catch((error) => setMessage(error instanceof Error ? error.message : "无法加载服务。"));
       return;
     }
 
@@ -53,7 +54,7 @@ export default function IntakePage() {
       .seedInitialData()
       .then(() => storage.getServiceById(serviceIdOrToken))
       .then(setService)
-      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load service."));
+      .catch((error) => setMessage(error instanceof Error ? error.message : "无法加载服务。"));
   }, [mode, serviceIdOrToken]);
 
   const update = <K extends keyof FanIntake>(field: K, value: FanIntake[K]) => {
@@ -62,36 +63,39 @@ export default function IntakePage() {
 
   if (!service && !message) {
     return (
-      <AppShell title="Fan Intake" description="Service not found.">
-        <div className="panel">Loading intake form...</div>
+      <AppShell title="采集顾客信息" description="正在加载采集表。">
+        <div className="panel">正在加载采集表...</div>
       </AppShell>
     );
   }
 
   if (!service) {
     return (
-      <AppShell title="Fan Intake" description="Service not found.">
-        <EmptyState title="Service not found" description={message || "Open a valid service intake link from the service menu."} />
+      <AppShell title="采集顾客信息" description="未找到服务。">
+        <EmptyState title="未找到服务" description={message || "请从服务链接列表打开一个有效的采集入口。"} />
       </AppShell>
     );
   }
 
   if (submittedCaseId) {
     return (
-      <AppShell title="Fan Intake" description="Intake submitted.">
+      <AppShell title="采集顾客信息" description="采集已提交。">
         <section className="panel">
-          <h2>Intake submitted</h2>
-          <p className="muted">Your structured intake was received. No photo, phone, wechat, id card, address, or email is required.</p>
-          <p className="muted">Case reference: {submittedCaseId}</p>
+          <h2>采集已提交</h2>
+          <p className="muted">已收到结构化采集信息。无需上传照片、电话、微信、身份证、住址或邮箱。</p>
+          <p className="muted">案例编号：{submittedCaseId}</p>
         </section>
       </AppShell>
     );
   }
 
   return (
-    <AppShell title="Fan Intake" description="CE MVP collects structured text fields only. No real photo upload.">
+    <AppShell title="采集顾客信息" description="第 1 步 · CE 版本仅采集结构化文本字段，不上传真实照片。">
+      <section className="panel">
+        <WorkflowSteps activeKey="intake" />
+      </section>
       <div className="notice">
-        {"当前 CE MVP 不上传真实照片。照片不是 StyleOS 的核心知识资产。本产品重点沉淀“特征标签 -> 造型方案 -> 执行反馈”。"}
+        {"当前 CE 版本不上传真实照片。照片不是 StyleOS 的核心知识资产，本产品重点沉淀“特征标签 → 造型方案 → 执行反馈”。"}
       </div>
       <form
         className="form-card"
@@ -110,11 +114,11 @@ export default function IntakePage() {
               });
               const result = await response.json();
               if (!response.ok) {
-                throw new Error(result.error ?? "Unable to submit intake.");
+                throw new Error(result.error ?? "无法提交采集信息。");
               }
               setSubmittedCaseId(result.case_id);
             } catch (error) {
-              setMessage(error instanceof Error ? error.message : "Unable to submit intake.");
+              setMessage(error instanceof Error ? error.message : "无法提交采集信息。");
             }
             return;
           }
@@ -127,8 +131,8 @@ export default function IntakePage() {
             consentType: "service_processing",
             consentValue: form.consentToLocalProcessing,
             consentNote: form.consentToLocalProcessing
-              ? "Service processing consent captured from the local intake form."
-              : "Service processing consent was not granted in the local intake form."
+              ? "已在本地采集表中获得服务处理同意。"
+              : "本地采集表中未获得服务处理同意。"
           });
           router.push(`/cases/${savedCase.caseId}`);
         }}
@@ -136,124 +140,124 @@ export default function IntakePage() {
         {message ? <div className="notice">{message}</div> : null}
         <div className="form-grid">
           <label className="field">
-            fan nickname
+            顾客昵称
             <input value={form.fanNickname} onChange={(event) => update("fanNickname", event.target.value)} />
           </label>
           <label className="field">
-            target scenario
+            目标场景
             <input value={form.targetScenario} onChange={(event) => update("targetScenario", event.target.value)} />
           </label>
           <label className="field full">
-            current hairstyle concern
+            当前发型困扰
             <textarea
               value={form.currentHairstyleConcern}
               onChange={(event) => update("currentHairstyleConcern", event.target.value)}
             />
           </label>
           <label className="field full">
-            styling goal
+            造型目标
             <textarea value={form.stylingGoal} onChange={(event) => update("stylingGoal", event.target.value)} />
           </label>
           <label className="field">
-            face shape tag
+            脸型
             <select value={form.faceShapeTag} onChange={(event) => update("faceShapeTag", event.target.value)}>
-              <option value="oval">oval</option>
-              <option value="round">round</option>
-              <option value="long">long</option>
-              <option value="square">square</option>
-              <option value="heart">heart</option>
+              <option value="oval">鹅蛋脸</option>
+              <option value="round">圆脸</option>
+              <option value="long">长脸</option>
+              <option value="square">方脸</option>
+              <option value="heart">心形脸</option>
             </select>
           </label>
           <label className="field">
-            forehead impression
+            额头印象
             <select value={form.foreheadImpression} onChange={(event) => update("foreheadImpression", event.target.value)}>
-              <option value="low">low</option>
-              <option value="medium">medium</option>
-              <option value="high">high</option>
+              <option value="low">偏低</option>
+              <option value="medium">适中</option>
+              <option value="high">偏高</option>
             </select>
           </label>
           <label className="field">
-            jawline signal
+            下颌线条
             <select value={form.jawlineSignal} onChange={(event) => update("jawlineSignal", event.target.value)}>
-              <option value="soft">soft</option>
-              <option value="square">square</option>
-              <option value="narrow">narrow</option>
+              <option value="soft">柔和</option>
+              <option value="square">方正</option>
+              <option value="narrow">窄</option>
             </select>
           </label>
           <label className="field">
-            hair volume
+            发量
             <select value={form.hairVolume} onChange={(event) => update("hairVolume", event.target.value)}>
-              <option value="low">low</option>
-              <option value="medium">medium</option>
-              <option value="high">high</option>
+              <option value="low">偏少</option>
+              <option value="medium">适中</option>
+              <option value="high">偏多</option>
             </select>
           </label>
           <label className="field">
-            hair texture
+            发质
             <select value={form.hairTexture} onChange={(event) => update("hairTexture", event.target.value)}>
-              <option value="straight">straight</option>
-              <option value="wavy">wavy</option>
-              <option value="curly">curly</option>
+              <option value="straight">直发</option>
+              <option value="wavy">微卷</option>
+              <option value="curly">卷发</option>
             </select>
           </label>
           <label className="field">
-            hair shape
+            头型走向
             <select value={form.hairShape} onChange={(event) => update("hairShape", event.target.value)}>
-              <option value="flat_crown">flat_crown</option>
-              <option value="side_volume">side_volume</option>
-              <option value="balanced">balanced</option>
+              <option value="flat_crown">头顶扁塌</option>
+              <option value="side_volume">两侧蓬松</option>
+              <option value="balanced">均衡</option>
             </select>
           </label>
           <label className="field">
-            crown height
+            头顶高度
             <select value={form.crownHeight} onChange={(event) => update("crownHeight", event.target.value)}>
-              <option value="low">low</option>
-              <option value="medium">medium</option>
-              <option value="high">high</option>
+              <option value="low">偏低</option>
+              <option value="medium">适中</option>
+              <option value="high">偏高</option>
             </select>
           </label>
           <label className="field">
-            maintenance willingness
+            打理意愿
             <select value={form.maintenanceWillingness} onChange={(event) => update("maintenanceWillingness", event.target.value)}>
-              <option value="low">low</option>
-              <option value="medium">medium</option>
-              <option value="high">high</option>
+              <option value="low">低</option>
+              <option value="medium">中</option>
+              <option value="high">高</option>
             </select>
           </label>
           <label className="field">
-            willingness to cut short
+            剪短意愿
             <select value={form.willingnessToCutShort} onChange={(event) => update("willingnessToCutShort", event.target.value)}>
-              <option value="no">no</option>
-              <option value="maybe">maybe</option>
-              <option value="yes">yes</option>
+              <option value="no">不接受</option>
+              <option value="maybe">看情况</option>
+              <option value="yes">接受</option>
             </select>
           </label>
           <label className="field">
-            willingness to perm
+            烫发意愿
             <select value={form.willingnessToPerm} onChange={(event) => update("willingnessToPerm", event.target.value)}>
-              <option value="no">no</option>
-              <option value="maybe">maybe</option>
-              <option value="yes">yes</option>
+              <option value="no">不接受</option>
+              <option value="maybe">看情况</option>
+              <option value="yes">接受</option>
             </select>
           </label>
           <label className="field">
-            willingness to color
+            染发意愿
             <select value={form.willingnessToColor} onChange={(event) => update("willingnessToColor", event.target.value)}>
-              <option value="no">no</option>
-              <option value="maybe">maybe</option>
-              <option value="yes">yes</option>
+              <option value="no">不接受</option>
+              <option value="maybe">看情况</option>
+              <option value="yes">接受</option>
             </select>
           </label>
           <label className="field full">
-            workplace / school constraints
+            职场 / 校园限制
             <textarea
-              placeholder="client-facing, workplace conservative, limited styling time"
+              placeholder="例如：需要面客、单位风格保守、可打理时间有限"
               value={form.workplaceSchoolConstraints}
               onChange={(event) => update("workplaceSchoolConstraints", event.target.value)}
             />
           </label>
           <label className="field full">
-            creator notes
+            顾问备注
             <textarea value={form.creatorNotes} onChange={(event) => update("creatorNotes", event.target.value)} />
           </label>
           <label className="field full">
@@ -263,12 +267,12 @@ export default function IntakePage() {
                 onChange={(event) => update("consentToLocalProcessing", event.target.checked)}
                 type="checkbox"
               />{" "}
-              I understand this CE MVP stores structured intake in the current {mode === "supabase" ? "Supabase Mode" : "Local Mode"} workflow.
+              我已了解：本 CE 版本会在当前{mode === "supabase" ? "云端模式" : "本地模式"}工作流中保存结构化采集信息。
             </span>
           </label>
         </div>
         <button className="button primary" disabled={!form.consentToLocalProcessing} type="submit">
-          Submit Intake
+          提交采集
         </button>
       </form>
     </AppShell>
