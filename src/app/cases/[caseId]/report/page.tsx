@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import BarberBriefPreview from "@/components/BarberBriefPreview";
 import EmptyState from "@/components/EmptyState";
+import WorkflowSteps from "@/components/WorkflowSteps";
 import { hairstyleRules } from "@/data/hairstyleRules";
 import { nowIso } from "@/lib/ids";
 import { generateBarberBrief } from "@/lib/barberBriefGenerator";
@@ -42,7 +43,7 @@ export default function ReportEditorPage() {
     storage
       .seedInitialData()
       .then(refresh)
-      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load report editor."))
+      .catch((error) => setMessage(error instanceof Error ? error.message : "无法加载报告编辑器。"))
       .finally(() => setIsLoading(false));
   }, [caseId]);
 
@@ -54,7 +55,7 @@ export default function ReportEditorPage() {
     const generated = generateLiteReport(caseItem, selectedRules);
     setMarkdown(generated.markdown);
     setBarberBrief(generated.barberBrief);
-    setMessage("Lite Report generated from intake, tags, and selected rules.");
+    setMessage("已根据采集信息、标签与所选规则生成 Lite Report。");
   };
 
   const generateBrief = () => {
@@ -63,19 +64,19 @@ export default function ReportEditorPage() {
     }
     const selectedRules = hairstyleRules.filter((rule) => caseItem.selectedRuleIds.includes(rule.rule_id));
     setBarberBrief(generateBarberBrief(caseItem, selectedRules));
-    setMessage("Barber Brief generated from intake and selected rules.");
+    setMessage("已根据采集信息与所选规则生成 Barber Brief 沟通卡。");
   };
 
   const save = async () => {
     if (!caseItem || !markdown.trim()) {
-      setMessage("Generate or write the Lite Report before saving.");
+      setMessage("请先生成或填写 Lite Report 再保存。");
       return;
     }
     const storage = getStorageAdapter();
     const now = nowIso();
     const nextReportInput = {
       caseId: caseItem.caseId,
-      title: `Hairstyle Lite Report - ${caseItem.fanNickname}`,
+      title: `顾客报告 - ${caseItem.fanNickname}`,
       markdown,
       barberBrief,
       status: report?.status ?? "draft",
@@ -88,7 +89,7 @@ export default function ReportEditorPage() {
       : await storage.createReport(nextReportInput);
     await storage.updateCase(caseItem.caseId, { reportId: savedReport.reportId, status: "report_draft", updatedAt: now });
     setReport(savedReport);
-    setMessage("Report saved as draft.");
+    setMessage("报告已保存为草稿。");
   };
 
   const markDelivered = async () => {
@@ -96,7 +97,7 @@ export default function ReportEditorPage() {
       return;
     }
     if (!markdown.trim() || !barberBrief.trim()) {
-      setMessage("Generate both the Lite Report and Barber Brief before marking delivered.");
+      setMessage("标记交付前，请先生成 Lite Report 与 Barber Brief 沟通卡。");
       return;
     }
     const storage = getStorageAdapter();
@@ -110,58 +111,61 @@ export default function ReportEditorPage() {
     });
     await storage.updateCase(caseItem.caseId, { status: "delivered", updatedAt: now });
     setReport(nextReport);
-    setMessage("Report marked as delivered.");
+    setMessage("报告已标记为已交付。");
   };
 
   if (!caseItem && isLoading) {
     return (
-      <AppShell title="Report Editor" description="Loading case.">
-        <EmptyState title="Loading case" description="Loading the cloud fan case for the current creator session." />
+      <AppShell title="生成报告与沟通卡" description="正在加载案例。">
+        <EmptyState title="正在加载案例" description="正在加载当前工作区的发型咨询案例。" />
       </AppShell>
     );
   }
 
   if (!caseItem) {
     return (
-      <AppShell title="Report Editor" description="Case not found.">
-        <EmptyState title="Case not found" description="Return to the case list and open a valid case." />
+      <AppShell title="生成报告与沟通卡" description="未找到案例。">
+        <EmptyState title="未找到案例" description="返回案例记录，重新打开一个有效案例。" />
       </AppShell>
     );
   }
 
   return (
-    <AppShell title="Report Editor" description="Generate, edit, copy, print, and deliver a Lite Report with Barber Brief.">
+    <AppShell title="生成报告与沟通卡" description="第 4 - 5 步 · 生成给顾客看的 Lite Report 和给理发师看的 Barber Brief。">
+      <section className="panel">
+        <WorkflowSteps activeKey={barberBrief.trim() ? "brief" : "report"} />
+      </section>
       {message ? <div className="notice">{message}</div> : null}
       <section className="panel">
         <div className="actions">
           <button className="button primary" onClick={generate} type="button">
-            Generate Lite Report
+            生成 Lite Report
           </button>
           <button className="button" onClick={generateBrief} type="button">
-            Generate Barber Brief
+            生成沟通卡
           </button>
           <button className="button" onClick={save} type="button">
-            Save Report
+            保存报告
           </button>
           <button
             className="button"
             onClick={() => {
               navigator.clipboard.writeText(copyableMarkdown(markdown));
-              setMessage("Markdown copied.");
+              setMessage("已复制 Markdown。");
             }}
             type="button"
           >
-            Copy Markdown
+            复制 Markdown
           </button>
           <button className="button" onClick={() => window.print()} type="button">
-            Print / Save as PDF
+            打印 / 存为 PDF
           </button>
           <button className="button" disabled={!report} onClick={markDelivered} type="button">
-            Mark as Delivered
+            标记为已交付
           </button>
           {report ? (
             <Link className="button ghost" href={`/reports/${mode === "supabase" && report.shareToken ? report.shareToken : report.reportId}`}>
-              Open Shared Report
+              打开分享报告
             </Link>
           ) : null}
         </div>
@@ -169,10 +173,10 @@ export default function ReportEditorPage() {
 
       <section className="grid two">
         <label className="field">
-          Edit Markdown
+          编辑 Markdown（顾客报告）
           <textarea className="textarea-large" value={markdown} onChange={(event) => setMarkdown(event.target.value)} />
         </label>
-        <BarberBriefPreview brief={barberBrief || "Generate a report to create the Barber Brief."} />
+        <BarberBriefPreview brief={barberBrief || "生成报告后会在这里显示给理发师看的沟通卡。"} />
       </section>
     </AppShell>
   );

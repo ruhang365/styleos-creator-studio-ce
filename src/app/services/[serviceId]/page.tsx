@@ -32,7 +32,7 @@ export default function ServiceDetailPage() {
         setService(nextService);
         setCases(nextCases.filter((caseItem) => caseItem.serviceId === serviceId));
       })
-      .catch((error) => setMessage(error instanceof Error ? error.message : "Unable to load service."))
+      .catch((error) => setMessage(error instanceof Error ? error.message : "无法加载服务。"))
       .finally(() => setIsLoading(false));
   }, [serviceId]);
 
@@ -48,22 +48,22 @@ export default function ServiceDetailPage() {
 
   if (!service && isLoading) {
     return (
-      <AppShell title="Service Detail" description="Loading service.">
-        <EmptyState title="Loading service" description="Loading the cloud service for the current creator session." />
+      <AppShell title="服务详情" description="正在加载服务。">
+        <EmptyState title="正在加载服务" description="正在加载当前工作区的服务链接。" />
       </AppShell>
     );
   }
 
   if (!service) {
     return (
-      <AppShell title="Service Detail" description="Service not found.">
-        <EmptyState title="Service not found" description="Return to the service menu and choose an available service." />
+      <AppShell title="服务详情" description="未找到服务。">
+        <EmptyState title="未找到服务" description="返回服务链接列表，选择一个可用服务。" />
       </AppShell>
     );
   }
 
   return (
-    <AppShell title={service.serviceName} description="Service detail, intake link, and related cases.">
+    <AppShell title={service.serviceName} description="查看服务详情、采集链接和关联案例。">
       {message ? <div className="notice">{message}</div> : null}
       <section className="panel">
         <div className="card-row">
@@ -73,26 +73,26 @@ export default function ServiceDetailPage() {
           </div>
           <StatusBadge status={service.status} />
         </div>
-        <p className="muted">Delivery format: {service.deliveryFormat}</p>
-        <p className="muted">Local intake link: /intake/{service.serviceId}</p>
+        <p className="muted">交付形式：{service.deliveryFormat}</p>
+        <p className="muted">本地采集链接：/intake/{service.serviceId}</p>
         {mode === "supabase" && service.intakeToken ? (
-          <p className="muted">Cloud intake link: /intake/{service.intakeToken}</p>
+          <p className="muted">云端采集链接：/intake/{service.intakeToken}</p>
         ) : (
-          <p className="muted">Enable Supabase Mode to share intake links across devices.</p>
+          <p className="muted">跨设备分享采集链接需要使用云端模式。</p>
         )}
         <div className="actions">
           <button className="button primary" onClick={createSynthetic} type="button">
-            Create Synthetic Case
+            录入体验案例
           </button>
           <Link className="button" href={mode === "supabase" && service.intakeToken ? `/intake/${service.intakeToken}` : `/intake/${service.serviceId}`}>
-            Open Intake Form
+            打开采集表
           </Link>
         </div>
       </section>
 
       <section className="grid two">
         {cases.length === 0 ? (
-          <EmptyState title="No cases for this service" description="Create a synthetic case or open the intake form." />
+          <EmptyState title="这个服务还没有案例" description="可以先录入体验案例，或打开采集表提交一条测试采集。" />
         ) : (
           cases.map((caseItem) => <CaseCard caseItem={caseItem} key={caseItem.caseId} />)
         )}

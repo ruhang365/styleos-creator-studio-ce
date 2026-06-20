@@ -6,30 +6,30 @@ export function generateBarberBrief(caseItem: FanCase, selectedRules: RuleCard[]
   const intake = caseItem.intake;
 
   return [
-    "## Barber Brief",
+    "## 理发师沟通卡 / Barber Brief",
     "",
-    `Client scenario: ${intake.targetScenario}`,
-    `Main goal: ${intake.stylingGoal}`,
+    `顾客场景：${intake.targetScenario}`,
+    `主要目标：${intake.stylingGoal}`,
     "",
-    "Recommended execution notes:",
-    bullets(hints.length > 0 ? hints : ["Use the intake and creator-selected tags to define a conservative first version."]),
+    "建议执行要点：",
+    bullets(hints.length > 0 ? hints : ["根据采集信息和创作者选择的标签，先给出稳妥的第一版方案。"]),
     "",
-    "Constraints to respect:",
+    "需要尊重的限制：",
     bullets([
-      `Maintenance willingness: ${intake.maintenanceWillingness}`,
-      `Cut-short willingness: ${intake.willingnessToCutShort}`,
-      `Perm willingness: ${intake.willingnessToPerm}`,
-      `Color willingness: ${intake.willingnessToColor}`,
+      `打理意愿：${intake.maintenanceWillingness}`,
+      `剪短意愿：${intake.willingnessToCutShort}`,
+      `烫发意愿：${intake.willingnessToPerm}`,
+      `染发意愿：${intake.willingnessToColor}`,
       intake.workplaceSchoolConstraints
     ]),
     "",
-    "CE disclaimer: This is a local planning brief, not a professional guarantee."
+    "CE 说明：这是一张咨询沟通卡，用于辅助创作者和理发师沟通。"
   ].join("\n");
 }
 
 export function recommendationSummary(selectedRules: RuleCard[]) {
   if (selectedRules.length === 0) {
-    return "No rule has been selected yet.";
+    return "还没有选择规则。";
   }
   return selectedRules.map((rule) => rule.recommendation).join(" ");
 }

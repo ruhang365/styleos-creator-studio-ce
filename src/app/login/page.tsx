@@ -15,30 +15,29 @@ export default function LoginPage() {
   const requestedMode = getRequestedStorageMode();
   const [creator, setCreator] = useState<Creator | null>(null);
   const [email, setEmail] = useState("");
-  const [userStatus, setUserStatus] = useState("checking");
+  const [userStatus, setUserStatus] = useState("检查中");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (mode === "local") {
       seedInitialData();
       setCreator(getCreator());
-      setUserStatus("local mode");
+      setUserStatus("本地模式");
       return;
     }
 
     getCurrentUser()
-      .then((user) => setUserStatus(user ? "logged in" : "not logged in"))
-      .catch(() => setUserStatus("not logged in"));
+      .then((user) => setUserStatus(user ? "已登录" : "未登录"))
+      .catch(() => setUserStatus("未登录"));
   }, [mode]);
 
   if (mode === "supabase") {
     return (
-      <AppShell title="Creator Login" description="Supabase Mode uses ruhang365 auth.users with email magic link login.">
+      <AppShell title="创作者登录" description="邀请制 Alpha 登录。输入已授权邮箱，打开邮件链接后进入发型咨询工作台。">
         <section className="panel">
-          <h2>Supabase Mode</h2>
-          <p className="muted">Current user: {userStatus}</p>
-          <p className="muted">Hosted Alpha is invite-only. Magic links are sent only for approved Alpha accounts.</p>
-          <p className="muted">Creator profile is not written to public.profiles in CE v0.2.2.</p>
+          <h2>内测登录</h2>
+          <p className="muted">当前状态：{userStatus}</p>
+          <p className="muted">Hosted Alpha 仅面向已邀请账号开放。未在 allowlist 内的邮箱不会获得访问权限。</p>
         </section>
 
         {message ? <div className="notice">{message}</div> : null}
@@ -57,17 +56,17 @@ export default function LoginPage() {
               });
               const result = (await response.json()) as { error?: string; message?: string };
               if (!response.ok) {
-                throw new Error(result.error ?? "Unable to send magic link.");
+                throw new Error(result.error ?? "无法发送登录链接。");
               }
-              setMessage(result.message ?? "Magic link sent. Open the link in this browser to complete login.");
+              setMessage(result.message ?? "登录链接已发送。请在这个浏览器里打开邮件链接完成登录。");
             } catch (error) {
-              setMessage(error instanceof Error ? error.message : "Unable to send magic link. Use an approved Alpha account.");
+              setMessage(error instanceof Error ? error.message : "无法发送登录链接，请确认使用已邀请的 Alpha 邮箱。");
             }
           }}
         >
           <div className="form-grid">
             <label className="field">
-              Email
+              登录邮箱
               <input
                 autoComplete="email"
                 inputMode="email"
@@ -80,18 +79,18 @@ export default function LoginPage() {
           </div>
           <div className="actions">
             <button className="button primary" disabled={!email.trim()} type="submit">
-              Send Magic Link
+              发送登录链接
             </button>
             <button
               className="button"
               onClick={async () => {
                 await signOut();
-                setUserStatus("not logged in");
-                setMessage("Signed out.");
+                setUserStatus("未登录");
+                setMessage("已退出登录。");
               }}
               type="button"
             >
-              Sign Out
+              退出登录
             </button>
           </div>
         </form>
@@ -101,20 +100,22 @@ export default function LoginPage() {
 
   if (!creator) {
     return (
-      <AppShell title="Creator Profile" description="Local profile loading.">
-        <div className="panel">Loading local creator profile...</div>
+      <AppShell title="创作者资料" description="正在加载本地创作者资料。">
+        <div className="panel">正在加载本地创作者资料...</div>
       </AppShell>
     );
   }
 
   return (
-    <AppShell title="Creator Profile" description="Local Mode profile is saved only in this browser.">
+    <AppShell title="创作者资料" description="本地模式资料只保存在当前浏览器中。">
       {isSupabaseModeRequestedButIncomplete() ? (
         <div className="notice">
-          Supabase Mode was requested, but public Supabase configuration is incomplete. Current mode is Local Mode.
+          已选择云端模式，但公开配置尚不完整，当前自动使用本地模式。
         </div>
       ) : null}
-      {requestedMode === "local" || !isSupabaseConfigured() ? null : <div className="notice">Current mode: {mode}</div>}
+      {requestedMode === "local" || !isSupabaseConfigured() ? null : (
+        <div className="notice">当前模式：本地模式</div>
+      )}
       <form
         className="form-card"
         onSubmit={(event) => {
@@ -125,34 +126,34 @@ export default function LoginPage() {
       >
         <div className="form-grid">
           <label className="field">
-            Creator display name
+            创作者昵称
             <input
               value={creator.displayName}
               onChange={(event) => setCreator({ ...creator, displayName: event.target.value })}
             />
           </label>
           <label className="field">
-            Creator type
+            创作者类型
             <select
               value={creator.creatorType}
               onChange={(event) => setCreator({ ...creator, creatorType: event.target.value as Creator["creatorType"] })}
             >
-              <option value="individual_creator">individual_creator</option>
-              <option value="small_studio">small_studio</option>
-              <option value="training_team">training_team</option>
+              <option value="individual_creator">个人创作者</option>
+              <option value="small_studio">小型工作室</option>
+              <option value="training_team">培训团队</option>
             </select>
           </label>
           <label className="field">
-            Focus area
+            擅长方向
             <input value={creator.focusArea} onChange={(event) => setCreator({ ...creator, focusArea: event.target.value })} />
           </label>
           <label className="field">
-            Studio name
+            工作室名称
             <input value={creator.studioName} onChange={(event) => setCreator({ ...creator, studioName: event.target.value })} />
           </label>
         </div>
         <button className="button primary" type="submit">
-          Save and enter dashboard
+          保存并进入工作台
         </button>
       </form>
     </AppShell>

@@ -71,7 +71,7 @@ export async function GET(_: Request, { params }: { params: { token: string } })
       throw error;
     }
     if (!data) {
-      return NextResponse.json({ error: "Service not found." }, { status: 404 });
+      return NextResponse.json({ error: "未找到服务。" }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -84,7 +84,7 @@ export async function GET(_: Request, { params }: { params: { token: string } })
       }
     });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to load service." }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "无法加载服务。" }, { status: 500 });
   }
 }
 
@@ -102,13 +102,13 @@ export async function POST(request: Request, { params }: { params: { token: stri
       throw serviceError;
     }
     if (!service) {
-      return NextResponse.json({ error: "Active service not found." }, { status: 404 });
+      return NextResponse.json({ error: "未找到可用服务。" }, { status: 404 });
     }
 
     const body = (await request.json()) as Record<string, unknown>;
     const rawIntake = body.intake && typeof body.intake === "object" ? body.intake : body;
     const intake = normalizeIntakeAliases(removeSensitiveFields(rawIntake) as Record<string, unknown>);
-    const fanAlias = sanitizeText(String(body.fan_alias ?? intake.fanNickname ?? "fan_alias"), 80) || "fan_alias";
+    const fanAlias = sanitizeText(String(body.fan_alias ?? intake.fanNickname ?? "体验顾客"), 80) || "体验顾客";
     const targetScenario = sanitizeText(String(body.target_scenario ?? intake.targetScenario ?? ""), 160);
     const consentValue = Boolean(
       intake.consentToLocalProcessing ?? body.consent_to_local_processing ?? body.consentToLocalProcessing ?? body.serviceProcessingConsent
@@ -143,15 +143,15 @@ export async function POST(request: Request, { params }: { params: { token: stri
       consent_note: appendSyntheticMarkers(
         sanitizeText(
           consentValue
-            ? "Service processing consent captured from the intake form."
-            : "Service processing consent was not granted in the intake form."
+            ? "已在采集表中获得服务处理同意。"
+            : "采集表中未获得服务处理同意。"
         ),
         consentMarkers
       )
     });
 
     if (consentError) {
-      throw new Error("Unable to record intake consent.");
+      throw new Error("无法记录采集授权。");
     }
 
     return NextResponse.json({
@@ -160,7 +160,7 @@ export async function POST(request: Request, { params }: { params: { token: stri
       status: fanCase.status
     });
   } catch (error) {
-    const message = error instanceof Error && error.message === "Unable to record intake consent." ? error.message : "Unable to submit intake.";
+    const message = error instanceof Error && error.message === "无法记录采集授权。" ? error.message : "无法提交采集信息。";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

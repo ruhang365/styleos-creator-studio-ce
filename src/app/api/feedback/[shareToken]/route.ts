@@ -13,7 +13,7 @@ export async function POST(request: Request, { params }: { params: { shareToken:
     const consent = body.consent_to_anonymized_learning ?? body.consentToAnonymizedLearning;
 
     if (typeof consent !== "boolean") {
-      return NextResponse.json({ error: "consent_to_anonymized_learning is required." }, { status: 400 });
+      return NextResponse.json({ error: "请先选择是否同意脱敏学习授权。" }, { status: 400 });
     }
 
     const client = getStyleosServiceClient();
@@ -28,7 +28,7 @@ export async function POST(request: Request, { params }: { params: { shareToken:
       throw reportError;
     }
     if (!report) {
-      return NextResponse.json({ error: "Report not found." }, { status: 404 });
+      return NextResponse.json({ error: "未找到报告。" }, { status: 404 });
     }
 
     const { data: feedback, error: feedbackError } = await client
@@ -60,14 +60,14 @@ export async function POST(request: Request, { params }: { params: { shareToken:
       consent_value: consent,
       consent_note: appendSyntheticMarkers(
         sanitizeText(
-          consent ? "Fan allowed anonymized learning from this feedback." : "Fan did not allow anonymized learning from this feedback."
+          consent ? "顾客同意将本次反馈脱敏后用于候选知识提炼。" : "顾客未同意将本次反馈用于候选知识提炼。"
         ),
         consentMarkers
       )
     });
 
     if (consentError) {
-      throw new Error("Unable to record feedback consent.");
+      throw new Error("无法记录反馈授权。");
     }
 
     return NextResponse.json({
@@ -75,7 +75,7 @@ export async function POST(request: Request, { params }: { params: { shareToken:
       feedback_id: feedback.id
     });
   } catch (error) {
-    const message = error instanceof Error && error.message === "Unable to record feedback consent." ? error.message : "Unable to submit feedback.";
+    const message = error instanceof Error && error.message === "无法记录反馈授权。" ? error.message : "无法提交反馈。";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

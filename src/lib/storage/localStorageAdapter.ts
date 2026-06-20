@@ -243,7 +243,7 @@ export const localStorageAdapter: StorageAdapter = {
     const services = getServicesSync();
     const existing = services.find((service) => service.serviceId === serviceId);
     if (!existing) {
-      throw new Error("Service not found.");
+      throw new Error("未找到服务。");
     }
     const next = withServiceDefaults({ ...existing, ...updates, updatedAt: nowIso() });
     saveServicesSync(services.map((service) => (service.serviceId === serviceId ? next : service)));
@@ -300,7 +300,7 @@ export const localStorageAdapter: StorageAdapter = {
     const reports = getReportsSync();
     const existing = reports.find((report) => report.reportId === reportId);
     if (!existing) {
-      throw new Error("Report not found.");
+      throw new Error("未找到报告。");
     }
     const next = withReportDefaults({ ...existing, ...updates, updatedAt: nowIso() });
     saveReportsSync(reports.map((report) => (report.reportId === reportId ? next : report)));
@@ -328,8 +328,8 @@ export const localStorageAdapter: StorageAdapter = {
       consentType: "anonymized_learning",
       consentValue: next.consentToAnonymizedLearning,
       consentNote: next.consentToAnonymizedLearning
-        ? "Fan allowed anonymized learning from this feedback."
-        : "Fan did not allow anonymized learning from this feedback."
+        ? "顾客同意将本次反馈脱敏后用于候选知识提炼。"
+        : "顾客未同意将本次反馈用于候选知识提炼。"
     });
     return next;
   },
